@@ -32,4 +32,4 @@
 - **MUI (Material-UI)** – UI komponentų bibliotekai, suteikiančiai modernų dizainą.
 
 ## Hierarchinis ryšys
-**Rezervacija -> Viešbutis -> Kambarys**
+**Viešbutis -> Kambarys -> Rezervacija**
