@@ -1,0 +1,6 @@
+@stay_link.Server_HostAddress = http://localhost:5027
+
+GET {{stay_link.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
