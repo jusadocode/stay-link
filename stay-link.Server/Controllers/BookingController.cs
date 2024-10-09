@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using stay_link.Server.Data;
 using stay_link.Server.Models;
 
@@ -44,10 +41,19 @@ namespace stay_link.Server.Controllers
 
         // POST: api/booking
         [HttpPost]
-        public async Task<ActionResult<Booking>> PostBooking(Booking booking)
+        public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
         {
             // Ensure the Room and Hotel objects are properly attached or created
-            if (booking.RoomId != null)
+            var booking = new Booking
+            {
+                CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate),
+                CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate),
+                RoomId = bookingDTO.RoomId,
+                HotelId = bookingDTO.HotelId,
+                BreakfastRequests = bookingDTO.BreakfastRequests
+            };
+
+            if (bookingDTO.RoomId != null)
             {
                 var room = await _context.Room.FindAsync(booking.RoomId);
                 if (room != null)
@@ -60,7 +66,7 @@ namespace stay_link.Server.Controllers
                 }
             }
 
-            if (booking.HotelId != null)
+            if (bookingDTO.HotelId != null)
             {
                 var hotel = await _context.Hotel.FindAsync(booking.HotelId);
                 if (hotel.ID != null)
@@ -75,7 +81,6 @@ namespace stay_link.Server.Controllers
 
             _context.Booking.Add(booking);
 
-
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBooking", new { id = booking.ID }, booking);
@@ -83,13 +88,23 @@ namespace stay_link.Server.Controllers
 
         // PUT: api/booking/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBooking(int id, Booking booking)
+        public async Task<IActionResult> PutBooking(int id, BookingDTO bookingDTO)
         {
-            if (id != booking.ID)
+            // Retrieve the existing booking from the database
+            var booking = await _context.Booking.FindAsync(id);
+            if (booking == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
+            // Update booking properties from the DTO
+            booking.CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate);
+            booking.CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate);
+            booking.RoomId = bookingDTO.RoomId;
+            booking.HotelId = bookingDTO.HotelId;
+            booking.BreakfastRequests = bookingDTO.BreakfastRequests;
+
+            // Mark the booking entity as modified
             _context.Entry(booking).State = EntityState.Modified;
 
             try
