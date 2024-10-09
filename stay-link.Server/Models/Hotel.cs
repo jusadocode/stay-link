@@ -10,15 +10,11 @@ namespace stay_link.Server.Models
         public string Address { get; set; }
         public string ImageUrl { get; set; }
 
-
-        public List<int> RoomIds { get; set; } = new List<int>();
-
-        public Hotel(string name, string location, List<int> rooms, string imgUrl)
+        public Hotel(string name, string location, string imgUrl)
         {
             Name = name;
             ImageUrl = imgUrl;
             Address = location;
-            RoomIds = rooms;
         }
 
         public Hotel() { }

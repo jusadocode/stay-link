@@ -42,18 +42,18 @@ namespace stay_link.Server.Data
                 // Seed rooms and associate with hotels
                 var rooms = new List<Room>
                 {
-                    new Room("Standard room with garden view", RoomType.Standart, hotels[0].ID),
-                    new Room("Deluxe room with sea view", RoomType.Deluxe, hotels[1].ID),
-                    new Room("Suite room with luxury amenities", RoomType.Suite, hotels[1].ID),
-                    new Room("Cozy room with snow view", RoomType.Standart, hotels[2].ID),
-                    new Room("Ski-in/ski-out suite", RoomType.Suite, hotels[2].ID),
-                    new Room("Family chalet with kitchen", RoomType.Deluxe, hotels[3].ID),
-                    new Room("Oasis view room", RoomType.Standart, hotels[4].ID),
-                    new Room("Luxury tent with amenities", RoomType.Deluxe, hotels[5].ID),
-                    new Room("Desert suite with panoramic view", RoomType.Suite, hotels[6].ID),
-                    new Room("River view room", RoomType.Standart, hotels[7].ID),
-                    new Room("Deluxe room with balcony", RoomType.Deluxe, hotels[8].ID),
-                    new Room("Suite with river access", RoomType.Suite, hotels[9].ID)
+                    new Room("Standard room with garden view", RoomType.Standart, hotels[0].ID, 4),
+                    new Room("Deluxe room with sea view", RoomType.Deluxe, hotels[1].ID, 5),
+                    new Room("Suite room with luxury amenities", RoomType.Suite, hotels[1].ID, 3),
+                    new Room("Cozy room with snow view", RoomType.Standart, hotels[2].ID, 2),
+                    new Room("Ski-in/ski-out suite", RoomType.Suite, hotels[2].ID, 2),
+                    new Room("Family chalet with kitchen", RoomType.Deluxe, hotels[3].ID, 5),
+                    new Room("Oasis view room", RoomType.Standart, hotels[4].ID, 7),
+                    new Room("Luxury tent with amenities", RoomType.Deluxe, hotels[5].ID, 8),
+                    new Room("Desert suite with panoramic view", RoomType.Suite, hotels[6].ID, 9),
+                    new Room("River view room", RoomType.Standart, hotels[7].ID, 2),
+                    new Room("Deluxe room with balcony", RoomType.Deluxe, hotels[8].ID,3),
+                    new Room("Suite with river access", RoomType.Suite, hotels[9].ID,2)
                 };
 
                 context.Room.AddRange(rooms);
@@ -69,6 +69,14 @@ namespace stay_link.Server.Data
                         RoomId = rooms.FirstOrDefault(r => r.Summary == "Deluxe room with sea view").ID,
                         HotelId = hotels.FirstOrDefault(h => h.Name == "Grand Hotel").ID,
                         BreakfastRequests = 3
+                    },
+                    new Booking
+                    {
+                        CheckInDate = new DateOnly(2024, 6, 20),
+                        CheckOutDate = new DateOnly(2024, 6, 21),
+                        RoomId = rooms.FirstOrDefault(r => r.Summary == "Cozy room with snow view").ID,
+                        HotelId = hotels.FirstOrDefault(h => h.Name == "Ocean Breeze Hotel").ID,
+                        BreakfastRequests = 2
                     }
                 };
 

@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using stay_link.Server.Data;
 using stay_link.Server.Models;
 
-namespace stay_link.Server
+namespace stay_link.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -44,12 +41,18 @@ namespace stay_link.Server
 
         // PUT: api/Hotel/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHotel(int id, Hotel hotel)
+        public async Task<IActionResult> PutHotel(int id, Hotel hotelUpdated)
         {
-            if (id != hotel.ID)
+            var hotel = await _context.Hotel.FindAsync(id);
+
+            if (hotel == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+
+            hotel.Name = hotelUpdated.Name;
+            hotel.Address = hotelUpdated.Address;
+            hotel.ImageUrl = hotelUpdated.ImageUrl;
 
             _context.Entry(hotel).State = EntityState.Modified;
 
@@ -65,12 +68,13 @@ namespace stay_link.Server
                 }
                 else
                 {
-                    throw;
+                    throw; 
                 }
             }
 
             return NoContent();
         }
+
 
         // POST: api/Hotel
         [HttpPost]
