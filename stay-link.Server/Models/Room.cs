@@ -17,14 +17,14 @@ namespace stay_link.Server.Models
         public string? Summary { get; set; }
         public RoomType RoomType { get; set; }
         public int HotelID { get; set; }
-        public int NumOfGuests { get; set; }
+        public int MaxOccupancy  { get; set; }
 
         public Room(string? summary, RoomType roomType, int hotelID, int numberOfguests)
         {
             Summary = summary;
             RoomType = roomType;
             HotelID = hotelID;
-            NumOfGuests = numberOfguests;
+            MaxOccupancy = numberOfguests;
         }
 
         public Room() { }
