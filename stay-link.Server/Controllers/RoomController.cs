@@ -61,7 +61,7 @@ namespace stay_link.Server.Controllers
             room.Summary = updatedRoom.Summary;
             room.RoomType = updatedRoom.RoomType;
             room.HotelID = updatedRoom.HotelID;
-            room.NumOfGuests = updatedRoom.NumOfGuests;
+            room.MaxOccupancy = updatedRoom.MaxOccupancy;
 
             _context.Entry(room).State = EntityState.Modified;
 
