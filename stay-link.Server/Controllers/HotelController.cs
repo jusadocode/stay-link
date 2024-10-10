@@ -26,17 +26,32 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Hotel/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hotel>> GetHotel(int id)
+        public async Task<ActionResult<HotelDTO>> GetHotel(int id)
         {
             var hotel = await _context.Hotel
                 .FirstOrDefaultAsync(h => h.ID == id);
+                
 
             if (hotel == null)
             {
                 return NotFound();
             }
 
-            return hotel;
+            var rooms = await _context.Room
+                .Where(r => r.HotelID == hotel.ID)
+                .ToListAsync();
+            
+            var hotelWithRoomsDto = new HotelDTO
+            {
+                ID = hotel.ID,
+                Name = hotel.Name,
+                Address = hotel.Address,
+                ImageUrl = hotel.ImageUrl,
+                Rooms = rooms
+            };
+
+
+            return hotelWithRoomsDto;
         }
 
         // PUT: api/Hotel/5
