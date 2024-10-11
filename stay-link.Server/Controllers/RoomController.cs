@@ -41,6 +41,9 @@ namespace stay_link.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Room>> PostRoom(Room room)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             _context.Room.Add(room);
             await _context.SaveChangesAsync();
 
@@ -51,6 +54,9 @@ namespace stay_link.Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRoom(int id, Room updatedRoom)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+                
             var room = await _context.Room.FindAsync(id);
 
             if(room == null)
