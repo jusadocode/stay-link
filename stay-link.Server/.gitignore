@@ -20,3 +20,5 @@ obj/*
 *.njsproj
 *.sln
 *.sw?
+
+notes.txt

@@ -43,6 +43,25 @@ namespace stay_link.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
+            
+            if (bookingDTO.RoomId != null)
+            {
+                var room = await _context.Room.FindAsync(bookingDTO.RoomId);
+                if (room == null)
+                     return BadRequest("Invalid Room ID.");
+            }
+
+            if (bookingDTO.HotelId != null)
+            {
+                var hotel = await _context.Hotel.FindAsync(bookingDTO.HotelId);
+                if (hotel == null)
+                    return BadRequest("Invalid Hotel ID.");
+
+            }
+
             // Ensure the Room and Hotel objects are properly attached or created
             var booking = new Booking
             {
@@ -52,32 +71,6 @@ namespace stay_link.Server.Controllers
                 HotelId = bookingDTO.HotelId,
                 BreakfastRequests = bookingDTO.BreakfastRequests
             };
-
-            if (bookingDTO.RoomId != null)
-            {
-                var room = await _context.Room.FindAsync(booking.RoomId);
-                if (room != null)
-                {
-                    booking.RoomId = room.ID;
-                }
-                else
-                {
-                    return BadRequest("Invalid Room ID.");
-                }
-            }
-
-            if (bookingDTO.HotelId != null)
-            {
-                var hotel = await _context.Hotel.FindAsync(booking.HotelId);
-                if (hotel.ID != null)
-                {
-                    booking.HotelId = hotel.ID;
-                }
-                else
-                {
-                    return BadRequest("Invalid Hotel ID.");
-                }
-            }
 
             _context.Booking.Add(booking);
 
