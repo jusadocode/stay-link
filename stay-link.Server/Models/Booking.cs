@@ -23,7 +23,7 @@ namespace stay_link.Server.Models
         public decimal CleaningFee = 20m;
         public decimal BreakfastFee = 15m;
 
-        [Range(0, int.MaxValue, ErrorMessage = "Breakfast requests must be a non-negative integer.")]
+        [Range(0, 10, ErrorMessage = "Breakfast requests must be a non-negative integer and up to 10")]
         public int BreakfastRequests { get; set; }
 
         public Booking() { }

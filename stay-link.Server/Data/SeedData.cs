@@ -16,7 +16,7 @@ namespace stay_link.Server.Data
                 context.Database.EnsureCreated();
 
                 // Check if any hotels exist.
-                if (context.Hotel.Any())
+                if (context.Hotels.Any())
                 {
                     return; // Database has been seeded
                 }
@@ -36,7 +36,7 @@ namespace stay_link.Server.Data
                     new Hotel { Name = "Snowy Peaks Hotel", Address = "606 Snowy Rd, Aspen", ImageUrl = "https://images.unsplash.com/photo-1580041065738-e72023775cdc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixID=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }
                 };
 
-                context.Hotel.AddRange(hotels);
+                context.Hotels.AddRange(hotels);
                 context.SaveChanges();
 
                 // Seed rooms and associate with hotels
@@ -56,7 +56,7 @@ namespace stay_link.Server.Data
                     new Room("Suite with river access", RoomType.Suite, hotels[9].ID,2)
                 };
 
-                context.Room.AddRange(rooms);
+                context.Rooms.AddRange(rooms);
                 context.SaveChanges();
 
                 // Seed bookings with valID hotel and room references
@@ -80,7 +80,7 @@ namespace stay_link.Server.Data
                     }
                 };
 
-                context.Booking.AddRange(bookings);
+                context.Bookings.AddRange(bookings);
                 context.SaveChanges();
             }
         }

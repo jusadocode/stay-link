@@ -5,9 +5,9 @@ namespace stay_link.Server.Data
 {
     public class BookingContext : DbContext
     {
-        public DbSet<Hotel> Hotel { get; set; }
-        public DbSet<Room> Room { get; set; }
-        public DbSet<Booking> Booking { get; set; }
+        public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
 
         public BookingContext(DbContextOptions<BookingContext> options) : base(options)
         {
@@ -24,6 +24,7 @@ namespace stay_link.Server.Data
                     property.SetColumnName(property.GetColumnName().ToLower());
                 }
             }
+
         }
 
     }
