@@ -1,0 +1,868 @@
+{
+  "openapi": "3.0.1",
+  "info":
+    {
+      "title": "stay-link.Server",
+      "version": "1.0",
+      "description": "API for managing bookings, hotels, and rooms in a hotel booking system.",
+    },
+  "paths":
+    {
+      "/api/Bookings":
+        {
+          "get":
+            {
+              "tags": ["Bookings"],
+              "summary": "Retrieve all bookings",
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "A list of bookings",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    { "$ref": "#/components/schemas/Booking" },
+                                },
+                              "examples":
+                                {
+                                  "bookingListExample":
+                                    {
+                                      value:
+                                        [
+                                          {
+                                            "id": 1,
+                                            "hotelId": 1,
+                                            "roomId": 2,
+                                            "checkInDate": "2024-12-01",
+                                            "checkOutDate": "2024-12-05",
+                                            "breakfastRequests": 2,
+                                          },
+                                          {
+                                            "id": 2,
+                                            "hotelId": 2,
+                                            "roomId": 1,
+                                            "checkInDate": "2024-12-10",
+                                            "checkOutDate": "2024-12-15",
+                                            "breakfastRequests": 1,
+                                          },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+          "post":
+            {
+              "tags": ["Bookings"],
+              "summary": "Create a new booking",
+              "requestBody":
+                {
+                  "required": true,
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            { "$ref": "#/components/schemas/BookingDTO" },
+                          "example":
+                            {
+                              "bookingExample":
+                                {
+                                  value:
+                                    {
+                                      hotelId: 1,
+                                      roomId: 2,
+                                      checkInDate: "2024-12-01",
+                                      checkOutDate: "2024-12-05",
+                                      breakfastRequests: 1,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+              "responses":
+                {
+                  "201":
+                    {
+                      "description": "Booking created successfully",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Booking" },
+                              "examples":
+                                {
+                                  "bookingCreatedExample":
+                                    {
+                                      value:
+                                        {
+                                          "id": 3,
+                                          "hotelId": 1,
+                                          "roomId": 2,
+                                          "checkInDate": "2024-12-01",
+                                          "checkOutDate": "2024-12-05",
+                                          "breakfastRequests": 1,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "400": { "description": "Invalid input" },
+                  "422": { "description": "Unsupported Entity" },
+                },
+            },
+        },
+      "/api/Bookings/{id}":
+        {
+          "get":
+            {
+              "tags": ["Bookings"],
+              "summary": "Retrieve a specific booking",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Booking details",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Booking" },
+                              "examples":
+                                {
+                                  "bookingDetailExample":
+                                    {
+                                      value:
+                                        {
+                                          "id": 1,
+                                          "hotelId": 1,
+                                          "roomId": 2,
+                                          "checkInDate": "2024-12-01",
+                                          "checkOutDate": "2024-12-05",
+                                          "breakfastRequests": 1,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "404": { "description": "Booking not found" },
+                },
+            },
+          "put":
+            {
+              "tags": ["Bookings"],
+              "summary": "Update an existing booking",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "required": true,
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            { "$ref": "#/components/schemas/BookingDTO" },
+                          "examples":
+                            {
+                              "updateBookingExample":
+                                {
+                                  value:
+                                    {
+                                      hotelId: 1,
+                                      roomId: 2,
+                                      checkInDate: "2024-12-01",
+                                      checkOutDate: "2024-12-06",
+                                      breakfastRequests: 2,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+              "responses":
+                {
+                  "200": { "description": "Booking updated successfully" },
+                  "404": { "description": "Booking not found" },
+                },
+            },
+          "delete":
+            {
+              "tags": ["Bookings"],
+              "summary": "Delete a booking",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "responses":
+                {
+                  "204": { "description": "Booking deleted successfully" },
+                  "404": { "description": "Booking not found" },
+                },
+            },
+        },
+      "/api/Hotels":
+        {
+          "get":
+            {
+              "tags": ["Hotels"],
+              "summary": "Retrieve all hotels",
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "A list of hotels",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    { "$ref": "#/components/schemas/Hotel" },
+                                },
+                              "examples":
+                                {
+                                  "hotelListExample":
+                                    {
+                                      value:
+                                        [
+                                          {
+                                            "id": 1,
+                                            "name": "Hotel Sunshine",
+                                            "address": "123 Sun St, Sunnyvale, CA",
+                                            "imageUrl": "https://example.com/image1.jpg",
+                                          },
+                                          {
+                                            "id": 2,
+                                            "name": "Moonlight Hotel",
+                                            "address": "456 Moon St, Moon City, CA",
+                                            "imageUrl": "https://example.com/image2.jpg",
+                                          },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+          "post":
+            {
+              "tags": ["Hotels"],
+              "summary": "Create a new hotel",
+              "requestBody":
+                {
+                  "required": true,
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema": { "$ref": "#/components/schemas/Hotel" },
+                          "examples":
+                            {
+                              "newHotelExample":
+                                {
+                                  value:
+                                    {
+                                      name: "Hotel Paradise",
+                                      address: "789 Paradise Ave, Paradise City, CA",
+                                      imageUrl: "https://example.com/image3.jpg",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+              "responses":
+                {
+                  "201":
+                    {
+                      "description": "Hotel created successfully",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Hotel" },
+                              "examples":
+                                {
+                                  "createdHotelExample":
+                                    {
+                                      value:
+                                        {
+                                          "id": 3,
+                                          "name": "Hotel Paradise",
+                                          "address": "789 Paradise Ave, Paradise City, CA",
+                                          "imageUrl": "https://example.com/image3.jpg",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "400": { "description": "Invalid input" },
+                  "422": { "description": "Unprocessable Entity" },
+                },
+            },
+        },
+      "/api/Hotels/{id}":
+        {
+          "get":
+            {
+              "tags": ["Hotels"],
+              "summary": "Retrieve a specific hotel",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Hotel details",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/Hotel" },
+                              "examples":
+                                {
+                                  "hotelDetailExample":
+                                    {
+                                      value:
+                                        {
+                                          "id": 1,
+                                          "name": "Hotel Sunshine",
+                                          "address": "123 Sun St, Sunnyvale, CA",
+                                          "imageUrl": "https://example.com/image1.jpg",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "404": { "description": "Hotel not found" },
+                },
+            },
+          "put":
+            {
+              "tags": ["Hotels"],
+              "summary": "Update an existing hotel",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "required": true,
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema": { "$ref": "#/components/schemas/Hotel" },
+                          "examples":
+                            {
+                              "updateHotelExample":
+                                {
+                                  value:
+                                    {
+                                      name: "Updated Hotel Sunshine",
+                                      address: "123 Sun St, Sunnyvale, CA",
+                                      imageUrl: "https://example.com/image1_updated.jpg",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+              "responses":
+                {
+                  "200": { "description": "Hotel updated successfully" },
+                  "404": { "description": "Hotel not found" },
+                },
+            },
+          "delete":
+            {
+              "tags": ["Hotels"],
+              "summary": "Delete a hotel",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "responses":
+                {
+                  "204": { "description": "Hotel deleted successfully" },
+                  "404": { "description": "Hotel not found" },
+                },
+            },
+        },
+      "/api/Hotels/{id}/Rooms":
+        {
+          "get":
+            {
+              "tags": ["Hotels"],
+              "summary": "Retrieve all rooms in a hotel",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "A list of rooms in the hotel",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    { "$ref": "#/components/schemas/Room" },
+                                },
+                              "examples":
+                                {
+                                  "roomListExample":
+                                    {
+                                      value:
+                                        [
+                                          {
+                                            "id": 1,
+                                            "hotelId": 1,
+                                            "roomNumber": "101",
+                                            "capacity": 2,
+                                            "price": 150.00,
+                                          },
+                                          {
+                                            "id": 2,
+                                            "hotelId": 1,
+                                            "roomNumber": "102",
+                                            "capacity": 4,
+                                            "price": 250.00,
+                                          },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "404": { "description": "Hotel not found" },
+                },
+            },
+        },
+      "/api/Rooms":
+        {
+          "get":
+            {
+              "tags": ["Rooms"],
+              "summary": "Retrieve all rooms",
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "A list of rooms",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    { "$ref": "#/components/schemas/Room" },
+                                },
+                              "examples":
+                                {
+                                  "roomListExample":
+                                    {
+                                      value:
+                                        [
+                                          {
+                                            "id": 1,
+                                            "hotelId": 1,
+                                            "roomNumber": "101",
+                                            "capacity": 2,
+                                            "price": 150.00,
+                                          },
+                                          {
+                                            "id": 2,
+                                            "hotelId": 1,
+                                            "roomNumber": "102",
+                                            "capacity": 4,
+                                            "price": 250.00,
+                                          },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "500": { "description": "Server error" },
+                },
+            },
+          "post":
+            {
+              "tags": ["Rooms"],
+              "summary": "Create a new room",
+              "requestBody":
+                {
+                  "required": true,
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema": { "$ref": "#/components/schemas/Room" },
+                          "examples":
+                            {
+                              "newRoomExample":
+                                {
+                                  value:
+                                    {
+                                      hotelId: 1,
+                                      roomNumber: "103",
+                                      capacity: 2,
+                                      price: 160.00,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+              "responses":
+                {
+                  "201":
+                    {
+                      "description": "Room created successfully",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema": { "$ref": "#/components/schemas/Room" },
+                              "examples":
+                                {
+                                  "createdRoomExample":
+                                    {
+                                      value:
+                                        {
+                                          "id": 3,
+                                          "hotelId": 1,
+                                          "roomNumber": "103",
+                                          "capacity": 2,
+                                          "price": 160.00,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "400": { "description": "Invalid input, check request body" },
+                  "422":
+                    { "description": "Unprocessable Entity, validation error" },
+                  "500": { "description": "Server error" },
+                },
+            },
+        },
+      "/api/Rooms/{id}":
+        {
+          "get":
+            {
+              "tags": ["Rooms"],
+              "summary": "Retrieve a specific room",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Room details",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema": { "$ref": "#/components/schemas/Room" },
+                              "examples":
+                                {
+                                  "roomDetailExample":
+                                    {
+                                      value:
+                                        {
+                                          "id": 1,
+                                          "hotelId": 1,
+                                          "roomNumber": "101",
+                                          "capacity": 2,
+                                          "price": 150.00,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                  "404": { "description": "Room not found" },
+                  "500": { "description": "Server error" },
+                },
+            },
+          "put":
+            {
+              "tags": ["Rooms"],
+              "summary": "Update an existing room",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "required": true,
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema": { "$ref": "#/components/schemas/Room" },
+                          "examples":
+                            {
+                              "updateRoomExample":
+                                {
+                                  value:
+                                    {
+                                      hotelId: 1,
+                                      roomNumber: "101",
+                                      capacity: 3,
+                                      price: 180.00,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+              "responses":
+                {
+                  "200": { "description": "Room updated successfully" },
+                  "400": { "description": "Invalid input, check request body" },
+                  "404": { "description": "Room not found" },
+                  "422":
+                    { "description": "Unprocessable Entity, validation error" },
+                  "500": { "description": "Server error" },
+                },
+            },
+          "delete":
+            {
+              "tags": ["Rooms"],
+              "summary": "Delete a room",
+              "parameters":
+                [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int32" },
+                  },
+                ],
+              "responses":
+                {
+                  "204": { "description": "Room deleted successfully" },
+                  "404": { "description": "Room not found" },
+                  "500": { "description": "Server error" },
+                },
+            },
+        },
+    },
+
+  "components":
+    {
+      "schemas":
+        {
+          "Booking":
+            {
+              "required": ["checkInDate", "checkOutDate", "hotelId", "roomId"],
+              "type": "object",
+              "properties":
+                {
+                  "id": { "type": "integer", "format": "int32" },
+                  "checkInDate": { "type": "string", "format": "date" },
+                  "checkOutDate": { "type": "string", "format": "date" },
+                  "roomId":
+                    {
+                      "maximum": 2147483647,
+                      "minimum": 1,
+                      "type": "integer",
+                      "format": "int32",
+                    },
+                  "hotelId":
+                    {
+                      "maximum": 2147483647,
+                      "minimum": 1,
+                      "type": "integer",
+                      "format": "int32",
+                    },
+                  "breakfastRequests":
+                    {
+                      "maximum": 10,
+                      "minimum": 0,
+                      "type": "integer",
+                      "format": "int32",
+                    },
+                },
+              "additionalProperties": false,
+            },
+          "BookingDTO":
+            {
+              "required": ["checkInDate", "checkOutDate", "hotelId", "roomId"],
+              "type": "object",
+              "properties":
+                {
+                  "checkInDate":
+                    { "minLength": 1, "type": "string", "format": "date" },
+                  "checkOutDate":
+                    { "minLength": 1, "type": "string", "format": "date" },
+                  "roomId":
+                    {
+                      "maximum": 2147483647,
+                      "minimum": 1,
+                      "type": "integer",
+                      "format": "int32",
+                    },
+                  "hotelId":
+                    {
+                      "maximum": 2147483647,
+                      "minimum": 1,
+                      "type": "integer",
+                      "format": "int32",
+                    },
+                  "breakfastRequests":
+                    {
+                      "maximum": 10,
+                      "minimum": 0,
+                      "type": "integer",
+                      "format": "int32",
+                    },
+                },
+              "additionalProperties": false,
+            },
+          "Hotel":
+            {
+              "required": ["address", "imageUrl", "name"],
+              "type": "object",
+              "properties":
+                {
+                  "id": { "type": "integer", "format": "int32" },
+                  "name":
+                    { "maxLength": 100, "minLength": 0, "type": "string" },
+                  "address":
+                    { "maxLength": 50, "minLength": 10, "type": "string" },
+                  "imageUrl": { "minLength": 1, "type": "string" },
+                },
+              "additionalProperties": false,
+            },
+          "Room":
+            {
+              "required": ["hotelID", "maxOccupancy", "price", "roomType"],
+              "type": "object",
+              "properties":
+                {
+                  "id": { "type": "integer", "format": "int32" },
+                  "summary":
+                    {
+                      "maxLength": 500,
+                      "minLength": 10,
+                      "type": "string",
+                      "nullable": true,
+                    },
+                  "roomType": { "$ref": "#/components/schemas/RoomType" },
+                  "price":
+                    {
+                      "maximum": 2147483647,
+                      "minimum": 1,
+                      "type": "number",
+                      "format": "double",
+                    },
+                  "hotelID":
+                    {
+                      "maximum": 2147483647,
+                      "minimum": 1,
+                      "type": "integer",
+                      "format": "int32",
+                    },
+                  "maxOccupancy":
+                    {
+                      "maximum": 10,
+                      "minimum": 1,
+                      "type": "integer",
+                      "format": "int32",
+                    },
+                },
+              "additionalProperties": false,
+            },
+          "RoomType":
+            { "enum": [0, 1, 2], "type": "integer", "format": "int32" },
+        },
+    },
+}

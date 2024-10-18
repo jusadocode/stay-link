@@ -13,7 +13,7 @@ namespace stay_link.Server.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Address is required.")]
-        [StringLength(50, ErrorMessage = "Address can't be shorter 10 characters.", MinimumLength = 10)]
+        [StringLength(50, ErrorMessage = "Address can't be shorter than 10 characters.", MinimumLength = 10)]
         public string Address { get; set; }
 
         [Required(ErrorMessage = "Image location is required.")]

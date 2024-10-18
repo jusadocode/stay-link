@@ -7,72 +7,66 @@ namespace stay_link.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HotelController : ControllerBase
+    public class HotelsController : ControllerBase
     {
         private readonly BookingContext _context;
 
-        public HotelController(BookingContext context)
+        public HotelsController(BookingContext context)
         {
             _context = context;
         }
 
-        // GET: api/Hotel
+        // GET: api/Hotels
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
         {
-            return await _context.Hotel
-                                .ToListAsync();
+            var hotels = await _context.Hotels.ToListAsync();
+            return Ok(hotels); // Returning 200 OK with a list of hotels
         }
 
-        // GET: api/Hotel/5
+        // GET: api/Hotels/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Hotel>> GetHotel(int id)
         {
-            var hotel = await _context.Hotel
-                .FirstOrDefaultAsync(h => h.ID == id);
+            var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.ID == id);
                 
-
             if (hotel == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Hotel not found." }); // More uniform message
             }
 
-            var rooms = await _context.Room
-                .Where(r => r.HotelID == hotel.ID)
-                .ToListAsync();
-
-            return hotel;
+            return Ok(hotel); // Return the found hotel
         }
 
-        // GET: api/Hotel/5
-        [HttpGet("{id}/rooms")]
+        // GET: api/Hotels/{id}/Rooms
+        [HttpGet("{id}/Rooms")]
         public async Task<ActionResult<IEnumerable<Room>>> GetHotelRooms(int id)
         {
-            var hotel = await _context.Hotel
-                .FirstOrDefaultAsync(h => h.ID == id);
+            var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.ID == id);
                 
             if (hotel == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Hotel not found." }); // More uniform message
             }
 
-            var rooms = await _context.Room
-                .Where(r => r.HotelID == hotel.ID)
-                .ToListAsync();
+            var rooms = await _context.Rooms.Where(r => r.HotelID == hotel.ID).ToListAsync();
                 
-            return rooms;
+            return Ok(rooms); // Returning the list of rooms in the hotel
         }
 
-
-        // PUT: api/Hotel/5
+        // PUT: api/Hotels/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutHotel(int id, Hotel hotelUpdated)
         {
-            var hotel = await _context.Hotel.FindAsync(id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid data provided.", errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+            }
 
+            var hotel = await _context.Hotels.FindAsync(id);
             if (hotel == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Hotel not found." });
             }
 
             hotel.Name = hotelUpdated.Name;
@@ -89,42 +83,40 @@ namespace stay_link.Server.Controllers
             {
                 if (!HotelExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Hotel not found." });
                 }
-                else
-                {
-                    throw; 
-                }
+                throw; 
             }
 
             return NoContent();
         }
 
-
-        // POST: api/Hotel
+        // POST: api/Hotels
         [HttpPost]
         public async Task<ActionResult<Hotel>> PostHotel(Hotel hotel)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                return BadRequest(new { message = "Invalid data provided." });
+            }
 
-            _context.Hotel.Add(hotel);
+            _context.Hotels.Add(hotel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetHotel", new { id = hotel.ID }, hotel);
+            return CreatedAtAction(nameof(GetHotel), new { id = hotel.ID }, hotel); // Use nameof for refactoring safety
         }
 
-        // DELETE: api/Hotel/5
+        // DELETE: api/Hotels/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(int id)
         {
-            var hotel = await _context.Hotel.FindAsync(id);
+            var hotel = await _context.Hotels.FindAsync(id);
             if (hotel == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Hotel not found." });
             }
 
-            _context.Hotel.Remove(hotel);
+            _context.Hotels.Remove(hotel);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -132,7 +124,7 @@ namespace stay_link.Server.Controllers
 
         private bool HotelExists(int id)
         {
-            return _context.Hotel.Any(e => e.ID == id);
+            return _context.Hotels.Any(e => e.ID == id);
         }
     }
 }
