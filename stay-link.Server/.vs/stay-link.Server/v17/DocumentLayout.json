@@ -3,28 +3,28 @@
   "WorkspaceRootPath": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\auth\\authendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:auth\\authendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\controllers\\bookingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:controllers\\bookingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\auth\\authseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:auth\\authseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\auth\\authendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:auth\\authendpoints.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\auth\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:auth\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\auth\\authseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|solutionrelative:auth\\authseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{350E16D8-579B-4E62-AEA4-4994B5CBD120}|stay-link.Server.csproj|f:\\justas\\repos\\stay-link\\stay-link.server\\auth\\session.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -128,21 +128,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 9,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "JwtTokenService.cs",
-              "DocumentMoniker": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Auth\\JwtTokenService.cs",
-              "RelativeDocumentMoniker": "Auth\\JwtTokenService.cs",
-              "ToolTip": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Auth\\JwtTokenService.cs",
-              "RelativeToolTip": "Auth\\JwtTokenService.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAwwEIAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T23:41:25.825Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 8,
@@ -153,8 +140,7 @@
               "RelativeToolTip": "Data\\BookingContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T15:06:14.442Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T15:06:14.442Z"
             },
             {
               "$type": "Document",
@@ -166,18 +152,17 @@
               "RelativeToolTip": "Controllers\\RoomsController.cs",
               "ViewState": "AgIAACAAAAAAAAAAAAAAAHAAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T22:46:29.729Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-20T22:46:29.729Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAAC0AAABIAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAC0AAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-02T14:50:09.693Z",
               "EditorCaption": ""
@@ -192,8 +177,7 @@
               "RelativeToolTip": "Models\\Room.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAACAAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T15:09:10.459Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T15:09:10.459Z"
             },
             {
               "$type": "Document",
@@ -205,8 +189,7 @@
               "RelativeToolTip": "Auth\\SessionService.cs",
               "ViewState": "AgIAAA0AAAAAAAAAAAAgwCkAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-22T00:58:58.006Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-22T00:58:58.006Z"
             },
             {
               "$type": "Document",
@@ -218,12 +201,11 @@
               "RelativeToolTip": "Auth\\Session.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-22T00:55:47.003Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-22T00:55:47.003Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "AuthSeeder.cs",
               "DocumentMoniker": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Auth\\AuthSeeder.cs",
               "RelativeDocumentMoniker": "Auth\\AuthSeeder.cs",
@@ -242,14 +224,14 @@
               "RelativeDocumentMoniker": "Controllers\\BookingsController.cs",
               "ToolTip": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Controllers\\BookingsController.cs",
               "RelativeToolTip": "Controllers\\BookingsController.cs",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAqwEAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADoAAAAAAAAAAAAqwEEAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-20T22:46:22.386Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "appsettings.json",
               "DocumentMoniker": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -257,21 +239,32 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-10-02T14:50:08.154Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T14:50:08.154Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "AuthEndpoints.cs",
               "DocumentMoniker": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Auth\\AuthEndpoints.cs",
               "RelativeDocumentMoniker": "Auth\\AuthEndpoints.cs",
               "ToolTip": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Auth\\AuthEndpoints.cs",
               "RelativeToolTip": "Auth\\AuthEndpoints.cs",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAMwFUAAABDAAAAAAAAAA==",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAgwE4AAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-21T20:18:11.912Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "JwtTokenService.cs",
+              "DocumentMoniker": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Auth\\JwtTokenService.cs",
+              "RelativeDocumentMoniker": "Auth\\JwtTokenService.cs",
+              "ToolTip": "F:\\Justas\\repos\\stay-link\\stay-link.Server\\Auth\\JwtTokenService.cs",
+              "RelativeToolTip": "Auth\\JwtTokenService.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAwwEIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T23:41:25.825Z"
             },
             {
               "$type": "Document",
@@ -283,8 +276,7 @@
               "RelativeToolTip": "Controllers\\HotelsController.cs",
               "ViewState": "AgIAAB4AAAAAAAAAAAAAAHIAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T22:46:26.828Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-20T22:46:26.828Z"
             },
             {
               "$type": "Document",
@@ -296,8 +288,7 @@
               "RelativeToolTip": "Data\\SeedData.cs",
               "ViewState": "AgIAACsAAAAAAAAAAAAgwFEAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T15:07:08.154Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T15:07:08.154Z"
             },
             {
               "$type": "Document",
@@ -309,8 +300,7 @@
               "RelativeToolTip": "Auth\\Model\\BookingRoles.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T20:29:52.908Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T20:29:52.908Z"
             },
             {
               "$type": "Document",
@@ -322,8 +312,7 @@
               "RelativeToolTip": "Models\\Hotel.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAAAwBMAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T15:06:43.234Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T15:06:43.234Z"
             },
             {
               "$type": "Document",
@@ -335,8 +324,7 @@
               "RelativeToolTip": "Helpers\\Extensions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-22T01:19:06.917Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-22T01:19:06.917Z"
             },
             {
               "$type": "Document",
@@ -348,8 +336,7 @@
               "RelativeToolTip": "Models\\Booking.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAAsAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T22:12:28.084Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T22:12:28.084Z"
             },
             {
               "$type": "Document",
@@ -361,8 +348,7 @@
               "RelativeToolTip": "Auth\\Model\\BookingUser.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T23:05:06.366Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-20T23:05:06.366Z"
             },
             {
               "$type": "Document",
@@ -374,8 +360,7 @@
               "RelativeToolTip": "Data\\RoomType.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T15:19:16.53Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T15:19:16.53Z"
             },
             {
               "$type": "Document",
@@ -387,8 +372,7 @@
               "RelativeToolTip": "Migrations\\BookingContextModelSnapshot.cs",
               "ViewState": "AgIAAE0BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T22:55:29.073Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T22:55:29.073Z"
             },
             {
               "$type": "Document",
@@ -400,8 +384,7 @@
               "RelativeToolTip": "Migrations\\20241121225520_identity.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T22:55:47.918Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T22:55:47.918Z"
             },
             {
               "$type": "Document",
@@ -413,8 +396,7 @@
               "RelativeToolTip": "DTO\\HotelDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T20:26:54.788Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T20:26:54.788Z"
             },
             {
               "$type": "Document",
@@ -426,8 +408,7 @@
               "RelativeToolTip": "DTO\\BookingDTO.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T20:27:25.267Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T20:27:25.267Z"
             },
             {
               "$type": "Document",
@@ -439,8 +420,7 @@
               "RelativeToolTip": "stay-link.Server.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-10-02T15:09:30.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T15:09:30.099Z"
             },
             {
               "$type": "Document",
@@ -474,8 +454,7 @@
               "RelativeToolTip": "Properties\\launchSettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-10-02T15:06:53.338Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T15:06:53.338Z"
             },
             {
               "$type": "Document",
@@ -487,8 +466,7 @@
               "RelativeToolTip": "..\\..\\booking-system\\BookingSystem.Server\\Models\\Hotel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T14:50:40.496Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T14:50:40.496Z"
             },
             {
               "$type": "Document",
@@ -500,8 +478,7 @@
               "RelativeToolTip": "..\\..\\booking-system\\BookingSystem.Server\\Models\\Booking.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T14:50:40.422Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T14:50:40.422Z"
             },
             {
               "$type": "Document",
@@ -513,8 +490,7 @@
               "RelativeToolTip": "..\\..\\booking-system\\BookingSystem.Server\\Data\\SeedData.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T14:50:31.886Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T14:50:31.886Z"
             },
             {
               "$type": "Document",
@@ -526,8 +502,7 @@
               "RelativeToolTip": "..\\..\\booking-system\\BookingSystem.Server\\Data\\BookingContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-02T14:50:31.732Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-02T14:50:31.732Z"
             }
           ]
         }

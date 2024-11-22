@@ -50,17 +50,28 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Bookings/{id}
         [HttpGet("{id}")]
-        [Authorize(Roles = BookingRoles.BookingUser)]
+        [Authorize]
         public async Task<ActionResult<Booking>> GetBooking(int id)
         {
             var booking = await _context.Bookings.FindAsync(id);
 
-            if (booking == null)
-            {
-                return NotFound(new { message = "Booking not found." }); // Consistent not found message
+            if (booking == null) {
+                return NotFound(new { message = "Booking not found." });
             }
 
-            return Ok(booking); // 200 OK with the booking details
+            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            if (User.IsInRole(BookingRoles.Admin))
+            {
+                return Ok(booking);
+            }
+
+            if (userId != booking.UserID)
+            {
+                return Forbid(); 
+            }
+
+            return Ok(booking); 
         }
 
         // POST: api/Bookings
