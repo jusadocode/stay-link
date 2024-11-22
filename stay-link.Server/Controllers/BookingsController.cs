@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using stay_link.Server.Auth.Model;
 using stay_link.Server.Data;
 using stay_link.Server.Models;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace stay_link.Server.Controllers
@@ -20,14 +24,33 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Bookings
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
-            var bookings = await _context.Bookings.ToListAsync();
-            return Ok(bookings); // Returning 200 OK with a list of bookings
+            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            if (User.IsInRole(BookingRoles.Admin))
+            {
+                var bookings = await _context.Bookings.ToListAsync();
+                return Ok(bookings); 
+            }
+
+            var userBookings = await _context.Bookings
+                                              .Where(b => b.UserID == userId) 
+                                              .ToListAsync();
+
+            if (!userBookings.Any())
+            {
+                return NotFound(new { message = "No bookings found for this user." });
+            }
+
+            return Ok(userBookings); 
         }
+
 
         // GET: api/Bookings/{id}
         [HttpGet("{id}")]
+        [Authorize(Roles = BookingRoles.BookingUser)]
         public async Task<ActionResult<Booking>> GetBooking(int id)
         {
             var booking = await _context.Bookings.FindAsync(id);
@@ -42,6 +65,7 @@ namespace stay_link.Server.Controllers
 
         // POST: api/Bookings
         [HttpPost]
+        [Authorize(Roles = BookingRoles.BookingUser)]
         public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
         {
             if (!ModelState.IsValid)
@@ -75,7 +99,8 @@ namespace stay_link.Server.Controllers
                 CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate),
                 RoomId = bookingDTO.RoomId,
                 HotelId = bookingDTO.HotelId,
-                BreakfastRequests = bookingDTO.BreakfastRequests
+                BreakfastRequests = bookingDTO.BreakfastRequests,
+                UserID = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
 
             _context.Bookings.Add(booking);
@@ -86,17 +111,24 @@ namespace stay_link.Server.Controllers
 
         // PUT: api/Bookings/{id}
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutBooking(int id, BookingDTO bookingDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(); // 400 Bad Request if model state is invalid
             }
-
+            
             var booking = await _context.Bookings.FindAsync(id);
             if (booking == null)
             {
                 return NotFound(new { message = "Booking not found." }); // Consistent not found message
+            }
+
+            if (!User.IsInRole(BookingRoles.Admin) &&
+                User.FindFirstValue(JwtRegisteredClaimNames.Sub) != booking.UserID)
+            {
+                return Forbid();
             }
 
             var room = await _context.Rooms.FindAsync(bookingDTO.RoomId);
@@ -149,6 +181,7 @@ namespace stay_link.Server.Controllers
 
         // DELETE: api/Bookings/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = BookingRoles.Admin)]
         public async Task<IActionResult> DeleteBooking(int id)
         {
             var booking = await _context.Bookings.FindAsync(id);

@@ -1,13 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using stay_link.Server.Auth;
+using stay_link.Server.Auth.Model;
 using stay_link.Server.Models;
 
 namespace stay_link.Server.Data
 {
-    public class BookingContext : DbContext
+    public class BookingContext : IdentityDbContext<BookingUser>
     {
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Session> Sessions { get; set; }
 
         public BookingContext(DbContextOptions<BookingContext> options) : base(options)
         {
@@ -24,6 +28,8 @@ namespace stay_link.Server.Data
                     property.SetColumnName(property.GetColumnName().ToLower());
                 }
             }
+
+            base.OnModelCreating(modelBuilder);
 
         }
 

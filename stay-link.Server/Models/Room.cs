@@ -27,11 +27,12 @@ namespace stay_link.Server.Models
         [Range(1, 10, ErrorMessage = "Max occupancy must be between 1 and 10.")]
         public int MaxOccupancy { get; set; }
 
-        public Room(string? summary, RoomType roomType, int hotelID, int numberOfguests)
+        public Room(string? summary, RoomType roomType, decimal price, int hotelID, int numberOfguests)
         {
             Summary = summary;
             RoomType = roomType;
             HotelID = hotelID;
+            Price = price;
             MaxOccupancy = numberOfguests;
         }
 
