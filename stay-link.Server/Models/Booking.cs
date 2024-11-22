@@ -1,3 +1,4 @@
+using stay_link.Server.Auth.Model;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,11 @@ namespace stay_link.Server.Models
     public class Booking : IValidatableObject
     {
         public int ID { get; set; }
+
+        [Required]
+        public string UserID { get; set; }
+
+        public BookingUser User { get; set; }
 
         [Required(ErrorMessage = "Check-in date is required.")]
         public DateOnly CheckInDate { get; set; }

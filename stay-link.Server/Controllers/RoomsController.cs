@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using stay_link.Server.Models;
 using stay_link.Server.Data;
+using Microsoft.AspNetCore.Authorization;
+using stay_link.Server.Auth.Model;
 
 namespace stay_link.Server.Controllers
 {
@@ -40,6 +42,7 @@ namespace stay_link.Server.Controllers
 
         // POST: api/Rooms
         [HttpPost]
+        [Authorize(Roles = BookingRoles.Admin)]
         public async Task<ActionResult<Room>> PostRoom(Room room)
         {
             if (!ModelState.IsValid)
@@ -61,6 +64,7 @@ namespace stay_link.Server.Controllers
 
         // PUT: api/Rooms/5
         [HttpPut("{id}")]
+        [Authorize(Roles = BookingRoles.Admin)]
         public async Task<IActionResult> PutRoom(int id, Room updatedRoom)
         {
             if (!ModelState.IsValid)
@@ -107,6 +111,7 @@ namespace stay_link.Server.Controllers
 
         // DELETE: api/Rooms/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = BookingRoles.Admin)]
         public async Task<IActionResult> DeleteRoom(int id)
         {
             var room = await _context.Rooms.FindAsync(id);

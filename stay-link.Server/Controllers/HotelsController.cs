@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using stay_link.Server.Auth.Model;
 using stay_link.Server.Data;
 using stay_link.Server.Models;
 
@@ -56,6 +58,7 @@ namespace stay_link.Server.Controllers
 
         // PUT: api/Hotels/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = BookingRoles.Admin)]
         public async Task<IActionResult> PutHotel(int id, Hotel hotelUpdated)
         {
             if (!ModelState.IsValid)
@@ -93,6 +96,7 @@ namespace stay_link.Server.Controllers
 
         // POST: api/Hotels
         [HttpPost]
+        [Authorize(Roles = BookingRoles.Admin)]
         public async Task<ActionResult<Hotel>> PostHotel(Hotel hotel)
         {
             if (!ModelState.IsValid)
@@ -108,6 +112,7 @@ namespace stay_link.Server.Controllers
 
         // DELETE: api/Hotels/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = BookingRoles.Admin)]
         public async Task<IActionResult> DeleteHotel(int id)
         {
             var hotel = await _context.Hotels.FindAsync(id);
