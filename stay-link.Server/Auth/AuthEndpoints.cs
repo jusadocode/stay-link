@@ -10,7 +10,7 @@ namespace stay_link.Server.Auth
     {
         public static void AddAuthApi(this WebApplication app)
         {
-            app.Map("api/accounts", async (UserManager<BookingUser> userManager, RegisterUserDTO userDTO) =>
+            app.MapPost("api/accounts", async (UserManager<BookingUser> userManager, RegisterUserDTO userDTO) =>
             {
                 var user = await userManager.FindByNameAsync(userDTO.Username);
                 if (user != null) {
@@ -35,7 +35,7 @@ namespace stay_link.Server.Auth
             });
 
 
-            app.Map("api/login", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext, RegisterUserDTO userDTO) =>
+            app.MapPost("api/login", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext, RegisterUserDTO userDTO) =>
             {
                 var user = await userManager.FindByNameAsync(userDTO.Username);
 
@@ -71,7 +71,7 @@ namespace stay_link.Server.Auth
 
             });
 
-            app.Map("api/accessToken", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
+            app.MapPost("api/accessToken", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
             {
                 if(!httpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
                 {
@@ -125,7 +125,7 @@ namespace stay_link.Server.Auth
 
             });
 
-            app.Map("api/logout", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
+            app.MapPost("api/logout", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
             {
                 if (!httpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
                 {
