@@ -13,6 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", builder =>
+    {
+        builder.WithOrigins("https://localhost:5173") 
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
+
 builder.Services.AddDbContext<BookingContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -48,7 +59,7 @@ using var scope = app.Services.CreateScope();
 var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
 await dbSeeder.SeedAsync();
 
-
+app.UseCors("AllowFrontend");
 
 app.AddAuthApi();
 
