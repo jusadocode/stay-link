@@ -71,11 +71,11 @@ const Login = () => {
           <TextField
             margin="normal"
             fullWidth
-            id="email"
-            label="Email Address"
-            placeholder="e.g., name@gmail.com"
+            id="userName"
+            label="Username"
+            placeholder="e.g., JohnCodes445"
             autoFocus
-            {...register("email")}
+            {...register("userName")}
             error={Boolean(errors.email)}
             helperText={errors.email?.message}
           />

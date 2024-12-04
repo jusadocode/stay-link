@@ -11,11 +11,12 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import RoomTypes from "../data/roomTypes";
-import { fetchBookings } from "../services/bookingService";
+import useBookings from "../shared/hooks/useBookings";
 
 function BookingList() {
   const [bookings, setBookings] = useState();
 
+  const { fetchBookings, fetchHotel, fetchRoom } = useBookings();
   useEffect(() => {
     populateBookingData();
   }, []);
@@ -32,7 +33,7 @@ function BookingList() {
               <Grid container spacing={5}>
                 <Grid item xs={12} sm={5}>
                   <img
-                    src={booking.hotel.imageUrl}
+                    src="https://149345965.v2.pressablecdn.com/wp-content/uploads/img-hotels-IADGV_006-Dusk-Exterior-home.jpg"
                     alt={booking.hotel.name}
                     style={{ width: "100%", height: "auto" }}
                   />
@@ -95,8 +96,25 @@ function BookingList() {
   );
 
   async function populateBookingData() {
-    const data = await fetchBookings();
-    setBookings(data);
+    try {
+      const bookingsData = await fetchBookings();
+
+      const bookingsWithDetails = await Promise.all(
+        bookingsData.map(async (booking) => {
+          const hotel = await fetchHotel(booking.hotelId); // Fetch hotel data
+          const room = await fetchRoom(booking.roomId); // Fetch room data
+          return {
+            ...booking,
+            hotel: hotel, // Add hotel data to the booking
+            room: room, // Add room data to the booking
+          };
+        })
+      );
+
+      setBookings(bookingsWithDetails);
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
   }
 }
 

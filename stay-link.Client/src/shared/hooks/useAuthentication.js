@@ -12,7 +12,7 @@ export const useAuthentication = () => {
     AuthContext
   ) ;
 
-  const login = async (data)=> {
+  const login = async (data) => {
     const response= await fetch(LOGIN_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -20,13 +20,15 @@ export const useAuthentication = () => {
     });
 
     if (!response.ok) {
-      const errorResponse= await response.json();
+      const errorResponse = await response.json();
       throw new Error(JSON.stringify(errorResponse));
     }
 
-    const loginResponse= await response.json();
+    const loginResponse = await response.json();
 
-    setAuthData(loginResponse.access_token, loginResponse.refresh_token);
+    console.log(loginResponse);
+
+    setAuthData(loginResponse.accessToken);
 
     return true;
   };
