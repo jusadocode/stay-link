@@ -22,7 +22,6 @@ import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import BookingDialog from "./BookingDialog";
 import RoomTypes from "../data/roomTypes";
 import "../App.css";
-import { fetchHotelRooms } from "../services/hotelService";
 
 function HotelList({ hotels }) {
   const [searchInput, setSearchInput] = useState("");
@@ -31,10 +30,6 @@ function HotelList({ hotels }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleExpandClick = (hotelId) => {
-    const hotelRooms = fetchHotelRooms(hotelId);
-
-    const updatedHotel = { ...expandedHotel, rooms: hotelRooms };
-
     setExpandedHotel(expandedHotel === hotelId ? null : hotelId);
   };
 

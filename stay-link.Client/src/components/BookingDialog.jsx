@@ -14,7 +14,7 @@ import { Dialog, DialogTitle } from "@mui/material";
 import CheckInStep from "./CheckInStep";
 import ExtraStep from "./ExtraStep";
 import FinalStep from "./FinalStep";
-import { addBooking } from "../services/bookingService";
+import useBookings from "../shared/hooks/useBookings";
 
 dayjs.extend(isSameOrAfter);
 
@@ -38,6 +38,8 @@ export default function BookingDialog({
 
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
+
+  const { addBooking } = useBookings();
 
   const isStepOptional = (step) => {
     return step === 1;
@@ -84,8 +86,8 @@ export default function BookingDialog({
     const newBooking = {
       checkInDate: bookingDates[0].toISOString().split("T")[0],
       checkOutDate: bookingDates[1].toISOString().split("T")[0],
-      room: selectedRoom,
-      hotel: expandedHotel,
+      roomId: selectedRoom.id,
+      hotelId: expandedHotel.id,
       breakfastRequests: breakfastRequests,
     };
 
