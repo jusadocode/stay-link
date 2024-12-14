@@ -1,16 +1,13 @@
 import React, { createContext, useState, useEffect } from "react";
 import { parseJWTToken } from "../utils/parseJWTTokenUtil";
+import { CommitSharp } from "@mui/icons-material";
 
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(() => {
-    return localStorage.getItem("accessToken");
-  });
-
   const [userID, setUserID] = useState(() => {
-    const userIDString = localStorage.getItem("userID");
-    return userIDString ? parseInt(userIDString, 10) : null;
+    const userIDString = localStorage.getItem("userId");
+    return userIDString ? userIDString : null;
   });
 
   const [userRoles, setUserRoles] = useState(() => {
@@ -18,45 +15,34 @@ export const AuthProvider = ({ children }) => {
     return rolesString ? JSON.parse(rolesString) : null;
   });
 
-  const isLoggedIn = () => accessToken !== null;
+  const isLoggedIn = userID !== null;
 
-  const setAuthData = (token) => {
-    const userInfo = parseJWTToken(token);
-
+  const setAuthData = (userInfo) => {
     if (userInfo) {
-      setAccessToken(token);
-      setUserID(userInfo.userID);
-      setUserRoles(userInfo.userRoles);
+      setUserID(userInfo.userId);
+      setUserRoles(userInfo.roles);
 
-      localStorage.setItem("accessToken", token);
-      localStorage.setItem("userID", userInfo.userID.toString());
-      localStorage.setItem("userRoles", JSON.stringify(userInfo.userRoles));
+      localStorage.setItem("userId", userInfo.userId.toString());
+      localStorage.setItem("userRoles", JSON.stringify(userInfo.roles));
     }
   };
 
-  const manageLocalStorage = () => {
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
-    } else {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("userID");
-      localStorage.removeItem("userRoles");
-    }
-  };
+  const clearUserData = () => {
+    setUserID(null);
+    setUserRoles(null);
 
-  useEffect(() => {
-    manageLocalStorage();
-  }, [accessToken]);
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userRoles");
+  };
 
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn,
-        setAccessToken,
-        accessToken,
         setAuthData,
         userID,
         userRoles,
+        clearUserData,
       }}
     >
       {children}

@@ -27,7 +27,7 @@ export default function ExtraStep({
           displayEmpty
           sx={{ minWidth: 100, marginInline: 2 }}
         >
-          {Array.from({ length: selectedRoom.numOfGuests + 1 }, (_, index) => (
+          {Array.from({ length: selectedRoom.maxOccupancy + 1 }, (_, index) => (
             <MenuItem key={index} value={index}>
               {index === 0 ? "None" : index}
             </MenuItem>

@@ -1,13 +1,9 @@
 import { object, ref, string } from "yup";
 
 export const RegistrationSchema = object({
-  firstname: string()
-    .required("First name is required.")
-    .max(50, "First name cannot exceed 50 characters."),
-
-  lastname: string()
-    .required("Last name is required.")
-    .max(50, "Last name cannot exceed 50 characters."),
+  username: string()
+    .required("Username is required.")
+    .max(50, "Username cannot exceed 50 characters."),
 
   email: string()
     .required("Email address is required.")
@@ -27,7 +23,5 @@ export const RegistrationSchema = object({
 
   repeatedPassword: string()
     .required("Please confirm your password.")
-    .oneOf([ref("password")], "Passwords must match!"),
-
-  imageUrl: string().url("Invalid URL format for image.").nullable(),
+    .oneOf([ref("password")], "Passwords must match!")
 });

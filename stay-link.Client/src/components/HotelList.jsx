@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Container,
   Table,
@@ -22,12 +22,18 @@ import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import BookingDialog from "./BookingDialog";
 import RoomTypes from "../data/roomTypes";
 import "../App.css";
+import { AuthContext } from "../shared/context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { LOGIN_PATH } from "../shared/constants/routes";
 
 function HotelList({ hotels }) {
   const [searchInput, setSearchInput] = useState("");
   const [expandedHotel, setExpandedHotel] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const { isLoggedIn } = useContext(AuthContext);
 
   const handleExpandClick = (hotelId) => {
     setExpandedHotel(expandedHotel === hotelId ? null : hotelId);
@@ -39,6 +45,10 @@ function HotelList({ hotels }) {
       hotel.address.toLowerCase().includes(query)
     );
   }
+
+  const handleBookClick = (room) => {
+    isLoggedIn ? handleOpenDialog(room) : navigate(LOGIN_PATH);
+  };
 
   function handleOpenDialog(room) {
     setSelectedRoom(room);
@@ -132,7 +142,7 @@ function HotelList({ hotels }) {
                               <TableCell>{RoomTypes[room.roomType]}</TableCell>
                               <TableCell>
                                 {Array.from(
-                                  { length: room.numOfGuests },
+                                  { length: room.maxOccupancy },
                                   (_, index) => (
                                     <PersonIcon key={index} />
                                   )
@@ -143,7 +153,7 @@ function HotelList({ hotels }) {
                               <TableCell>
                                 <Button
                                   variant="contained"
-                                  onClick={() => handleOpenDialog(room)}
+                                  onClick={() => handleBookClick(room)}
                                 >
                                   Book
                                 </Button>

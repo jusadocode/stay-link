@@ -19,7 +19,6 @@ import {
   RegistrationForm,
 } from "./styles";
 import { useAuthentication } from "../../shared/hooks/useAuthentication";
-import { useFile } from "../../shared/hooks/useFile";
 import { LOGIN_PATH } from "../../shared/constants/routes";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -27,7 +26,6 @@ const Registration = () => {
   const navigate = useNavigate();
 
   const { registerUser } = useAuthentication();
-  const { uploadProfileImage } = useFile();
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -47,11 +45,6 @@ const Registration = () => {
     setIsLoading(true);
     setError("");
     try {
-      if (image !== null) {
-        const response = await uploadProfileImage(image);
-        data.profileImageUrl = response.imageLocation;
-      }
-
       const success = await registerUser(data);
 
       if (success) {
@@ -67,7 +60,7 @@ const Registration = () => {
   };
 
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth="xs" sx={{ display: "flex", justifyContent: "center" }}>
       <CssBaseline />
       <Box sx={MainBox}>
         <Box>
@@ -87,25 +80,13 @@ const Registration = () => {
           <TextField
             margin="normal"
             fullWidth
-            id="firstName"
-            label="First Name"
-            placeholder="e.g., Mike"
+            id="userName"
+            label="Username"
+            placeholder="e.g., Johnson445"
             autoFocus
-            {...register("firstname")}
-            error={Boolean(errors.firstname)}
-            helperText={errors.firstname?.message}
-          />
-
-          <TextField
-            margin="normal"
-            fullWidth
-            id="lastName"
-            label="Last Name"
-            placeholder="e.g., Johnson"
-            autoFocus
-            {...register("lastname")}
-            error={Boolean(errors.lastname)}
-            helperText={errors.lastname?.message}
+            {...register("username")}
+            error={Boolean(errors.username)}
+            helperText={errors.username?.message}
           />
 
           <TextField

@@ -1,58 +1,42 @@
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { BEARER_TOKEN_PREFIX } from '../constants/apiConstants';
+
+import { useAuthentication } from "./useAuthentication";
+
 
 const useBookings = () => {
-    const { accessToken } = useContext(AuthContext); 
+
+const {customFetch} = useAuthentication();
+
 
     const fetchBookings = async () => {
-        const response = await fetch('/api/Bookings', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${BEARER_TOKEN_PREFIX}${accessToken}`
-            }
+        const response = await customFetch('/api/Bookings', {
+            method: 'GET'
         });
         return response.json();
     };
 
     const fetchHotel = async (hotelId) => {
-        const response = await fetch(`/api/Hotels/${hotelId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${BEARER_TOKEN_PREFIX}${accessToken}`
-            }
+        const response = await customFetch(`/api/Hotels/${hotelId}`, {
+            method: 'GET'
         });
         return response.json();
     };
 
     const fetchRoom = async (roomId) => {
-        const response = await fetch(`/api/Rooms/${roomId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${BEARER_TOKEN_PREFIX}${accessToken}`
-            }
+        const response = await customFetch(`/api/Rooms/${roomId}`, {
+            method: 'GET'
         });
         return response.json();
     };
 
     const addBooking = async (booking) => {
-        const response = await fetch('/api/Bookings', {
+        const response = await customFetch('/api/Bookings', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${BEARER_TOKEN_PREFIX}${accessToken}`
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(booking)
         });
 
         const data = await response.json();
-        return {
-            status: response.status,
-            data: data
-        };
+        return data;
     };
 
     return {

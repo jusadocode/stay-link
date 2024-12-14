@@ -1,6 +1,5 @@
-import * as React from "react";
 import { useState, useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -15,6 +14,7 @@ import CheckInStep from "./CheckInStep";
 import ExtraStep from "./ExtraStep";
 import FinalStep from "./FinalStep";
 import useBookings from "../shared/hooks/useBookings";
+import React from "react";
 
 dayjs.extend(isSameOrAfter);
 
@@ -38,6 +38,7 @@ export default function BookingDialog({
 
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
+  const [isLoading, setIsLoading] = useState(false);
 
   const { addBooking } = useBookings();
 
@@ -61,6 +62,7 @@ export default function BookingDialog({
     }
     if (activeStep === steps.length - 1) {
       handleBooking();
+      return;
     }
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -83,15 +85,34 @@ export default function BookingDialog({
   };
 
   const handleBooking = async () => {
-    const newBooking = {
-      checkInDate: bookingDates[0].toISOString().split("T")[0],
-      checkOutDate: bookingDates[1].toISOString().split("T")[0],
-      roomId: selectedRoom.id,
-      hotelId: expandedHotel.id,
-      breakfastRequests: breakfastRequests,
-    };
+    setIsLoading(true);
+    try {
+      const numberOfNights = bookingDates[1].diff(bookingDates[0], "day") + 1;
+      const cleaningFee = 20;
+      const breakfastDailyFee = 15;
+      const totalBreakfast =
+        breakfastRequests * breakfastDailyFee * numberOfNights;
+      const totalPrice =
+        selectedRoom.price * numberOfNights + totalBreakfast + cleaningFee;
 
-    await addBooking(newBooking);
+      const newBooking = {
+        checkInDate: bookingDates[0].toISOString().split("T")[0],
+        checkOutDate: bookingDates[1].toISOString().split("T")[0],
+        roomId: selectedRoom.id,
+        hotelId: expandedHotel.id,
+        breakfastRequests: breakfastRequests,
+        totalPrice: totalPrice,
+      };
+
+      const result = await addBooking(newBooking);
+      if (result) {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSkip = () => {
@@ -192,9 +213,15 @@ export default function BookingDialog({
                   Skip
                 </Button>
               )}
-              <Button variant="contained" onClick={handleNext}>
-                {activeStep === steps.length - 1 ? "Finalize booking" : "Next"}
-              </Button>
+              {isLoading ? (
+                <CircularProgress sx={{ mt: 2 }} />
+              ) : (
+                <Button variant="contained" onClick={handleNext}>
+                  {activeStep === steps.length - 1
+                    ? "Finalize booking"
+                    : "Next"}
+                </Button>
+              )}
             </Box>
           </React.Fragment>
         )}
