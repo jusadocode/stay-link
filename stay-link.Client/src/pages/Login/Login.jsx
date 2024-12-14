@@ -16,10 +16,7 @@ import { MainBox, ButtonStyle, errorFieldSx } from "./styles";
 import { useAuthentication } from "../../shared/hooks/useAuthentication";
 import { HOME_PATH } from "../../shared/constants/routes";
 import { useErrorHandler } from "../../shared/hooks/useErrorHandler.js";
-import {
-  FORGOT_PASSWORD_PATH,
-  REGISTER_PATH,
-} from "../../shared/constants/routes";
+import { REGISTER_PATH } from "../../shared/constants/routes";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -61,7 +58,7 @@ const Login = () => {
           Welcome to Stay-Link
         </Typography>
         <Typography component="p">
-          Sign in with your work email address
+          Sign in with username or email address{" "}
         </Typography>
         <Box
           sx={{ mt: 1 }}
@@ -72,12 +69,12 @@ const Login = () => {
             margin="normal"
             fullWidth
             id="userName"
-            label="Username"
+            label="Username or Email"
             placeholder="e.g., JohnCodes445"
             autoFocus
             {...register("userName")}
-            error={Boolean(errors.email)}
-            helperText={errors.email?.message}
+            error={Boolean(errors.userName)}
+            helperText={errors.userName?.message}
           />
 
           <TextField
@@ -92,11 +89,6 @@ const Login = () => {
           />
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
-            <Typography variant="body2">
-              <Link to={FORGOT_PASSWORD_PATH} style={{ color: "gray" }}>
-                Forgot Password?
-              </Link>
-            </Typography>
             <Typography variant="body2">
               <Link to={REGISTER_PATH} style={{ color: "gray" }}>
                 Don&apos;t have an account?

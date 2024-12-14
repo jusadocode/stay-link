@@ -1,5 +1,4 @@
 export const MainBox = {
-  mt: 20,
   gap: '2rem',
   display: 'flex',
   flexDirection: 'column',
@@ -9,25 +8,6 @@ export const MainBox = {
 export const ButtonStyle = {
   borderRadius: '20px',
   backgroundColor: 'black'
-};
-
-export const ProfileImageContainer = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '0.5rem'
-};
-
-export const ProfileImageUpload = {
-  width: '150px',
-  height: '150px',
-  cursor: 'pointer',
-  '& img': {
-    transition: 'filter 1s ease'
-  },
-  '&:hover img': {
-    filter: 'grayscale(100%)'
-  }
 };
 
 export const FormBottomSection = {
@@ -54,5 +34,4 @@ export const DeleteImageButton = {
 };
 
 export const RegistrationForm = {
-  height: '100vh'
 };

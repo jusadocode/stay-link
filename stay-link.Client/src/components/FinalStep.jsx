@@ -53,7 +53,7 @@ export default function FinalStep({
           <strong>Breakfast requests:</strong> {breakfastRequests}
         </Typography>
         <Typography variant="body2">
-          <strong>Number of guests:</strong> {selectedRoom.numOfGuests}
+          <strong>Number of guests:</strong> {selectedRoom.maxOccupancy}
         </Typography>
 
         <Box sx={{ textAlign: "right", mt: 2 }}>

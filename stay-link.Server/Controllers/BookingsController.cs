@@ -39,11 +39,6 @@ namespace stay_link.Server.Controllers
                                               .Where(b => b.UserID == userId) 
                                               .ToListAsync();
 
-            if (!userBookings.Any())
-            {
-                return NotFound(new { message = "No bookings found for this user." });
-            }
-
             return Ok(userBookings); 
         }
 

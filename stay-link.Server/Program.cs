@@ -42,6 +42,19 @@ builder.Services.AddAuthentication(configureOptions =>
     configureOptions.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:ValidAudience"];
     configureOptions.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
     configureOptions.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]));
+
+    configureOptions.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            if (context.Request.Cookies.ContainsKey("AccessToken"))
+            {
+                context.Token = context.Request.Cookies["AccessToken"];
+            }
+
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddAuthorization();

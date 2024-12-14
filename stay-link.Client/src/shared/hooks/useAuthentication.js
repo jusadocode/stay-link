@@ -1,53 +1,55 @@
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import {
-  BEARER_TOKEN_PREFIX,
   LOGIN_API_URL,
   LOGOUT_API_URL,
-  REGISTER_API_URL
+  REGISTER_API_URL,
+  REFRESH_TOKEN_URL
 } from '../constants/apiConstants';
+import { LOGIN_PATH } from '../constants/routes';
+import { useNavigate} from 'react-router-dom';
 
 export const useAuthentication = () => {
-  const { accessToken, isLoggedIn, setAccessToken, setAuthData } = useContext(
+  const { isLoggedIn, setAuthData, clearUserData } = useContext(
     AuthContext
   ) ;
+
+  const navigate = useNavigate();
 
   const login = async (data) => {
     const response= await fetch(LOGIN_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      credentials: 'include'
     });
 
     if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(JSON.stringify(errorResponse));
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
     }
 
-    const loginResponse = await response.json();
+    const userData = await response.json();
 
-    console.log(loginResponse);
+    console.log(userData);
 
-    setAuthData(loginResponse.accessToken);
+    setAuthData(userData)
 
     return true;
   };
 
-  const logout = async ()=> {
+  const logout = async () => {
     try {
-      const response= await fetch(LOGOUT_API_URL, {
+      const response = await fetch(LOGOUT_API_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `${BEARER_TOKEN_PREFIX}${accessToken}`
-        }
+        credentials: 'include'
       });
 
       if (!response.ok) {
         throw new Error(`Logout failed with status ${response.status}`);
       }
 
-      setAccessToken(null);
+      clearUserData();
 
       return true;
     } catch (error) {
@@ -61,12 +63,13 @@ export const useAuthentication = () => {
       const response = await fetch(REGISTER_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: 'include'
       });
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        throw new Error(`Registration failed. ${errorResponse.detail}`);
+        throw new Error(`Registration failed. ${errorResponse}`);
       }
 
       return true;
@@ -75,5 +78,48 @@ export const useAuthentication = () => {
     }
   };
 
-  return { login, logout, registerUser, isLoggedIn, accessToken };
+  const customFetch = async (
+    url,
+    options = {}
+  ) => {
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        credentials: 'include', 
+      });
+  
+      if (response.ok)
+        return response; 
+      
+      if (response.status === 401) {
+        console.log('Access token expired. Attempting to refresh...');
+        const refreshResponse = await fetch(REFRESH_TOKEN_URL, {
+          method: 'POST',
+          credentials: 'include', 
+        });
+  
+        if (refreshResponse.ok) {
+          console.log('Token refreshed. Retrying original request...');
+          return fetch(url, {
+            ...options,
+            credentials: 'include',
+          });
+        }
+  
+        console.error('Failed to refresh token. Logging out...');
+        clearUserData();
+        navigate(LOGIN_PATH);
+
+        throw new Error('Unauthorized');
+      }
+  
+      return response;
+    } catch (error) {
+      console.error('Error occurred during fetchWithRefresh:', error);
+      throw error;
+    }
+};
+
+  return { login, logout, registerUser, customFetch, isLoggedIn};
 };

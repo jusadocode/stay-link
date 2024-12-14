@@ -34,6 +34,8 @@ namespace stay_link.Server.Models
 
         public Booking() { }
 
+        
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)  
         {  
             if(CheckInDate.CompareTo(CheckOutDate) < 0)  

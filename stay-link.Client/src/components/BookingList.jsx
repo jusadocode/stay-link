@@ -53,22 +53,16 @@ function BookingList() {
                     <strong>Check-in Date:</strong>{" "}
                     {new Date(booking.checkInDate).toLocaleDateString()}
                   </Typography>
-                  <Typography>
-                    <strong>Check-out Date:</strong>{" "}
-                    {new Date(booking.checkOutDate).toLocaleDateString()}
-                  </Typography>
-                  <Typography>
-                    <strong>Description:</strong> {booking.room.summary}
-                  </Typography>
+
                   <Typography>
                     <strong>Room type:</strong>{" "}
                     {RoomTypes[booking.room.roomType]}
                   </Typography>
                   <Typography>
                     <strong>Space:</strong>{" "}
-                    {booking.room.numOfGuests === 1
+                    {booking.room.maxOccupancy === 1
                       ? "For 1 person"
-                      : `For up to ${booking.room.numOfGuests} people`}
+                      : `For up to ${booking.room.maxOccupancy} people`}
                   </Typography>
                   <Typography>
                     <strong>Total:</strong> €{booking.totalPrice}

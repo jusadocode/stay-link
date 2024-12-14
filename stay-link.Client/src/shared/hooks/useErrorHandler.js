@@ -6,9 +6,7 @@ export const useErrorHandler = () => {
     console.error('Error occurred:', error);
     if (error instanceof Error) {
       try {
-        const errorDetail = JSON.parse(error.message);
-        const errorMessage = `${errorDetail.title}: ${errorDetail.detail}`;
-        setError(errorMessage);
+        setError(error.message);
       } catch (parseError) {
         console.error('Failed to parse error message:', parseError);
         setError('An unexpected error occurred.');
