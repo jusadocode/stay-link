@@ -39,11 +39,22 @@ const {customFetch} = useAuthentication();
         return data;
     };
 
+    const updateRoom = async (room) => {
+        const response = await customFetch(`/api/Rooms/${room.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(room)
+        });
+
+        return response;
+    };
+
     return {
         addBooking,
         fetchBookings,
         fetchHotel,
-        fetchRoom
+        fetchRoom,
+        updateRoom
     };
 };
 

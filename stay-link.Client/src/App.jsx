@@ -11,7 +11,7 @@ import { useAuthentication } from "./shared/hooks/useAuthentication";
 function App() {
   const [hotels, setHotels] = useState([]);
 
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
 
   const { logout } = useAuthentication();
 
@@ -80,7 +80,7 @@ function App() {
         </Button>
         {isLoggedIn ? (
           <Button variant="outlined" component={Link} to="/bookings">
-            My Bookings
+            {userIsAdmin() ? "All Bookings" : "My Bookings"}
           </Button>
         ) : (
           ""

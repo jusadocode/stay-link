@@ -1,6 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
-import { parseJWTToken } from "../utils/parseJWTTokenUtil";
-import { CommitSharp } from "@mui/icons-material";
+import React, { createContext, useState } from "react";
 
 export const AuthContext = createContext(null);
 
@@ -27,6 +25,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const userIsAdmin = () => {
+    if (!isLoggedIn) return false;
+
+    return userRoles.includes("Admin");
+  };
+
   const clearUserData = () => {
     setUserID(null);
     setUserRoles(null);
@@ -43,6 +47,7 @@ export const AuthProvider = ({ children }) => {
         userID,
         userRoles,
         clearUserData,
+        userIsAdmin,
       }}
     >
       {children}

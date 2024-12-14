@@ -87,21 +87,12 @@ export default function BookingDialog({
   const handleBooking = async () => {
     setIsLoading(true);
     try {
-      const numberOfNights = bookingDates[1].diff(bookingDates[0], "day") + 1;
-      const cleaningFee = 20;
-      const breakfastDailyFee = 15;
-      const totalBreakfast =
-        breakfastRequests * breakfastDailyFee * numberOfNights;
-      const totalPrice =
-        selectedRoom.price * numberOfNights + totalBreakfast + cleaningFee;
-
       const newBooking = {
         checkInDate: bookingDates[0].toISOString().split("T")[0],
         checkOutDate: bookingDates[1].toISOString().split("T")[0],
         roomId: selectedRoom.id,
         hotelId: expandedHotel.id,
         breakfastRequests: breakfastRequests,
-        totalPrice: totalPrice,
       };
 
       const result = await addBooking(newBooking);
