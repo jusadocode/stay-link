@@ -85,7 +85,7 @@ namespace stay_link.Server.Auth
 
                 if (!jwtTokenService.TryParseRefreshToken(refreshToken, out var claims))
                 {
-                    return Results.UnprocessableEntity();
+                    return Results.UnprocessableEntity("Failed to parse refresh token");
                 }
 
                 var sessionId = claims.FindFirstValue("SessionId");

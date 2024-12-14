@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import RoomTypes from "../data/roomTypes";
 import useBookings from "../shared/hooks/useBookings";
+import dayjs from "dayjs";
 
 function BookingList() {
   const [bookings, setBookings] = useState();
@@ -53,7 +54,13 @@ function BookingList() {
                     <strong>Check-in Date:</strong>{" "}
                     {new Date(booking.checkInDate).toLocaleDateString()}
                   </Typography>
-
+                  <Typography>
+                    <strong>Check-out Date:</strong>{" "}
+                    {new Date(booking.checkOutDate).toLocaleDateString()}
+                  </Typography>
+                  <Typography>
+                    <strong>Description:</strong> {booking.room.summary}
+                  </Typography>
                   <Typography>
                     <strong>Room type:</strong>{" "}
                     {RoomTypes[booking.room.roomType]}
@@ -97,8 +104,21 @@ function BookingList() {
         bookingsData.map(async (booking) => {
           const hotel = await fetchHotel(booking.hotelId); // Fetch hotel data
           const room = await fetchRoom(booking.roomId); // Fetch room data
+
+          const checkInDate = new dayjs(booking.checkInDate);
+          const checkOutDate = new dayjs(booking.checkOutDate);
+
+          const numberOfNights = checkOutDate.diff(checkInDate, "day") + 1;
+          const cleaningFee = 20;
+          const breakfastDailyFee = 15;
+          const totalBreakfast =
+            booking.breakfastRequests * breakfastDailyFee * numberOfNights;
+          const totalPrice =
+            room.price * numberOfNights + totalBreakfast + cleaningFee;
+
           return {
             ...booking,
+            totalPrice: totalPrice,
             hotel: hotel, // Add hotel data to the booking
             room: room, // Add room data to the booking
           };

@@ -1,5 +1,5 @@
 const RoomTypes = [
-    'Standard',
+    'Standart',
     'Deluxe',
     'Suite'
 ];

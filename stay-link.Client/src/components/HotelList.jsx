@@ -24,7 +24,7 @@ import RoomTypes from "../data/roomTypes";
 import "../App.css";
 import { AuthContext } from "../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { LOGIN_PATH } from "../shared/constants/routes";
+import { LOGIN_PATH, EDIT_ROOM_PATH } from "../shared/constants/routes";
 
 function HotelList({ hotels }) {
   const [searchInput, setSearchInput] = useState("");
@@ -33,7 +33,7 @@ function HotelList({ hotels }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
 
   const handleExpandClick = (hotelId) => {
     setExpandedHotel(expandedHotel === hotelId ? null : hotelId);
@@ -45,6 +45,10 @@ function HotelList({ hotels }) {
       hotel.address.toLowerCase().includes(query)
     );
   }
+
+  const handleEditClick = (room) => {
+    navigate(`rooms/edit/${room.id}`);
+  };
 
   const handleBookClick = (room) => {
     isLoggedIn ? handleOpenDialog(room) : navigate(LOGIN_PATH);
@@ -86,8 +90,8 @@ function HotelList({ hotels }) {
                     src={hotel.imageUrl}
                     alt={hotel.name}
                     style={{
-                      width: "100%",
-                      height: "100%",
+                      width: "80%",
+                      height: "80%",
                       objectFit: "cover",
                     }}
                   />
@@ -150,13 +154,23 @@ function HotelList({ hotels }) {
                               </TableCell>
                               <TableCell>€{room.price}</TableCell>
                               <TableCell>{room.summary}</TableCell>
-                              <TableCell>
+                              <TableCell sx={{}}>
                                 <Button
                                   variant="contained"
                                   onClick={() => handleBookClick(room)}
                                 >
                                   Book
                                 </Button>
+                                {userIsAdmin() ? (
+                                  <Button
+                                    variant="contained"
+                                    onClick={() => handleEditClick(room)}
+                                  >
+                                    Edit
+                                  </Button>
+                                ) : (
+                                  ""
+                                )}
                               </TableCell>
                             </TableRow>
                           ))}
