@@ -4,3 +4,6 @@ export const LOGIN_API_URL= API_URL + "/login";
 export const LOGOUT_API_URL= API_URL + "/logout";
 export const REGISTER_API_URL= API_URL + "/accounts";
 export const REFRESH_TOKEN_URL = API_URL+ "/accessToken";
+export const API_BOOKINGS_URL = API_URL+ "/Bookings";
+export const API_HOTELS_URL = API_URL+ "/Hotels";
+export const API_ROOMS_URL = API_URL+ "/Rooms";

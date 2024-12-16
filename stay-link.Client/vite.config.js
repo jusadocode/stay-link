@@ -31,7 +31,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 }
 
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7147';
+    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:8080';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -43,15 +43,7 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/api/Hotels': {
-                target,
-                secure: false
-            },
-            '^/api/Rooms': {
-                target,
-                secure: false
-            },
-            '^/api/Bookings': {
+            '^/api': {
                 target,
                 secure: false
             }

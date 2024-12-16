@@ -2,16 +2,17 @@ import { useContext, useEffect, useState } from "react";
 import { Container, Button, Typography, Box } from "@mui/material";
 import HotelList from "./components/HotelList";
 import { Footer } from "./components/Footer";
-import { fetchHotelRooms, fetchHotels } from "./services/hotelService";
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./App.css";
-import { AuthContext, AuthProvider } from "./shared/context/AuthContext";
+import { AuthContext } from "./shared/context/AuthContext";
 import { useAuthentication } from "./shared/hooks/useAuthentication";
+import useBookings from "./shared/hooks/useBookings";
 
 function App() {
   const [hotels, setHotels] = useState([]);
 
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
+  const { fetchHotelRooms, fetchHotels } = useBookings();
 
   const { logout } = useAuthentication();
 
