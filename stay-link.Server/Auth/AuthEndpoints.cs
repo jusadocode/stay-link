@@ -66,7 +66,8 @@ namespace stay_link.Server.Auth
                 {
                     HttpOnly = true,
                     SameSite = SameSiteMode.None,
-                    Expires = expiresAt
+                    Expires = expiresAt,
+                    Secure = true,
                 };
 
                 httpContext.Response.Cookies.Append("AccessToken", accessToken, cookieOptions);
@@ -119,7 +120,8 @@ namespace stay_link.Server.Auth
                 {
                     HttpOnly = true,
                     SameSite = SameSiteMode.None,
-                    Expires = expiresAt
+                    Expires = expiresAt,
+                    Secure = true
                 };
 
                 httpContext.Response.Cookies.Append("AccessToken", accessToken, cookieOptions);
