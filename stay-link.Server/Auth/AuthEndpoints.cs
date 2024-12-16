@@ -65,7 +65,7 @@ namespace stay_link.Server.Auth
                 var cookieOptions = new CookieOptions
                 {
                     HttpOnly = true,
-                    SameSite = SameSiteMode.Lax,
+                    SameSite = SameSiteMode.None,
                     Expires = expiresAt
                 };
 
@@ -118,7 +118,7 @@ namespace stay_link.Server.Auth
                 var cookieOptions = new CookieOptions
                 {
                     HttpOnly = true,
-                    SameSite = SameSiteMode.Lax,
+                    SameSite = SameSiteMode.None,
                     Expires = expiresAt
                 };
 
