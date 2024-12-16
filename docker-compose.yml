@@ -3,13 +3,12 @@ services:
     image: ${DOCKER_REGISTRY-}staylinkserver
     environment:
       - ConnectionStrings__Default="Server=postgres;Port=5432;Database=booking-system-db;User Id=postgres;Password=root;"
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
     build:
       context: stay-link.Server
       dockerfile: Dockerfile
     ports:
       - "8080:80"
-      - "8081:443"
     depends_on:
       postgresql:
         condition: service_healthy
