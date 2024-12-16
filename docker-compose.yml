@@ -7,7 +7,6 @@ services:
       context: stay-link.Server
       dockerfile: Dockerfile
     ports:
-      - "8081:443"
       - "8080:80"
     depends_on:
       postgresql:
