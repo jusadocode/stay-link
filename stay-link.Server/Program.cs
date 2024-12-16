@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", builder =>
     {
-        builder.WithOrigins("https://localhost:5173") 
+        builder.WithOrigins("https://stingray-app-si2pt.ondigitalocean.app") 
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
