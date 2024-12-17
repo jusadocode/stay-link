@@ -31,7 +31,6 @@ export const useAuthentication = () => {
 
     const userData = await response.json();
 
-    console.log(userData);
 
     setAuthData(userData)
 

@@ -27,57 +27,87 @@ function BookingList() {
       <Typography variant="h4" gutterBottom>
         My Bookings
       </Typography>
+
       {bookings ? (
         bookings.length > 0 ? (
-          bookings.map((booking, index) => (
-            <Paper key={index} elevation={3} sx={{ p: 2, mb: 2 }}>
-              <Grid container spacing={5}>
-                <Grid item xs={12} sm={5}>
-                  <img
-                    src="https://149345965.v2.pressablecdn.com/wp-content/uploads/img-hotels-IADGV_006-Dusk-Exterior-home.jpg"
-                    alt={booking.hotel.name}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                </Grid>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+              gap: 5,
+            }}
+          >
+            {bookings.map((booking, index) => (
+              <Paper
+                key={index}
+                elevation={3}
+                sx={{
+                  p: 2,
+                  mb: 2,
+                  maxWidth: "40rem",
+                  width: "100%",
+                  textAlign: "left",
+                }}
+              >
                 <Grid
-                  item
-                  xs={12}
-                  sm={7}
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="flex-start"
+                  container
+                  sx={{
+                    flexDirection: "column", // Use column for both xs and md
+                  }}
                 >
-                  <Typography variant="h6" gutterBottom>
-                    {booking.hotel.name}
-                  </Typography>
-                  <Typography>
-                    <strong>Check-in Date:</strong>{" "}
-                    {new Date(booking.checkInDate).toLocaleDateString()}
-                  </Typography>
-                  <Typography>
-                    <strong>Check-out Date:</strong>{" "}
-                    {new Date(booking.checkOutDate).toLocaleDateString()}
-                  </Typography>
-                  <Typography>
-                    <strong>Description:</strong> {booking.room.summary}
-                  </Typography>
-                  <Typography>
-                    <strong>Room type:</strong>{" "}
-                    {RoomTypes[booking.room.roomType]}
-                  </Typography>
-                  <Typography>
-                    <strong>Space:</strong>{" "}
-                    {booking.room.maxOccupancy === 1
-                      ? "For 1 person"
-                      : `For up to ${booking.room.maxOccupancy} people`}
-                  </Typography>
-                  <Typography>
-                    <strong>Total:</strong> €{booking.totalPrice}
-                  </Typography>
+                  {/* Image Section */}
+                  <Grid item xs={12}>
+                    <img
+                      src={booking.hotel.imageUrl}
+                      alt={booking.hotel.name}
+                      style={{
+                        width: "100%",
+                      }}
+                    />
+                  </Grid>
+
+                  {/* Information Section */}
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      paddingTop: 2,
+                    }}
+                  >
+                    <Typography variant="h6" gutterBottom>
+                      {booking.hotel.name}
+                    </Typography>
+                    <Typography>
+                      <strong>Check-in Date:</strong>{" "}
+                      {new Date(booking.checkInDate).toLocaleDateString()}
+                    </Typography>
+                    <Typography>
+                      <strong>Check-out Date:</strong>{" "}
+                      {new Date(booking.checkOutDate).toLocaleDateString()}
+                    </Typography>
+                    <Typography>
+                      <strong>Description:</strong> {booking.room.summary}
+                    </Typography>
+                    <Typography>
+                      <strong>Room type:</strong>{" "}
+                      {RoomTypes[booking.room.roomType]}
+                    </Typography>
+                    <Typography>
+                      <strong>Space:</strong>{" "}
+                      {booking.room.maxOccupancy === 1
+                        ? "For 1 person"
+                        : `For up to ${booking.room.maxOccupancy} people`}
+                    </Typography>
+                    <Typography>
+                      <strong>Total:</strong> €{booking.totalPrice}
+                    </Typography>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Paper>
-          ))
+              </Paper>
+            ))}
+          </Box>
         ) : (
           <Typography variant="body1" sx={{ mt: 2 }}>
             You have not booked anything yet.
