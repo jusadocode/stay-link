@@ -1,7 +1,7 @@
 # StayLink
 
 ## Projekto aprašymas
-**StayLink** – tai moderni viešbučių kambarių rezervacijos sistema, skirta vartotojams, norintiems patogiai rezervuoti kambarius įvairiuose viešbučiuose, ir administratoriams, kurie gali valdyti viešbučių informaciją ir užimtumą. Naudodami šią sistemą, vartotojai gali prisijungti, peržiūrėti kambarius, rezervuoti juos tam tikram laikotarpiui bei tvarkyti savo rezervacijas.
+**StayLink** – tai moderni viešbučių kambarių rezervacijos sistema, skirta vartotojams, norintiems patogiai rezervuoti kambarius įvairiuose viešbučiuose, ir administratoriams, kurie gali valdyti viešbučių informaciją, užimtumą bei užsakymus. Naudodami šią sistemą, vartotojai gali prisijungti, peržiūrėti kambarius, rezervuoti juos tam tikram laikotarpiui bei peržiūrėti savo rezervacijas.
 
 ## Funkciniai reikalavimai
 
@@ -12,10 +12,10 @@
 - Prisijungimas ir registracija.
 - Viešbučių ir kambarių peržiūra.
 - Kambario rezervacija pasirinktoms datoms.
-- Rezervacijų peržiūra, atšaukimas ir keitimas.
+- Rezervacijų peržiūra.
 
 ### Administratoriai:
-- Viešbučių ir kambarių kūrimas, redagavimas ir šalinimas.
+- Viešbučių ir kambarių kūrimas, redagavimas ir rezervacijų šalinimas.
 - Vartotojų rezervacijų valdymas.
 - Kambarių užimtumo stebėjimas.
 
