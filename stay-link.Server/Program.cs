@@ -16,15 +16,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", builder =>
+    options.AddPolicy("AllowFrontend", corsBuilder =>
     {
-        builder.WithOrigins("https://stingray-app-si2pt.ondigitalocean.app") 
+        corsBuilder.WithOrigins(builder.Configuration["FRONTEND_URL"]) 
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
     });
 });
-
 
 builder.Services.AddDbContext<BookingContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

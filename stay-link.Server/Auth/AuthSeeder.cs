@@ -9,10 +9,13 @@ namespace stay_link.Server.Auth
 
         UserManager<BookingUser> _userManager;
         RoleManager<IdentityRole> _roleManager;
+        IConfiguration _configuration;
 
-        public AuthSeeder(UserManager<BookingUser> userManager, RoleManager<IdentityRole> roleManager) {
+        public AuthSeeder(UserManager<BookingUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration = null)
+        {
             _userManager = userManager;
             _roleManager = roleManager;
+            _configuration = configuration;
         }
         public async Task SeedAsync()
         {
@@ -31,7 +34,7 @@ namespace stay_link.Server.Auth
             var existingAdminUser = await _userManager.FindByNameAsync(newAdminUser.UserName);
             if(existingAdminUser == null)
             {
-                var createAdminUserResult = await _userManager.CreateAsync(newAdminUser, "NotHardcodedAtAll!1");
+                var createAdminUserResult = await _userManager.CreateAsync(newAdminUser, _configuration["ADMIN_PASSWORD"]);
                 if (createAdminUserResult.Succeeded) {
                     await _userManager.AddToRolesAsync(newAdminUser, BookingRoles.All);
                 }
