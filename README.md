@@ -86,3 +86,251 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 
 ![image](https://github.com/user-attachments/assets/6aeb6b05-db3b-491e-b752-9442460ffdd7)
 
+## **Rezervacijos**
+
+## **1. Gauti visas rezervacijas**
+
+`GET /api/Bookings`
+
+**Aprašymas:**  
+Šis endpointas grąžina visų rezervacijų sąrašą.
+
+**Atsakymas (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "roomId": 1,
+    "userId": "12345",
+    "startDate": "2024-12-21",
+    "endDate": "2024-12-23"
+  },
+  {
+    "id": 2,
+    "roomId": 2,
+    "userId": "67890",
+    "startDate": "2024-12-22",
+    "endDate": "2024-12-24"
+  }
+]
+```
+**Atsakymas (401 Unauthorized):**
+
+```json
+{ "message": "Unauthorized" }
+```
+---
+
+## **2. Sukurti naują rezervaciją**
+
+`POST /api/Bookings`
+
+**Aprašymas:**  
+Šis endpointas leidžia sukurti naują rezervaciją.
+
+**Užklausos pavyzdys:**
+```json
+{
+  "roomId": 1,
+  "userId": "12345",
+  "startDate": "2024-12-21",
+  "endDate": "2024-12-23"
+}
+```
+**Atsakymas (201 Created):**
+```json
+{
+  "id": 1,
+  "roomId": 1,
+  "userId": "12345",
+  "startDate": "2024-12-21",
+  "endDate": "2024-12-23"
+}
+```
+**Galimi atsakymai (422 Unprocessable Entity):**
+```json
+{ "message": "Room does not belong to the specified hotel." }
+```
+
+```json
+{ "message": "End date must be greater than the start date." }
+```
+---
+
+## **3. Gauti rezervaciją pagal ID**
+
+`GET /api/Bookings/{id}`
+
+**Aprašymas:**  
+Šis endpointas grąžina rezervacijos duomenis pagal pateiktą ID.
+
+**Atsakymas (200 OK):**
+```json
+{
+  "id": 1,
+  "roomId": 1,
+  "userId": "12345",
+  "startDate": "2024-12-21",
+  "endDate": "2024-12-23"
+}
+```
+
+**Galimas atsakymaas (404 Not found):**
+```json
+{ "message": "Booking not found." }
+```
+---
+
+## **4. Atlikti rezervacijos atnaujinimą**
+
+`PUT /api/Bookings/{id}`
+
+**Aprašymas:**  
+Šis endpointas leidžia atnaujinti esamą rezervaciją pagal ID.
+
+**Užklausos pavyzdys:**
+```json
+{
+  "roomId": 1,
+  "userId": "12345",
+  "startDate": "2024-12-22",
+  "endDate": "2024-12-24"
+}
+```
+
+**Atsakymas (204 No Content):**
+
+**Galimi atsakymai:**
+
+- 400 Bad Request:
+```json
+ { "message": "Invalid data." }
+```
+- **403 Forbidden:**
+
+- **404 Not Found:**
+- 
+```json
+{ "message": "Booking not found." }
+```
+
+## **5. Ištrinti rezervaciją**
+
+`DELETE /api/Bookings/{id}`
+
+**Aprašymas:**  
+Šis endpointas leidžia ištrinti rezervaciją pagal ID.
+
+**Atsakymas (204 No Content):**
+
+**Galimi atsakymai:**
+
+- **404 Not Found:**
+```json
+{ "message": "Booking not found." }
+```
+- **403 Forbidden:**
+
+## **Autentifikacija**
+
+## **1. Registracija**
+
+`POST /api/accounts`
+
+**Aprašymas:**  
+Šis endpointas leidžia vartotojams registruotis sistemoje pateikiant vartotojo duomenis.
+
+**Užklausos pavyzdys:**
+
+{
+  "userName": "JohnDoe",
+  "email": "JohnDoe@email.com",
+  "password": "password123"
+}
+
+**Atsakymas (200 OK):**
+```json
+{
+  "message": "Registration successful"
+}
+```
+**Galimi atsakymai:**
+
+- **400 Bad Request:**
+```json
+ { "message": "Invalid input." }
+```
+- **422 Unprocessable Entity:**
+```json
+  { "message": "Email already in use." }
+```
+
+## **2. Prisijungimas**
+
+`POST /api/login`
+
+**Aprašymas:**  
+Šis endpointas leidžia vartotojams prisijungti prie sistemos pateikiant vartotojo vardą ir slaptažodį.
+
+**Užklausos pavyzdys:**
+
+```json
+{
+  "userName": "JohnDoe",
+  "password": "password123"
+}
+```
+**Atsakymas (200 OK):**
+
+```json
+{
+  "userUd": "23523535",
+  "roles": [Admin, BookingUser]
+}
+```
+
+**Galimi atsakymai:**
+
+- **422 Unauthorized:**
+
+```json
+{ "message": "Invalid username or password." }
+```
+
+## **3. Atnaujinti prisijungimo žetoną**
+
+`POST /api/accessToken`
+
+**Aprašymas:**  
+Šis endpointas leidžia atnaujinti prisijungimo žetoną.
+
+**Atsakymas (200 OK):**
+
+**Galimi atsakymai:**
+
+- **422 Unprocessable Entity:**
+```json
+ { "message": "Invalid refresh token." }
+```
+
+```json
+ { "message": "Refresh token not found in cookies." }
+```
+
+## **4. Atsijungimas**
+
+`POST /api/logoutt`
+
+**Aprašymas:**  
+Šis endpointas leidžia vartotojams atsijungti nuo sistemos.
+
+**Atsakymas (200 OK):**
+```json
+{
+  "message": "Logout successful"
+}
+```
+**Galimi atsakymai:**
+
+- **401 Unauthorized:**
+
