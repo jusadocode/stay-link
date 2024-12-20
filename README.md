@@ -114,11 +114,8 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
   }
 ]
 ```
-**Atsakymas (401 Unauthorized):**
+**Atsakymas (401 Unauthorized)**
 
-```json
-{ "message": "Unauthorized" }
-```
 ---
 
 ## **2. Sukurti naują rezervaciją**
@@ -209,7 +206,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 - **403 Forbidden:**
 
 - **404 Not Found:**
-- 
+
 ```json
 { "message": "Booking not found." }
 ```
@@ -241,13 +238,13 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 Šis endpointas leidžia vartotojams registruotis sistemoje pateikiant vartotojo duomenis.
 
 **Užklausos pavyzdys:**
-
+```json
 {
   "userName": "JohnDoe",
   "email": "JohnDoe@email.com",
   "password": "password123"
 }
-
+```
 **Atsakymas (200 OK):**
 ```json
 {
@@ -291,7 +288,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 
 **Galimi atsakymai:**
 
-- **422 Unauthorized:**
+- **422 Unprocessable Entity:**
 
 ```json
 { "message": "Invalid username or password." }
@@ -319,7 +316,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 
 ## **4. Atsijungimas**
 
-`POST /api/logoutt`
+`POST /api/logout`
 
 **Aprašymas:**  
 Šis endpointas leidžia vartotojams atsijungti nuo sistemos.
@@ -333,4 +330,3 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 **Galimi atsakymai:**
 
 - **401 Unauthorized:**
-
