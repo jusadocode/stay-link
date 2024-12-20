@@ -154,10 +154,11 @@ function HotelList({ hotels }) {
                               </TableCell>
                               <TableCell>€{room.price}</TableCell>
                               <TableCell>{room.summary}</TableCell>
-                              <TableCell sx={{}}>
+                              <TableCell>
                                 <Button
                                   variant="contained"
                                   onClick={() => handleBookClick(room)}
+                                  sx={{ margin: "1rem" }}
                                 >
                                   Book
                                 </Button>

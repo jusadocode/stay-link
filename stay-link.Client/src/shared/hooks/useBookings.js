@@ -59,6 +59,15 @@ const {customFetch} = useAuthentication();
         return response.json();
     }
 
+    const deleteBooking = async (bookingId) => {
+        const response = await customFetch(API_BOOKINGS_URL+`/${bookingId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        return response;
+    };
+
     return {
         addBooking,
         fetchBookings,
@@ -66,7 +75,8 @@ const {customFetch} = useAuthentication();
         fetchRoom,
         updateRoom,
         fetchHotels, 
-        fetchHotelRooms
+        fetchHotelRooms,
+        deleteBooking
     };
 };
 

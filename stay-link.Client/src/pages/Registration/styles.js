@@ -7,7 +7,6 @@ export const MainBox = {
 
 export const ButtonStyle = {
   borderRadius: '20px',
-  backgroundColor: 'black'
 };
 
 export const FormBottomSection = {
