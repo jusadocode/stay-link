@@ -1,0 +1,5 @@
+static_sites:
+  - build_command: ...
+    error_document: catchall_document
+    routes:
+      - path: /
