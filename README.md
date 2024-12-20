@@ -93,7 +93,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `GET /api/Bookings`
 
 **Aprašymas:**  
-Šis endpointas grąžina visų rezervacijų sąrašą.
+Grąžinamas visų rezervacijų sąrašas.
 
 **Atsakymas (200 OK):**
 ```json
@@ -123,7 +123,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/Bookings`
 
 **Aprašymas:**  
-Šis endpointas leidžia sukurti naują rezervaciją.
+Leidžiama naudotojui sukurti naują rezervaciją.
 
 **Užklausos pavyzdys:**
 ```json
@@ -159,7 +159,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `GET /api/Bookings/{id}`
 
 **Aprašymas:**  
-Šis endpointas grąžina rezervacijos duomenis pagal pateiktą ID.
+Grąžinami rezervacijos duomenys pagal pateiktą ID.
 
 **Atsakymas (200 OK):**
 ```json
@@ -183,7 +183,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `PUT /api/Bookings/{id}`
 
 **Aprašymas:**  
-Šis endpointas leidžia atnaujinti esamą rezervaciją pagal ID.
+Leidžiama atnaujinti esamą rezervaciją pagal ID.
 
 **Užklausos pavyzdys:**
 ```json
@@ -216,7 +216,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `DELETE /api/Bookings/{id}`
 
 **Aprašymas:**  
-Šis endpointas leidžia ištrinti rezervaciją pagal ID.
+Leidžiama ištrinti rezervaciją pagal ID.
 
 **Atsakymas (204 No Content):**
 
@@ -235,7 +235,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/accounts`
 
 **Aprašymas:**  
-Šis endpointas leidžia vartotojams registruotis sistemoje pateikiant vartotojo duomenis.
+Asmenims galima registruotis sistemoje pateikiant vartotojo duomenis.
 
 **Užklausos pavyzdys:**
 ```json
@@ -267,7 +267,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/login`
 
 **Aprašymas:**  
-Šis endpointas leidžia vartotojams prisijungti prie sistemos pateikiant vartotojo vardą ir slaptažodį.
+Leidžiama vartotojams prisijungti prie sistemos pateikiant vartotojo vardą ir slaptažodį.
 
 **Užklausos pavyzdys:**
 
@@ -299,7 +299,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/accessToken`
 
 **Aprašymas:**  
-Šis endpointas leidžia atnaujinti prisijungimo žetoną.
+Leidžiama atnaujinti prisijungimo žetoną.
 
 **Atsakymas (200 OK):**
 
@@ -319,7 +319,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/logout`
 
 **Aprašymas:**  
-Šis endpointas leidžia vartotojams atsijungti nuo sistemos.
+Leidžiama vartotojams atsijungti nuo sistemos.
 
 **Atsakymas (200 OK):**
 ```json
