@@ -77,7 +77,6 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 
 - **Backend** komponentas įdiegtas **DigitalOcean Droplet** (virtualioje mašinoje), naudojant **Docker** konteinerius.
 - Backend veikia kaip atskiras konteineris ir bendrauja su **PostgreSQL** duomenų bazės konteineriu.
-- Tarpusavio sąveika vyksta per **TCP/IP** protokolą.
 
 ## 3. Nginx Serveris
 
