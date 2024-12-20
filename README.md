@@ -89,7 +89,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 # OpenAPI Specifikacija
 
 Šioje vietoje bus nurodoma keletas esminių Backend funkcionalumo atvejų, kurie paliečia apribotas prieigas prie rezervacijų valdymo, priklausomai nuo naudotojo rolės.
-Pilną OpenAPI specifikaciją su visais galimais atsakais galima pasiekti čia: [a link](https://github.com/jusadocode/stay-link/stay-link.Server/openapi.yaml)
+Pilną OpenAPI specifikaciją su visais galimais atsakais galima pasiekti [čia](https://github.com/jusadocode/stay-link/blob/25d504e94bf6c7c7358ebd9fb87c91adb5771ecb/stay-link.Server/openapi.yaml)
 
 ## **Rezervacijos**
 
