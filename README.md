@@ -37,10 +37,10 @@
 
 Toliau pateikiama keletas naudotojo sąsajos wireframe pavyzdžių:
 
-| Vaizdas 1   | Vaizdas 2   |
+|    |    |
 |-------------|-------------|
 | <p align="center"><img src="https://github.com/user-attachments/assets/690e9d3b-41c1-42c6-a33a-255fe33f359e" width="400" height="300" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/d3c5f755-afaf-46f5-9f95-1c8d53cc77fd" width="400" height="300" /></p> |
-| Vaizdas 3   | Vaizdas 2   |
+|    |    |
 | <p align="center"><img src="https://github.com/user-attachments/assets/c704de52-6ffc-4434-bddb-4868f4611242" width="500" height="600" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/9ad190fa-3690-47de-b955-b84d993931dc" width="500" height="600" /></p> |
 
 ---
@@ -53,10 +53,10 @@ Toliau pateikiama keletas naudotojo sąsajos wireframe pavyzdžių:
 # Naudotojo sąsajos dizainas    
 
 Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
-| Vaizdas 1   | Vaizdas 2   |
+|    |    |
 |-------------|-------------|
 | <p align="center"><img src="https://github.com/user-attachments/assets/f5726090-6a70-4108-8baf-de678f81f0a2" width="400" height="400" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/8a99493a-25e4-4c15-b48f-d7231bb456b1" width="400" height="400" /></p> |
-| Vaizdas 3   | Vaizdas 4   |
+|    |    |
 | <p align="center"><img src="https://github.com/user-attachments/assets/c8dc6a8f-f5bd-4051-aff7-04c940360b3b" width="600" height="400" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/2b625e0b-3653-4c7e-83e9-d71dfcc785de" width="600" height="400" /></p> |
 
 
