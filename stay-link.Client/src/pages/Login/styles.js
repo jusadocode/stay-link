@@ -6,7 +6,6 @@ export const MainBox = {
 
 export const ButtonStyle = {
   borderRadius: '20px',
-  backgroundColor: 'black',
   marginTop: '16px',
   textTransform: 'none'
 };

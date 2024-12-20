@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "../App.css";
 import {
   Box,
@@ -8,24 +8,60 @@ import {
   Paper,
   CircularProgress,
   Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import RoomTypes from "../data/roomTypes";
 import useBookings from "../shared/hooks/useBookings";
 import dayjs from "dayjs";
+import { AuthContext } from "../shared/context/AuthContext";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 function BookingList() {
   const [bookings, setBookings] = useState();
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { fetchBookings, fetchHotel, fetchRoom } = useBookings();
+  const { userIsAdmin } = useContext(AuthContext);
+
+  const { fetchBookings, fetchHotel, fetchRoom, deleteBooking } = useBookings();
+
   useEffect(() => {
     populateBookingData();
   }, []);
 
+  const handleOpenModal = (booking) => {
+    setSelectedBooking(booking);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedBooking(null);
+    setIsModalOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedBooking) {
+      try {
+        await deleteBooking(selectedBooking.id);
+        setBookings((prevBookings) =>
+          prevBookings.filter((booking) => booking.id !== selectedBooking.id)
+        );
+      } catch (error) {
+        console.error("Error deleting booking:", error);
+      } finally {
+        handleCloseModal();
+      }
+    }
+  };
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        My Bookings
+        {userIsAdmin() ? "Manage bookings" : "My Bookings"}
       </Typography>
 
       {bookings ? (
@@ -49,22 +85,23 @@ function BookingList() {
                   textAlign: "left",
                 }}
               >
-                <Grid
-                  container
+                <Box
                   sx={{
-                    flexDirection: "column", // Use column for both xs and md
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-around",
+                    height: "100%",
                   }}
                 >
                   {/* Image Section */}
-                  <Grid item xs={12}>
-                    <img
-                      src={booking.hotel.imageUrl}
-                      alt={booking.hotel.name}
-                      style={{
-                        width: "100%",
-                      }}
-                    />
-                  </Grid>
+                  <img
+                    src={booking.hotel.imageUrl}
+                    alt={booking.hotel.name}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                    }}
+                  />
 
                   {/* Information Section */}
                   <Grid
@@ -104,7 +141,18 @@ function BookingList() {
                       <strong>Total:</strong> €{booking.totalPrice}
                     </Typography>
                   </Grid>
-                </Grid>
+                  {userIsAdmin() && (
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleOpenModal(booking)}
+                      sx={{ mt: 2 }}
+                    >
+                      <DeleteForeverIcon />
+                      Delete Booking
+                    </Button>
+                  )}
+                </Box>
               </Paper>
             ))}
           </Box>
@@ -123,6 +171,25 @@ function BookingList() {
       <Button variant="outlined" component={Link} to="/" sx={{ mt: 4 }}>
         Go Back to Hotel List
       </Button>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={isModalOpen} onClose={handleCloseModal}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete the booking for{" "}
+            <strong>{selectedBooking?.hotel.name}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 
@@ -132,8 +199,8 @@ function BookingList() {
 
       const bookingsWithDetails = await Promise.all(
         bookingsData.map(async (booking) => {
-          const hotel = await fetchHotel(booking.hotelId); // Fetch hotel data
-          const room = await fetchRoom(booking.roomId); // Fetch room data
+          const hotel = await fetchHotel(booking.hotelId);
+          const room = await fetchRoom(booking.roomId);
 
           const checkInDate = new dayjs(booking.checkInDate);
           const checkOutDate = new dayjs(booking.checkOutDate);
@@ -149,8 +216,8 @@ function BookingList() {
           return {
             ...booking,
             totalPrice: totalPrice,
-            hotel: hotel, // Add hotel data to the booking
-            room: room, // Add room data to the booking
+            hotel: hotel,
+            room: room,
           };
         })
       );

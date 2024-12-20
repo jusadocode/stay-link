@@ -11,8 +11,6 @@ namespace stay_link.Server.Models
         [Required]
         public string UserID { get; set; }
 
-        public BookingUser User { get; set; }
-
         [Required(ErrorMessage = "Check-in date is required.")]
         public DateOnly CheckInDate { get; set; }
 
