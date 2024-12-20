@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using stay_link.Server.Auth.Model;
 using stay_link.Server.Data;
 using stay_link.Server.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -22,9 +24,15 @@ namespace stay_link.Server.Controllers
             _context = context;
         }
 
-        // GET: api/Bookings
+        /// <summary>
+        /// Gets a list of all bookings or the authenticated user's bookings.
+        /// </summary>
+        /// <returns>A list of bookings.</returns>
         [HttpGet]
         [Authorize]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Booking>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
             var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
@@ -32,57 +40,68 @@ namespace stay_link.Server.Controllers
             if (User.IsInRole(BookingRoles.Admin))
             {
                 var bookings = await _context.Bookings.ToListAsync();
-                return Ok(bookings); 
+                return Ok(bookings); // Admins get all bookings
             }
 
             var userBookings = await _context.Bookings
-                                              .Where(b => b.UserID == userId) 
+                                              .Where(b => b.UserID == userId)
                                               .ToListAsync();
 
-            return Ok(userBookings); 
+            return Ok(userBookings); // Regular users get their own bookings
         }
 
-
-        // GET: api/Bookings/{id}
+        /// <summary>
+        /// Gets a specific booking by ID.
+        /// </summary>
+        /// <param name="id">The ID of the booking.</param>
+        /// <returns>The booking details.</returns>
         [HttpGet("{id}")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Booking))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Booking>> GetBooking(int id)
         {
             var booking = await _context.Bookings.FindAsync(id);
 
-            if (booking == null) {
+            if (booking == null)
+            {
                 return NotFound(new { message = "Booking not found." });
             }
 
             var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
-            if (User.IsInRole(BookingRoles.Admin))
+            if (!User.IsInRole(BookingRoles.Admin) && userId != booking.UserID)
             {
-                return Ok(booking);
+                return Forbid(); // Non-admin users can only access their own bookings
             }
 
-            if (userId != booking.UserID)
-            {
-                return Forbid(); 
-            }
-
-            return Ok(booking); 
+            return Ok(booking);
         }
 
-        // POST: api/Bookings
+        /// <summary>
+        /// Creates a new booking.
+        /// </summary>
+        /// <param name="bookingDTO">The booking details.</param>
+        /// <returns>The created booking.</returns>
         [HttpPost]
         [Authorize(Roles = BookingRoles.BookingUser)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Booking))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ErrorResponse))]
         public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState); // 400 Bad Request if model state is invalid
+                return BadRequest(ModelState);
             }
 
             var room = await _context.Rooms.FindAsync(bookingDTO.RoomId);
             if (bookingDTO.RoomId != null && room == null)
             {
-                return BadRequest(new { message = "Room not found." }); // Consistent bad request message for invalid room
+                return BadRequest(new { message = "Room not found." });
             }
 
             if (bookingDTO.HotelId != null)
@@ -90,13 +109,13 @@ namespace stay_link.Server.Controllers
                 var hotel = await _context.Hotels.FindAsync(bookingDTO.HotelId);
                 if (hotel == null)
                 {
-                    return BadRequest(new { message = "Hotel not found." }); // Consistent bad request message for invalid hotel
+                    return BadRequest(new { message = "Hotel not found." });
                 }
             }
 
             if (room != null && room.HotelID != bookingDTO.HotelId)
             {
-                return UnprocessableEntity(new { message = "Room does not belong to the specified hotel." }); // Consistent unprocessable entity message
+                return UnprocessableEntity(new { message = "Room does not belong to the specified hotel." });
             }
 
             var booking = new Booking
@@ -112,23 +131,33 @@ namespace stay_link.Server.Controllers
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetBooking), new { id = booking.ID }, booking); // 201 Created
+            return CreatedAtAction(nameof(GetBooking), new { id = booking.ID }, booking);
         }
 
-        // PUT: api/Bookings/{id}
+        /// <summary>
+        /// Updates an existing booking by ID.
+        /// </summary>
+        /// <param name="id">The ID of the booking.</param>
+        /// <param name="bookingDTO">The updated booking details.</param>
+        /// <returns>204 No Content on success.</returns>
         [HttpPut("{id}")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> PutBooking(int id, BookingDTO bookingDTO)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(); // 400 Bad Request if model state is invalid
+                return BadRequest();
             }
-            
+
             var booking = await _context.Bookings.FindAsync(id);
             if (booking == null)
             {
-                return NotFound(new { message = "Booking not found." }); // Consistent not found message
+                return NotFound(new { message = "Booking not found." });
             }
 
             if (!User.IsInRole(BookingRoles.Admin) &&
@@ -140,7 +169,7 @@ namespace stay_link.Server.Controllers
             var room = await _context.Rooms.FindAsync(bookingDTO.RoomId);
             if (bookingDTO.RoomId != null && room == null)
             {
-                return BadRequest(new { message = "Room not found." }); // Consistent bad request message for invalid room
+                return BadRequest(new { message = "Room not found." });
             }
 
             if (bookingDTO.HotelId != null)
@@ -148,16 +177,16 @@ namespace stay_link.Server.Controllers
                 var hotel = await _context.Hotels.FindAsync(bookingDTO.HotelId);
                 if (hotel == null)
                 {
-                    return BadRequest(new { message = "Hotel not found." }); // Consistent bad request message for invalid hotel
+                    return BadRequest(new { message = "Hotel not found." });
                 }
             }
 
             if (room != null && room.HotelID != bookingDTO.HotelId)
             {
-                return UnprocessableEntity(new { message = "Room does not belong to the specified hotel." }); // Consistent unprocessable entity message
+                return UnprocessableEntity(new { message = "Room does not belong to the specified hotel." });
             }
 
-            // Update booking properties from the DTO
+            // Update booking properties
             booking.CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate);
             booking.CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate);
             booking.RoomId = bookingDTO.RoomId;
@@ -168,38 +197,45 @@ namespace stay_link.Server.Controllers
 
             try
             {
-                await _context.SaveChangesAsync(); // Save changes
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!BookingExists(id))
                 {
-                    return NotFound(new { message = "Booking not found." }); // Consistent not found message
+                    return NotFound(new { message = "Booking not found." });
                 }
                 else
                 {
-                    throw; // Unexpected error, rethrow
+                    throw;
                 }
             }
 
-            return NoContent(); // 204 No Content on successful update
+            return NoContent();
         }
 
-        // DELETE: api/Bookings/{id}
+        /// <summary>
+        /// Deletes a booking by ID.
+        /// </summary>
+        /// <param name="id">The ID of the booking.</param>
+        /// <returns>204 No Content on success.</returns>
         [HttpDelete("{id}")]
         [Authorize(Roles = BookingRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteBooking(int id)
         {
             var booking = await _context.Bookings.FindAsync(id);
             if (booking == null)
             {
-                return NotFound(new { message = "Booking not found." }); // Consistent not found message
+                return NotFound(new { message = "Booking not found." });
             }
 
             _context.Bookings.Remove(booking);
             await _context.SaveChangesAsync();
 
-            return NoContent(); // 204 No Content on successful deletion
+            return NoContent();
         }
 
         private bool BookingExists(int id)

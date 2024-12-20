@@ -20,6 +20,7 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Hotels
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Hotel>))]
         public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
         {
             var hotels = await _context.Hotels.ToListAsync();
@@ -28,6 +29,8 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Hotels/{id}
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Hotel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         public async Task<ActionResult<Hotel>> GetHotel(int id)
         {
             var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.ID == id);
@@ -42,6 +45,8 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Hotels/{id}/Rooms
         [HttpGet("{id}/Rooms")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Room>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         public async Task<ActionResult<IEnumerable<Room>>> GetHotelRooms(int id)
         {
             var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.ID == id);
@@ -59,6 +64,10 @@ namespace stay_link.Server.Controllers
         // PUT: api/Hotels/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = BookingRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> PutHotel(int id, Hotel hotelUpdated)
         {
             if (!ModelState.IsValid)
@@ -97,6 +106,9 @@ namespace stay_link.Server.Controllers
         // POST: api/Hotels
         [HttpPost]
         [Authorize(Roles = BookingRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Hotel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<Hotel>> PostHotel(Hotel hotel)
         {
             if (!ModelState.IsValid)
@@ -113,6 +125,9 @@ namespace stay_link.Server.Controllers
         // DELETE: api/Hotels/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = BookingRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteHotel(int id)
         {
             var hotel = await _context.Hotels.FindAsync(id);
