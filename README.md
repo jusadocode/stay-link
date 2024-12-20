@@ -89,6 +89,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 # OpenAPI Specifikacija
 
 Šioje vietoje bus nurodoma keletas esminių Backend funkcionalumo atvejų, kurie paliečia apribotas prieigas prie rezervacijų valdymo, priklausomai nuo naudotojo rolės.
+
 Pilną OpenAPI specifikaciją su visais galimais atsakais galima pasiekti [čia](https://github.com/jusadocode/stay-link/blob/25d504e94bf6c7c7358ebd9fb87c91adb5771ecb/stay-link.Server/openapi.yaml)
 
 ## **Rezervacijos**
@@ -208,7 +209,7 @@ Leidžiama atnaujinti esamą rezervaciją pagal ID.
 ```json
  { "message": "Invalid data." }
 ```
-- **403 Forbidden:**
+- **403 Forbidden**
 
 - **404 Not Found:**
 
@@ -231,7 +232,7 @@ Leidžiama ištrinti rezervaciją pagal ID.
 ```json
 { "message": "Booking not found." }
 ```
-- **403 Forbidden:**
+- **403 Forbidden**
 
 ## **Autentifikacija**
 
@@ -306,7 +307,7 @@ Leidžiama vartotojams prisijungti prie sistemos pateikiant vartotojo vardą ir 
 **Aprašymas:**  
 Leidžiama atnaujinti prisijungimo žetoną.
 
-**Atsakymas (200 OK):**
+**Atsakymas (200 OK)**
 
 **Galimi atsakymai:**
 
@@ -334,4 +335,4 @@ Leidžiama vartotojams atsijungti nuo sistemos.
 ```
 **Galimi atsakymai:**
 
-- **401 Unauthorized:**
+- **401 Unauthorized**
