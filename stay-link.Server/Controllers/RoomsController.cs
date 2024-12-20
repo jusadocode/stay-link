@@ -20,6 +20,7 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Rooms
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Room>))]
         public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
         {
             var rooms = await _context.Rooms.ToListAsync();
@@ -28,6 +29,8 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Rooms/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Room))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Room>> GetRoom(int id)
         {
             var room = await _context.Rooms.FindAsync(id);
@@ -43,6 +46,10 @@ namespace stay_link.Server.Controllers
         // POST: api/Rooms
         [HttpPost]
         [Authorize(Roles = BookingRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Room))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<Room>> PostRoom(Room room)
         {
             if (!ModelState.IsValid)
@@ -65,6 +72,11 @@ namespace stay_link.Server.Controllers
         // PUT: api/Rooms/5
         [HttpPut("{id}")]
         [Authorize(Roles = BookingRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> PutRoom(int id, Room updatedRoom)
         {
             if (!ModelState.IsValid)
@@ -113,6 +125,9 @@ namespace stay_link.Server.Controllers
         // DELETE: api/Rooms/5
         [HttpDelete("{id}")]
         [Authorize(Roles = BookingRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteRoom(int id)
         {
             var room = await _context.Rooms.FindAsync(id);
