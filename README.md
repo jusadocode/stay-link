@@ -39,7 +39,7 @@ Toliau pateikiama keletas naudotojo sąsajos wireframe pavyzdžių:
 
 |    |    |
 |-------------|-------------|
-| <p align="center"><img src="https://github.com/user-attachments/assets/690e9d3b-41c1-42c6-a33a-255fe33f359e" width="400" height="300" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/d3c5f755-afaf-46f5-9f95-1c8d53cc77fd" width="400" height="300" /></p> |
+| <p align="center"><img src="https://github.com/user-attachments/assets/690e9d3b-41c1-42c6-a33a-255fe33f359e" width="400" height="400" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/d3c5f755-afaf-46f5-9f95-1c8d53cc77fd" width="400" height="400" /></p> |
 |    |    |
 | <p align="center"><img src="https://github.com/user-attachments/assets/c704de52-6ffc-4434-bddb-4868f4611242" width="500" height="600" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/9ad190fa-3690-47de-b955-b84d993931dc" width="500" height="600" /></p> |
 
