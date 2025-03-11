@@ -39,7 +39,7 @@ Toliau pateikiama keletas naudotojo sąsajos wireframe pavyzdžių:
 
 |    |    |
 |-------------|-------------|
-| <p align="center"><img src="https://github.com/user-attachments/assets/690e9d3b-41c1-42c6-a33a-255fe33f359e" width="400" height="300" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/d3c5f755-afaf-46f5-9f95-1c8d53cc77fd" width="400" height="300" /></p> |
+| <p align="center"><img src="https://github.com/user-attachments/assets/690e9d3b-41c1-42c6-a33a-255fe33f359e" width="400" height="400" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/d3c5f755-afaf-46f5-9f95-1c8d53cc77fd" width="400" height="400" /></p> |
 |    |    |
 | <p align="center"><img src="https://github.com/user-attachments/assets/c704de52-6ffc-4434-bddb-4868f4611242" width="500" height="600" /></p> | <p align="center"><img src="https://github.com/user-attachments/assets/9ad190fa-3690-47de-b955-b84d993931dc" width="500" height="600" /></p> |
 
@@ -86,6 +86,12 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 
 ![image](https://github.com/user-attachments/assets/6aeb6b05-db3b-491e-b752-9442460ffdd7)
 
+# OpenAPI Specifikacija
+
+Šioje vietoje bus nurodoma keletas esminių Backend funkcionalumo atvejų, kurie paliečia apribotas prieigas prie rezervacijų valdymo, priklausomai nuo naudotojo rolės.
+
+Pilną OpenAPI specifikaciją su visais galimais atsakais galima pasiekti [čia](https://github.com/jusadocode/stay-link/blob/25d504e94bf6c7c7358ebd9fb87c91adb5771ecb/stay-link.Server/openapi.yaml)
+
 ## **Rezervacijos**
 
 ## **1. Gauti visas rezervacijas**
@@ -93,7 +99,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `GET /api/Bookings`
 
 **Aprašymas:**  
-Šis endpointas grąžina visų rezervacijų sąrašą.
+Grąžinamas visų rezervacijų sąrašas.
 
 **Atsakymas (200 OK):**
 ```json
@@ -123,7 +129,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/Bookings`
 
 **Aprašymas:**  
-Šis endpointas leidžia sukurti naują rezervaciją.
+Leidžiama naudotojui sukurti naują rezervaciją.
 
 **Užklausos pavyzdys:**
 ```json
@@ -159,7 +165,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `GET /api/Bookings/{id}`
 
 **Aprašymas:**  
-Šis endpointas grąžina rezervacijos duomenis pagal pateiktą ID.
+Grąžinami rezervacijos duomenys pagal pateiktą ID.
 
 **Atsakymas (200 OK):**
 ```json
@@ -183,7 +189,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `PUT /api/Bookings/{id}`
 
 **Aprašymas:**  
-Šis endpointas leidžia atnaujinti esamą rezervaciją pagal ID.
+Leidžiama atnaujinti esamą rezervaciją pagal ID.
 
 **Užklausos pavyzdys:**
 ```json
@@ -203,7 +209,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 ```json
  { "message": "Invalid data." }
 ```
-- **403 Forbidden:**
+- **403 Forbidden**
 
 - **404 Not Found:**
 
@@ -216,7 +222,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `DELETE /api/Bookings/{id}`
 
 **Aprašymas:**  
-Šis endpointas leidžia ištrinti rezervaciją pagal ID.
+Leidžiama ištrinti rezervaciją pagal ID.
 
 **Atsakymas (204 No Content):**
 
@@ -226,7 +232,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 ```json
 { "message": "Booking not found." }
 ```
-- **403 Forbidden:**
+- **403 Forbidden**
 
 ## **Autentifikacija**
 
@@ -235,7 +241,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/accounts`
 
 **Aprašymas:**  
-Šis endpointas leidžia vartotojams registruotis sistemoje pateikiant vartotojo duomenis.
+Asmenims galima registruotis sistemoje pateikiant vartotojo duomenis.
 
 **Užklausos pavyzdys:**
 ```json
@@ -267,7 +273,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/login`
 
 **Aprašymas:**  
-Šis endpointas leidžia vartotojams prisijungti prie sistemos pateikiant vartotojo vardą ir slaptažodį.
+Leidžiama vartotojams prisijungti prie sistemos pateikiant vartotojo vardą ir slaptažodį.
 
 **Užklausos pavyzdys:**
 
@@ -299,9 +305,9 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/accessToken`
 
 **Aprašymas:**  
-Šis endpointas leidžia atnaujinti prisijungimo žetoną.
+Leidžiama atnaujinti prisijungimo žetoną.
 
-**Atsakymas (200 OK):**
+**Atsakymas (200 OK)**
 
 **Galimi atsakymai:**
 
@@ -319,7 +325,7 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 `POST /api/logout`
 
 **Aprašymas:**  
-Šis endpointas leidžia vartotojams atsijungti nuo sistemos.
+Leidžiama vartotojams atsijungti nuo sistemos.
 
 **Atsakymas (200 OK):**
 ```json
@@ -329,4 +335,4 @@ Toliau pateikiama dalis įgyvendintų naudotojo sąsajos dizaino pavyzdžių:
 ```
 **Galimi atsakymai:**
 
-- **401 Unauthorized:**
+- **401 Unauthorized**
