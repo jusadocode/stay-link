@@ -34,7 +34,7 @@ namespace stay_link.Server.Auth
             var existingAdminUser = await _userManager.FindByNameAsync(newAdminUser.UserName);
             if(existingAdminUser == null)
             {
-                var createAdminUserResult = await _userManager.CreateAsync(newAdminUser, _configuration["ADMIN_PASSWORD"]);
+                var createAdminUserResult = await _userManager.CreateAsync(newAdminUser, Environment.GetEnvironmentVariable("ADMIN_PASSWORD"));
                 if (createAdminUserResult.Succeeded) {
                     await _userManager.AddToRolesAsync(newAdminUser, BookingRoles.All);
                 }

@@ -13,7 +13,7 @@ namespace stay_link.Server.Auth
 
         public JwtTokenService(IConfiguration configuration) {
 
-            _authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
+            _authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")));
             _issuer = configuration["JWT:ValidIssuer"];
             _audience = configuration["JWT:ValidAudience"];
         }

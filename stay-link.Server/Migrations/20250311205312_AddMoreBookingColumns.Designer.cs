@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using stay_link.Server.Data;
@@ -11,9 +12,11 @@ using stay_link.Server.Data;
 namespace stay_link.Server.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    partial class BookingContextModelSnapshot : ModelSnapshot
+    [Migration("20250311205312_AddMoreBookingColumns")]
+    partial class AddMoreBookingColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -338,30 +341,6 @@ namespace stay_link.Server.Migrations
                     b.ToTable("bookings");
                 });
 
-            modelBuilder.Entity("stay_link.Server.Models.Feature", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("feature");
-                });
-
             modelBuilder.Entity("stay_link.Server.Models.Hotel", b =>
                 {
                     b.Property<int>("ID")
@@ -414,9 +393,8 @@ namespace stay_link.Server.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("price");
 
-                    b.Property<string>("RoomType")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<int>("RoomType")
+                        .HasColumnType("integer")
                         .HasColumnName("roomtype");
 
                     b.Property<string>("Summary")
@@ -427,35 +405,6 @@ namespace stay_link.Server.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("rooms");
-                });
-
-            modelBuilder.Entity("stay_link.Server.Models.RoomFeature", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("Condition")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("condition");
-
-                    b.Property<string>("FeatureId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("featureid");
-
-                    b.Property<string>("RoomId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("roomid");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("roomfeature");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

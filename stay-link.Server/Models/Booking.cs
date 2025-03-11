@@ -30,6 +30,10 @@ namespace stay_link.Server.Models
         [Range(0, 10, ErrorMessage = "Breakfast requests must be a non-negative integer and up to 10")]
         public int BreakfastRequests { get; set; }
 
+        public int TotalGuests { get; set; }
+
+        public decimal TotalPrice  { get; set; }
+
         public Booking() { }
 
         

@@ -10,6 +10,8 @@ namespace stay_link.Server.Data
     {
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<Feature> Feature { get; set; }
+        public DbSet<RoomFeature> RoomFeature { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Session> Sessions { get; set; }
 
@@ -30,6 +32,15 @@ namespace stay_link.Server.Data
             }
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Room>()
+            .Property(f => f.RoomType)
+            .HasConversion<string>();
+
+
+            modelBuilder.Entity<RoomFeature>()
+            .Property(f => f.Condition)
+            .HasConversion<string>();
 
         }
 

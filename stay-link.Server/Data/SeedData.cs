@@ -56,8 +56,28 @@ namespace stay_link.Server.Data
                     new Room("Suite with river access", RoomType.Suite,120,hotels[9].ID,2)
                 };
 
+
                 context.Rooms.AddRange(rooms);
                 context.SaveChanges();
+
+                var features = new[]
+                {
+                    new Feature { Name = "Free Wi-Fi", Description = "Complimentary wireless internet access." },
+                    new Feature { Name = "Pool", Description = "Outdoor and indoor pools available." },
+                    new Feature { Name = "Gym", Description = "Fully equipped gym for fitness enthusiasts." },
+                    new Feature { Name = "Breakfast Included", Description = "Complimentary breakfast available." },
+                    new Feature { Name = "Spa", Description = "Relax and rejuvenate with our spa services." },
+                    new Feature { Name = "Parking", Description = "Free parking for guests." },
+                    new Feature { Name = "Pet-Friendly", Description = "Pets allowed in designated rooms." },
+                    new Feature { Name = "Room Service", Description = "24/7 room service for your convenience." },
+                    new Feature { Name = "Conference Room", Description = "Available for business meetings and events." },
+                    new Feature { Name = "Beachfront", Description = "Direct access to the beach." }
+                };
+
+
+                context.Feature.AddRange(features);
+                context.SaveChanges();
+
 
                 // Seed bookings with valID hotel and room references
                 var bookings = new[]
@@ -69,6 +89,7 @@ namespace stay_link.Server.Data
                         RoomId = rooms.FirstOrDefault(r => r.Summary == "Deluxe room with sea view").ID,
                         HotelId = hotels.FirstOrDefault(h => h.Name == "Grand Hotel").ID,
                         BreakfastRequests = 3,
+                        TotalGuests = rooms.FirstOrDefault(r => r.Summary == "Deluxe room with sea view").MaxOccupancy - 1,
                         UserID = "4cdc02fe-5fef-4e2c-a022-fbf178d11112"
                     },
                     new Booking
@@ -77,6 +98,7 @@ namespace stay_link.Server.Data
                         CheckOutDate = new DateOnly(2024, 6, 21),
                         RoomId = rooms.FirstOrDefault(r => r.Summary == "Cozy room with snow view").ID,
                         HotelId = hotels.FirstOrDefault(h => h.Name == "Ocean Breeze Hotel").ID,
+                        TotalGuests = rooms.FirstOrDefault(r => r.Summary == "Cozy room with snow view").MaxOccupancy - 1,
                         BreakfastRequests = 2,
                         UserID = "b3a703b8-0686-4fc6-a54c-69a6a9d91a7f"
                     }
@@ -84,6 +106,40 @@ namespace stay_link.Server.Data
 
                 context.Bookings.AddRange(bookings);
                 context.SaveChanges();
+
+                var roomFeatures = new[]
+                {
+                    new RoomFeature
+                    {
+                        RoomId = rooms.FirstOrDefault(r => r.Summary == "Deluxe room with sea view").ID.ToString(),
+                        FeatureId = features.FirstOrDefault(f => f.Name == "Free Wi-Fi").ID.ToString(),
+                        Condition = FeatureCondition.Great
+                    },
+                    new RoomFeature
+                    {
+                        RoomId = rooms.FirstOrDefault(r => r.Summary == "Standard room with garden view").ID.ToString(),
+                        FeatureId = features.FirstOrDefault(f => f.Name == "Pool").ID.ToString(),
+                        Condition = FeatureCondition.Great
+                    },
+                    new RoomFeature
+                    {
+                        RoomId = rooms.FirstOrDefault(r => r.Summary == "Suite room with luxury amenities").ID.ToString(),
+                        FeatureId = features.FirstOrDefault(f => f.Name == "Spa").ID.ToString(),
+                        Condition = FeatureCondition.Great
+                    },
+                    new RoomFeature
+                    {
+                        RoomId = rooms.FirstOrDefault(r => r.Summary == "Family chalet with kitchen").ID.ToString(),
+                        FeatureId = features.FirstOrDefault(f => f.Name == "Breakfast Included").ID.ToString(),
+                        Condition = FeatureCondition.Great
+                    }
+                };
+
+
+                context.RoomFeature.AddRange(roomFeatures);
+                context.SaveChanges();
+
+
             }
         }
     }
