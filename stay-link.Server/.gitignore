@@ -245,6 +245,6 @@ paket-files/
 *.sln.iml
 
 notes.txt
-
+.env*
 .env.development
 .env.production
