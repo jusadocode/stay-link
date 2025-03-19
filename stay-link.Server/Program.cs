@@ -10,6 +10,7 @@ using DotNetEnv;
 using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using stay_link.Server.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -74,6 +75,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddTransient<JwtTokenService>();
 builder.Services.AddTransient<SessionService>();
 builder.Services.AddScoped<AuthSeeder>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 var app = builder.Build();
 

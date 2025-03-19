@@ -34,6 +34,9 @@ namespace stay_link.Server.Models
 
         public decimal TotalPrice  { get; set; }
 
+        public BookingStatus Status { get; set; }
+        public List<RoomFeature> FeaturePreferences { get; set; }
+
         public Booking() { }
 
         

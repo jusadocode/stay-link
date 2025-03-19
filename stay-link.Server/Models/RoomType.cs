@@ -1,4 +1,4 @@
-﻿namespace stay_link.Server.Data
+﻿namespace stay_link.Server.Models
 {
     public enum RoomType
     {

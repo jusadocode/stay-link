@@ -10,9 +10,10 @@ namespace stay_link.Server.Data
     {
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
-        public DbSet<Feature> Feature { get; set; }
-        public DbSet<RoomFeature> RoomFeature { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<RoomUsage> RoomUsages { get; set; }
+        public DbSet<RoomFeature> RoomFeatures { get; set; }
+
         public DbSet<Session> Sessions { get; set; }
 
         public BookingContext(DbContextOptions<BookingContext> options) : base(options)
@@ -33,14 +34,37 @@ namespace stay_link.Server.Data
 
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<RoomUsage>()
+            .Property(r => r.CleaningState)
+            .HasConversion<string>();
+
             modelBuilder.Entity<Room>()
-            .Property(f => f.RoomType)
+            .Property(r => r.RoomType)
             .HasConversion<string>();
 
 
-            modelBuilder.Entity<RoomFeature>()
-            .Property(f => f.Condition)
+            modelBuilder.Entity<Booking>()
+            .Property(r => r.Status)
             .HasConversion<string>();
+
+            modelBuilder.Entity<Room>()
+        .HasMany(r => r.Features)
+        .WithMany(rf => rf.Rooms)
+        .UsingEntity<Dictionary<string, object>>(
+            "RoomRoomFeature", // Name of the join table
+            j => j.HasOne<RoomFeature>().WithMany().HasForeignKey("RoomFeatureID"),
+            j => j.HasOne<Room>().WithMany().HasForeignKey("RoomID")
+        );
+
+            // Configure many-to-many relationship between Booking and RoomFeature
+            modelBuilder.Entity<Booking>()
+                .HasMany(b => b.FeaturePreferences)
+                .WithMany(rf => rf.Bookings)
+                .UsingEntity<Dictionary<string, object>>(
+                    "BookingRoomFeature", // Name of the join table
+                    j => j.HasOne<RoomFeature>().WithMany().HasForeignKey("RoomFeatureID"),
+                    j => j.HasOne<Booking>().WithMany().HasForeignKey("BookingID")
+                );
 
         }
 

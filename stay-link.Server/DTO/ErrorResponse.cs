@@ -1,4 +1,4 @@
-﻿namespace stay_link.Server.Controllers
+﻿namespace stay_link.Server.DTO
 {
     public class ErrorResponse
     {

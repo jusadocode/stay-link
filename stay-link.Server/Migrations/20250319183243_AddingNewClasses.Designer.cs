@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using stay_link.Server.Data;
@@ -11,9 +12,11 @@ using stay_link.Server.Data;
 namespace stay_link.Server.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    partial class BookingContextModelSnapshot : ModelSnapshot
+    [Migration("20250319183243_AddingNewClasses")]
+    partial class AddingNewClasses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace stay_link.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("BookingRoomFeature", b =>
-                {
-                    b.Property<int>("BookingID")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RoomFeatureID")
-                        .HasColumnType("integer");
-
-                    b.HasKey("BookingID", "RoomFeatureID");
-
-                    b.HasIndex("RoomFeatureID");
-
-                    b.ToTable("bookingroomfeature");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -191,21 +179,6 @@ namespace stay_link.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("RoomRoomFeature", b =>
-                {
-                    b.Property<int>("RoomFeatureID")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RoomID")
-                        .HasColumnType("integer");
-
-                    b.HasKey("RoomFeatureID", "RoomID");
-
-                    b.HasIndex("RoomID");
-
-                    b.ToTable("roomroomfeature");
-                });
-
             modelBuilder.Entity("stay_link.Server.Auth.Model.BookingUser", b =>
                 {
                     b.Property<string>("Id")
@@ -350,11 +323,6 @@ namespace stay_link.Server.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("roomid");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("status");
-
                     b.Property<int>("TotalGuests")
                         .HasColumnType("integer")
                         .HasColumnName("totalguests");
@@ -413,6 +381,11 @@ namespace stay_link.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
+                    b.Property<int[]>("Features")
+                        .IsRequired()
+                        .HasColumnType("integer[]")
+                        .HasColumnName("features");
+
                     b.Property<int>("FloorNumber")
                         .HasColumnType("integer")
                         .HasColumnName("floornumber");
@@ -449,34 +422,6 @@ namespace stay_link.Server.Migrations
                     b.ToTable("rooms");
                 });
 
-            modelBuilder.Entity("stay_link.Server.Models.RoomFeature", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<decimal?>("ExtraCost")
-                        .HasColumnType("numeric")
-                        .HasColumnName("extracost");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("roomfeatures");
-                });
-
             modelBuilder.Entity("stay_link.Server.Models.RoomUsage", b =>
                 {
                     b.Property<int>("ID")
@@ -510,21 +455,6 @@ namespace stay_link.Server.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("roomusages");
-                });
-
-            modelBuilder.Entity("BookingRoomFeature", b =>
-                {
-                    b.HasOne("stay_link.Server.Models.Booking", null)
-                        .WithMany()
-                        .HasForeignKey("BookingID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("stay_link.Server.Models.RoomFeature", null)
-                        .WithMany()
-                        .HasForeignKey("RoomFeatureID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -574,21 +504,6 @@ namespace stay_link.Server.Migrations
                     b.HasOne("stay_link.Server.Auth.Model.BookingUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("RoomRoomFeature", b =>
-                {
-                    b.HasOne("stay_link.Server.Models.RoomFeature", null)
-                        .WithMany()
-                        .HasForeignKey("RoomFeatureID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("stay_link.Server.Models.Room", null)
-                        .WithMany()
-                        .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
