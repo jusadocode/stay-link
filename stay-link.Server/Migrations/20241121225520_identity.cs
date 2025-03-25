@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
-
 namespace stay_link.Server.Migrations
 {
     /// <inheritdoc />
+    /// 
+    [ExcludeFromCodeCoverage]
     public partial class identity : Migration
     {
         /// <inheritdoc />

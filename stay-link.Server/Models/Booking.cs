@@ -35,7 +35,10 @@ namespace stay_link.Server.Models
         public decimal TotalPrice  { get; set; }
 
         public BookingStatus Status { get; set; }
-        public List<RoomFeature> FeaturePreferences { get; set; }
+        public virtual List<RoomFeature> FeaturePreferences { get; set; }
+        public virtual List<BookingFeature> BookingPreferences { get; set; }
+
+        public virtual List<Booking> Rooms { get; set; }
 
         public Booking() { }
 

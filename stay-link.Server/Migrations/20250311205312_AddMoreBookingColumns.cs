@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
 namespace stay_link.Server.Migrations
 {
+    [ExcludeFromCodeCoverage]
     /// <inheritdoc />
     public partial class AddMoreBookingColumns : Migration
     {

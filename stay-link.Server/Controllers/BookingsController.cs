@@ -46,6 +46,9 @@ public class BookingsController : ControllerBase
     public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+        
+
         var booking = await _bookingService.CreateBooking(bookingDTO, userId);
 
         return CreatedAtAction(nameof(GetBooking), new { id = booking.ID }, booking);

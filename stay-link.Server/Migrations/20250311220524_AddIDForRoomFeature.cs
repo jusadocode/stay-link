@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
 namespace stay_link.Server.Migrations
 {
+    [ExcludeFromCodeCoverage]
     /// <inheritdoc />
     public partial class AddIDForRoomFeature : Migration
     {

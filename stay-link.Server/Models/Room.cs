@@ -27,7 +27,11 @@ namespace stay_link.Server.Models
         [Required(ErrorMessage = "Max occupancy is required.")]
         [Range(1, 10, ErrorMessage = "Max occupancy must be between 1 and 10.")]
         public int MaxOccupancy { get; set; }
-        public List<RoomFeature> Features { get; set; } = new List<RoomFeature>();
+        public virtual List<RoomFeature> Features { get; set; } = new List<RoomFeature>();
+
+        public virtual List<Booking> Bookings { get; set; }
+
+        public virtual RoomUsage RoomUsage { get; set; }
 
 
         public Room() { }

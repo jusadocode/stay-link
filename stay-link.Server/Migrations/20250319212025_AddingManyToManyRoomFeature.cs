@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
@@ -7,6 +8,7 @@ namespace stay_link.Server.Migrations
     /// <inheritdoc />
     public partial class AddingManyToManyRoomFeature : Migration
     {
+        [ExcludeFromCodeCoverage]
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {

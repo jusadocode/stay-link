@@ -7,10 +7,8 @@ using stay_link.Server.Auth.Model;
 using stay_link.Server.Data;
 using System.Text;
 using DotNetEnv;
-using System.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using stay_link.Server.Services;
+using stay_link.Server.Mappings;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,10 +33,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-Debug.WriteLine("Printing env "+  Environment.GetEnvironmentVariable("Default_Connection"));
 
 builder.Services.AddDbContext<BookingContext>(options =>
-    options.UseNpgsql(Environment.GetEnvironmentVariable("Default_Connection")));
+    options.UseLazyLoadingProxies()
+        .UseNpgsql(Environment.GetEnvironmentVariable("Default_Connection")));
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddIdentity<BookingUser, IdentityRole>()
     .AddEntityFrameworkStores<BookingContext>()
@@ -72,10 +72,15 @@ builder.Services.AddAuthentication(configureOptions =>
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddHostedService<RoomUsageBackgroundService>();
+
 builder.Services.AddTransient<JwtTokenService>();
 builder.Services.AddTransient<SessionService>();
 builder.Services.AddScoped<AuthSeeder>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<RoomService>();
+
+
 
 var app = builder.Build();
 

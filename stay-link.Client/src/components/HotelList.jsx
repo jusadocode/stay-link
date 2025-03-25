@@ -25,6 +25,7 @@ import "../App.css";
 import { AuthContext } from "../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_PATH, EDIT_ROOM_PATH } from "../shared/constants/routes";
+import VisualsPage from "./VisualsPage";
 
 function HotelList({ hotels }) {
   const [searchInput, setSearchInput] = useState("");
@@ -77,6 +78,7 @@ function HotelList({ hotels }) {
             <TableCell>More</TableCell>
           </TableRow>
         </TableHead>
+        <VisualsPage></VisualsPage>
         <TableBody>
           {filteredHotels.map((hotel) => (
             <React.Fragment key={hotel.id}>

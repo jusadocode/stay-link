@@ -12,7 +12,7 @@ namespace stay_link.Server.Auth
         public bool IsRevoked { get; set; }
         [Required]
         public string UserId { get; set; }
-        public BookingUser User { get; set; }
+        public virtual BookingUser User { get; set; }
 
     }
 }
