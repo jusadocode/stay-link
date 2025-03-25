@@ -7,7 +7,6 @@ export default function FinalStep({
   selectedRoom,
   bookingDates,
   breakfastRequests,
-  expandedHotel,
 }) {
   const numberOfNights = bookingDates[1].diff(bookingDates[0], "day") + 1;
   const cleaningFee = 20;
@@ -32,9 +31,6 @@ export default function FinalStep({
         booking
       </Typography>
       <Box sx={{ mt: 2 }}>
-        <Typography variant="body2">
-          <strong>Hotel name:</strong> {expandedHotel.name}
-        </Typography>
         <Typography variant="body2">
           <strong>Room type:</strong> {RoomTypes[selectedRoom.roomType]}
         </Typography>

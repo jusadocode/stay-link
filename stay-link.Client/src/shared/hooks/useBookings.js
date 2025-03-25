@@ -14,12 +14,12 @@ const {customFetch} = useAuthentication();
         return response.json();
     };
 
-    const fetchHotel = async (hotelId) => {
-        const response = await customFetch(API_HOTELS_URL+`/${hotelId}`, {
-            method: 'GET'
-        });
-        return response.json();
-    };
+    // const fetchHotel = async (hotelId) => {
+    //     const response = await customFetch(API_HOTELS_URL+`/${hotelId}`, {
+    //         method: 'GET'
+    //     });
+    //     return response.json();
+    // };
 
     const fetchRoom = async (roomId) => {
         const response = await customFetch(API_ROOMS_URL+ `/${roomId}`, {
@@ -49,10 +49,10 @@ const {customFetch} = useAuthentication();
         return response;
     };
 
-    async function fetchHotels() {
-        const response = await fetch(API_HOTELS_URL);
-        return response.json();
-    }
+    // async function fetchHotels() {
+    //     const response = await fetch(API_HOTELS_URL);
+    //     return response.json();
+    // }
     
     async function fetchHotelRooms(hotelId) {
         const response = await fetch(API_HOTELS_URL + `/${hotelId}/Rooms`);
@@ -71,10 +71,8 @@ const {customFetch} = useAuthentication();
     return {
         addBooking,
         fetchBookings,
-        fetchHotel,
         fetchRoom,
         updateRoom,
-        fetchHotels, 
         fetchHotelRooms,
         deleteBooking
     };

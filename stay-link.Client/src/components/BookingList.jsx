@@ -19,6 +19,7 @@ import useBookings from "../shared/hooks/useBookings";
 import dayjs from "dayjs";
 import { AuthContext } from "../shared/context/AuthContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import LoadingIndicator from "./LoadingIndicator";
 
 function BookingList() {
   const [bookings, setBookings] = useState();
@@ -163,13 +164,13 @@ function BookingList() {
         )
       ) : (
         <Box sx={{ mt: 4, textAlign: "center" }}>
+          <LoadingIndicator />
           <Typography>Getting booking data...</Typography>
-          <CircularProgress sx={{ mt: 2 }} />
         </Box>
       )}
 
       <Button variant="outlined" component={Link} to="/" sx={{ mt: 4 }}>
-        Go Back to Hotel List
+        Go Back to Room List
       </Button>
 
       {/* Delete Confirmation Modal */}

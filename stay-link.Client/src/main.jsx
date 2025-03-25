@@ -9,7 +9,6 @@ import Login from "./pages/Login/Login.jsx";
 import Registration from "./pages/Registration/Registration.jsx";
 import { AuthProvider } from "./shared/context/AuthContext.jsx";
 import RoomEditPage from "./pages/RoomEditPage/RoomEditPage.jsx";
-import VisualsPage from "./components/VisualsPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,10 +31,6 @@ const router = createBrowserRouter([
   {
     path: "rooms/edit/:id",
     element: <RoomEditPage />,
-  },
-  {
-    path: "visuals",
-    element: <VisualsPage />,
   },
 ]);
 
