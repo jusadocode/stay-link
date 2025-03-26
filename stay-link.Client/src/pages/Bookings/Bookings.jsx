@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import "../App.css";
 import {
   Box,
   Button,
   Typography,
   Container,
   Paper,
-  CircularProgress,
   Grid,
   Dialog,
   DialogTitle,
@@ -14,15 +12,15 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import RoomTypes from "../data/roomTypes";
-import useBookings from "../shared/hooks/useBookings";
+import RoomTypes from "../../data/roomTypes";
+import useBookings from "../../shared/hooks/useBookings";
 import dayjs from "dayjs";
-import { AuthContext } from "../shared/context/AuthContext";
+import { AuthContext } from "../../shared/context/AuthContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import LoadingIndicator from "./LoadingIndicator";
+import LoadingIndicator from "../../shared/components/LoadingIndicator";
 
-function BookingList() {
-  const [bookings, setBookings] = useState();
+function BookingsPage() {
+  const [bookings, setBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -203,8 +201,8 @@ function BookingList() {
           const hotel = await fetchHotel(booking.hotelId);
           const room = await fetchRoom(booking.roomId);
 
-          const checkInDate = new dayjs(booking.checkInDate);
-          const checkOutDate = new dayjs(booking.checkOutDate);
+          const checkInDate = dayjs(booking.checkInDate);
+          const checkOutDate = dayjs(booking.checkOutDate);
 
           const numberOfNights = checkOutDate.diff(checkInDate, "day") + 1;
           const cleaningFee = 20;
@@ -230,4 +228,4 @@ function BookingList() {
   }
 }
 
-export default BookingList;
+export default BookingsPage;

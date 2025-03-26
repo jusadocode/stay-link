@@ -1,9 +1,7 @@
-/* eslint-disable react/prop-types */
 import React, { useContext, useState } from "react";
 import {
   Container,
   Table,
-  CircularProgress,
   TableBody,
   TableCell,
   TableContainer,
@@ -16,13 +14,13 @@ import {
   TextField,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import BookingDialog from "./BookingDialog";
-import RoomTypes from "../data/roomTypes";
-import { AuthContext } from "../shared/context/AuthContext";
+import BookingDialog from "../../../components/BookingDialog";
+import RoomTypes from "../../../data/roomTypes";
+import { AuthContext } from "../../../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { LOGIN_PATH } from "../shared/constants/routes";
+import { LOGIN_PATH } from "../../../shared/constants/routes";
 import { Collapse } from "@mui/material";
-import LoadingIndicator from "./LoadingIndicator";
+import LoadingIndicator from "../../../shared/components/LoadingIndicator";
 
 function RoomList({ rooms }) {
   const [searchInput, setSearchInput] = useState("");
