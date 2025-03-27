@@ -1,115 +1,190 @@
 import React, { useState } from "react";
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
+  arrayMove,
+  sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
   Box,
   Typography,
   Paper,
-  TextField,
-  Grid,
   List,
   ListItem,
   ListItemText,
   ListItemButton,
+  Card,
+  Button,
+  IconButton,
+  TextField,
 } from "@mui/material";
-import { format } from "date-fns";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import CloseIcon from "@mui/icons-material/Close";
+import { Center } from "@react-three/drei";
 
 const initialPreferences = [
   { id: "1", label: "Balcony" },
   { id: "2", label: "Sea View" },
   { id: "3", label: "Air Conditioning" },
   { id: "4", label: "Minibar" },
+  { id: "5", label: "Yakuzi" },
+  { id: "6", label: "City View" },
 ];
 
 function SearchSection() {
-  const [preferences, setPreferences] = useState(initialPreferences);
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState(1);
-
+  const [preferences] = useState(initialPreferences);
+  const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [bookingDates, setBookingDates] = useState([dayjs(), dayjs()]);
+  const [guests, setGuests] = useState(2);
+  const [rooms, setRooms] = useState(1);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
+  const handlePreferenceToggle = (pref) => {
+    const isSelected = selectedPreferences.find((p) => p.id === pref.id);
+    if (isSelected) {
+      setSelectedPreferences((prev) => prev.filter((p) => p.id !== pref.id));
+    } else {
+      setSelectedPreferences((prev) => [...prev, pref]);
+    }
+  };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-    if (active.id !== over?.id) {
-      const oldIndex = preferences.findIndex((item) => item.id === active.id);
-      const newIndex = preferences.findIndex((item) => item.id === over?.id);
+    const oldIndex = selectedPreferences.findIndex((p) => p.id === active.id);
+    const newIndex = selectedPreferences.findIndex((p) => p.id === over.id);
 
-      setPreferences((items) => arrayMove(items, oldIndex, newIndex));
+    if (oldIndex !== -1 && newIndex !== -1) {
+      setSelectedPreferences((items) => arrayMove(items, oldIndex, newIndex));
     }
   };
 
   return (
-    <Box p={3} component={Paper}>
-      <Typography variant="h6" gutterBottom>
-        Search Preferences
-      </Typography>
-
-      <Box sx={{ mt: 2, mb: 1 }}>
-        <Typography sx={{ my: 2 }}>
-          When should we prepare your room? Select your dates:
-        </Typography>
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <Box
+      p={3}
+      component={Paper}
+      sx={{ display: "flex", justifyContent: "space-between", gap: "2rem" }}
+    >
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            justifyContent: "space-evenly",
+          }}
+        >
           <DateRangePicker
             localeText={{ start: "Check-in", end: "Check-out" }}
             value={bookingDates}
             onChange={(newValue) => setBookingDates(newValue)}
           />
-        </LocalizationProvider>
-      </Box>
 
-      <Typography variant="subtitle1" gutterBottom>
-        Drag to prioritize features:
-      </Typography>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <TextField
+              label="Guests"
+              type="number"
+              size="small"
+              value={guests}
+              onChange={(e) => setGuests(Math.max(1, Number(e.target.value)))}
+              InputProps={{ inputProps: { min: 1 } }}
+            />
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
+            <TextField
+              label="Rooms"
+              type="number"
+              size="small"
+              value={rooms}
+              onChange={(e) => setRooms(Math.max(1, Number(e.target.value)))}
+              InputProps={{ inputProps: { min: 1 } }}
+            />
+          </Box>
+        </Box>
+      </LocalizationProvider>
+
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", gap: "2rem" }}
       >
-        <SortableContext
-          items={preferences}
-          strategy={verticalListSortingStrategy}
-        >
-          <List component="div">
-            {preferences.map((pref) => (
-              <SortableItem key={pref.id} id={pref.id} label={pref.label} />
-            ))}
+        <Box>
+          <Typography variant="subtitle1">Available Preferences</Typography>
+
+          <List
+            sx={{
+              display: "grid",
+              alignItems: "center",
+              gap: "0.2rem",
+            }}
+          >
+            {preferences
+              .filter((p) => !selectedPreferences.find((s) => s.id === p.id))
+              .map((pref) => (
+                <Button
+                  key={pref.id}
+                  onClick={() => handlePreferenceToggle(pref)}
+                  size="small"
+                  variant="outlined"
+                >
+                  {pref.label}
+                </Button>
+              ))}
           </List>
-        </SortableContext>
-      </DndContext>
+        </Box>
+
+        <Box>
+          <Typography variant="subtitle1">Selected Preferences</Typography>
+
+          <DndContext
+            sensors={sensors}
+            onDragEnd={handleDragEnd}
+            collisionDetection={closestCenter}
+          >
+            <SortableContext
+              items={selectedPreferences.map((p) => p.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <List>
+                {selectedPreferences.map((pref) => (
+                  <SortableItem
+                    key={pref.id}
+                    id={pref.id}
+                    label={pref.label}
+                    onRemove={() => handlePreferenceToggle(pref)}
+                  />
+                ))}
+              </List>
+            </SortableContext>
+          </DndContext>
+        </Box>
+      </Box>
     </Box>
   );
 }
 
-function SortableItem({ id, label }) {
+function SortableItem({ id, label, onRemove }) {
   const {
     attributes,
     listeners,
@@ -125,21 +200,46 @@ function SortableItem({ id, label }) {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#e0f7fa",
     marginBottom: "8px",
+    borderRadius: "8px",
+    cursor: "pointer",
   };
 
   return (
     <ListItem
       ref={setNodeRef}
       style={style}
+      disablePadding
+      sx={{
+        "&:hover": {
+          backgroundColor: "#FFD95F",
+        },
+        "&:hover .remove-btn": {
+          opacity: 1,
+        },
+      }}
+      secondaryAction={
+        <IconButton
+          edge="end"
+          aria-label="delete"
+          className="remove-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onRemove();
+          }}
+          sx={{ opacity: 0, transition: "opacity 0.2s" }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      }
       {...attributes}
       {...listeners}
-      disablePadding
     >
-      <ListItemButton>
-        <ListItemText primary={label} />
-      </ListItemButton>
+      <Button fullWidth variant="contained" disableElevation>
+        {label}
+      </Button>
     </ListItem>
   );
 }
