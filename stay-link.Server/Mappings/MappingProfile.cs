@@ -11,12 +11,16 @@ namespace stay_link.Server.Mappings
         public MappingProfile()
         {
             CreateMap<Room, RoomDTO>();
-
             CreateMap<CreateRoomDTO, Room>();
-
             CreateMap<RoomDTO, Room>();
-
             CreateMap<UpdateRoomDTO, Room>();
+            CreateMap<RoomFeatureDTO, RoomFeature>();
+            CreateMap<RoomFeature, RoomFeatureDTO>();
+            CreateMap<RoomFeature, RoomFeatureDetailsDTO>()
+                .ForMember(dest => dest.BookingCount,
+                    opt => opt.MapFrom(src => src.Bookings != null ? src.Bookings.Count : 0))
+                .ForMember(dest => dest.RoomCount,
+                    opt => opt.MapFrom(src => src.Rooms != null ? src.Rooms.Count : 0));
         }
     }
 }

@@ -10,9 +10,9 @@ using System.Security.Claims;
 [Route("api/[controller]")]
 public class BookingsController : ControllerBase
 {
-    private readonly IBookingService _bookingService;
+    private readonly BookingService _bookingService;
 
-    public BookingsController(IBookingService bookingService)
+    public BookingsController(BookingService bookingService)
     {
         _bookingService = bookingService;
     }

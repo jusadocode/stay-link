@@ -22,15 +22,7 @@ namespace stay_link.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            foreach (var entity in modelBuilder.Model.GetEntityTypes())
-            {
-                entity.SetTableName(entity.GetTableName().ToLower());
-
-                foreach (var property in entity.GetProperties())
-                {
-                    property.SetColumnName(property.GetColumnName().ToLower());
-                }
-            }
+            
 
             base.OnModelCreating(modelBuilder);
 
@@ -48,13 +40,13 @@ namespace stay_link.Server.Data
             .HasConversion<string>();
 
             modelBuilder.Entity<Room>()
-        .HasMany(r => r.Features)
-        .WithMany(rf => rf.Rooms)
-        .UsingEntity<Dictionary<string, object>>(
-            "RoomRoomFeature", // Name of the join table
-            j => j.HasOne<RoomFeature>().WithMany().HasForeignKey("RoomFeatureID"),
-            j => j.HasOne<Room>().WithMany().HasForeignKey("RoomID")
-        );
+                .HasMany(r => r.Features)
+                .WithMany(rf => rf.Rooms)
+                .UsingEntity<Dictionary<string, object>>(
+                    "RoomRoomFeature", // Name of the join table
+                    j => j.HasOne<RoomFeature>().WithMany().HasForeignKey("RoomFeatureID"),
+                    j => j.HasOne<Room>().WithMany().HasForeignKey("RoomID")
+                );
 
             // Configure many-to-many relationship between Booking and RoomFeature
             modelBuilder.Entity<Booking>()
@@ -65,6 +57,17 @@ namespace stay_link.Server.Data
                     j => j.HasOne<RoomFeature>().WithMany().HasForeignKey("RoomFeatureID"),
                     j => j.HasOne<Booking>().WithMany().HasForeignKey("BookingID")
                 );
+
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                entity.SetTableName(entity.GetTableName().ToLower());
+
+                foreach (var property in entity.GetProperties())
+                {
+                    property.SetColumnName(property.GetColumnName().ToLower());
+                }
+            }
+
 
         }
 

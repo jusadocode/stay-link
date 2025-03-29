@@ -7,7 +7,7 @@ using stay_link.Server.Models;
 
 namespace stay_link.Server.Services
 {
-    public class RoomService : IRoomService
+    public class RoomService
     {
         private readonly BookingContext _context;
         private readonly IMapper _mapper;
@@ -21,6 +21,12 @@ namespace stay_link.Server.Services
         public async Task<IEnumerable<RoomDTO>> GetRooms()
         {
             var rooms = await _context.Rooms.ToListAsync();
+            return _mapper.Map<IEnumerable<RoomDTO>>(rooms);
+        }
+
+        public async Task<IEnumerable<RoomDTO>> GetRooms(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
+        {
+            var rooms = await FindMatchingRoomsByPreference(checkIn, checkOut, guestCount, preferences);
             return _mapper.Map<IEnumerable<RoomDTO>>(rooms);
         }
 
@@ -76,7 +82,26 @@ namespace stay_link.Server.Services
             return await _context.Rooms.AnyAsync(e => e.ID == id);
         }
 
-        public async Task <IEnumerable<Room?>> FindMatchingRoomsByPreference(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
+        public async Task<List<RoomFeature>> GetRoomFeaturesByIds(List<int> preferenceIds)
+        {
+            var preferences = await _context.RoomFeatures
+                                  .Where(f => preferenceIds.Contains(f.Id))
+                                  .ToListAsync();
+            return preferences;
+        }
+
+        public async Task<List<RoomFeatureDetailsDTO>> GetAllFeatures()
+        {
+            var features = await _context.RoomFeatures
+                .Include(f => f.Bookings)
+                .Include(f => f.Rooms)
+                .ToListAsync();
+
+            return _mapper.Map<List<RoomFeatureDetailsDTO>>(features);
+
+        }
+
+        public async Task <List<Room?>> FindMatchingRoomsByPreference(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
         {
             var availableRooms = await _context.Rooms
                 .Where(r => !r.Bookings.Any(b => b.CheckInDate < checkOut && checkIn < b.CheckOutDate))

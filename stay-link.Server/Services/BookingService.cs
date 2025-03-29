@@ -5,7 +5,7 @@ using stay_link.Server.Models;
 
 namespace stay_link.Server.Services
 {
-    public class BookingService : IBookingService
+    public class BookingService 
     {
         private readonly BookingContext _context;
 

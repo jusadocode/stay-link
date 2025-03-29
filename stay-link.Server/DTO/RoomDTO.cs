@@ -10,6 +10,6 @@ namespace stay_link.Server.DTO
         public decimal Price { get; set; }
         public int HotelID { get; set; }
         public int MaxOccupancy { get; set; }
-        public List<RoomFeature> Features { get; set; }
+        public List<RoomFeatureDTO> Features { get; set; }
     }
 }

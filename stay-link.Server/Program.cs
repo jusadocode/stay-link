@@ -77,7 +77,7 @@ builder.Services.AddHostedService<RoomUsageBackgroundService>();
 builder.Services.AddTransient<JwtTokenService>();
 builder.Services.AddTransient<SessionService>();
 builder.Services.AddScoped<AuthSeeder>();
-builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<BookingService>();
 builder.Services.AddScoped<RoomService>();
 
 

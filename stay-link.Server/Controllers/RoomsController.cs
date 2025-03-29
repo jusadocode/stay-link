@@ -13,9 +13,9 @@ namespace stay_link.Server.Controllers
     [Route("api/[controller]")]
     public class RoomsController : ControllerBase
     {
-        private readonly IRoomService _roomService;
+        private readonly RoomService _roomService;
 
-        public RoomsController(IRoomService roomService)
+        public RoomsController(RoomService roomService)
         {
             _roomService = roomService;
         }
@@ -27,6 +27,28 @@ namespace stay_link.Server.Controllers
         {
             var rooms = await _roomService.GetRooms();
             return Ok(rooms); // Wrap the result in Ok()
+        }
+
+        [HttpGet("filter")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Room>))]
+        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsByFilters(
+            [FromQuery] DateOnly checkIn,
+            [FromQuery] DateOnly checkOut,
+            [FromQuery] int guestCount,
+            [FromQuery] List<int> preferenceIds)
+        {
+
+            var preferences = await _roomService.GetRoomFeaturesByIds(preferenceIds);
+            var rooms = await _roomService.GetRooms(checkIn, checkOut, guestCount, preferences);
+            return Ok(rooms); // Wrap the result in Ok()
+        }
+
+        [HttpGet("features")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomFeatureDetailsDTO>))]
+        public async Task<ActionResult<IEnumerable<RoomFeatureDetailsDTO>>> GetRoomsFeatures()
+        {
+            var features = await _roomService.GetAllFeatures();
+            return Ok(features); // Wrap the result in Ok()
         }
 
         // GET: api/Rooms/5

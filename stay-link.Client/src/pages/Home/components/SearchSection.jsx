@@ -33,7 +33,8 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import CloseIcon from "@mui/icons-material/Close";
-import { Center } from "@react-three/drei";
+import SearchIcon from "@mui/icons-material/Search";
+import { Bed } from "@mui/icons-material";
 
 const initialPreferences = [
   { id: "1", label: "Balcony" },
@@ -84,101 +85,105 @@ function SearchSection() {
   };
 
   return (
-    <Box
-      p={3}
-      component={Paper}
-      sx={{ display: "flex", justifyContent: "space-between", gap: "2rem" }}
-    >
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            justifyContent: "space-evenly",
-          }}
-        >
-          <DateRangePicker
-            localeText={{ start: "Check-in", end: "Check-out" }}
-            value={bookingDates}
-            onChange={(newValue) => setBookingDates(newValue)}
-          />
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <TextField
-              label="Guests"
-              type="number"
-              size="small"
-              value={guests}
-              onChange={(e) => setGuests(Math.max(1, Number(e.target.value)))}
-              InputProps={{ inputProps: { min: 1 } }}
-            />
-
-            <TextField
-              label="Rooms"
-              type="number"
-              size="small"
-              value={rooms}
-              onChange={(e) => setRooms(Math.max(1, Number(e.target.value)))}
-              InputProps={{ inputProps: { min: 1 } }}
-            />
-          </Box>
-        </Box>
-      </LocalizationProvider>
-
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", gap: "2rem" }}
-      >
-        <Box>
-          <Typography variant="subtitle1">Available Preferences</Typography>
-
-          <List
+    <Box p={3} component={Paper}>
+      <Box sx={{ display: "flex", gap: "2rem" }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Box
             sx={{
-              display: "grid",
-              alignItems: "center",
-              gap: "0.2rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              justifyContent: "space-evenly",
             }}
           >
-            {preferences
-              .filter((p) => !selectedPreferences.find((s) => s.id === p.id))
-              .map((pref) => (
-                <Button
-                  key={pref.id}
-                  onClick={() => handlePreferenceToggle(pref)}
-                  size="small"
-                  variant="outlined"
-                >
-                  {pref.label}
-                </Button>
-              ))}
-          </List>
-        </Box>
+            <DateRangePicker
+              localeText={{ start: "Check-in", end: "Check-out" }}
+              value={bookingDates}
+              onChange={(newValue) => setBookingDates(newValue)}
+            />
 
-        <Box>
-          <Typography variant="subtitle1">Selected Preferences</Typography>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <TextField
+                label="Guests"
+                type="number"
+                size="small"
+                value={guests}
+                onChange={(e) => setGuests(Math.max(1, Number(e.target.value)))}
+                InputProps={{ inputProps: { min: 1 } }}
+              />
 
-          <DndContext
-            sensors={sensors}
-            onDragEnd={handleDragEnd}
-            collisionDetection={closestCenter}
-          >
-            <SortableContext
-              items={selectedPreferences.map((p) => p.id)}
-              strategy={verticalListSortingStrategy}
+              <TextField
+                label="Rooms"
+                type="number"
+                size="small"
+                value={rooms}
+                onChange={(e) => setRooms(Math.max(1, Number(e.target.value)))}
+                InputProps={{ inputProps: { min: 1 } }}
+              />
+            </Box>
+          </Box>
+        </LocalizationProvider>
+
+        <Box
+          sx={{ display: "flex", justifyContent: "space-between", gap: "2rem" }}
+        >
+          <Box>
+            <Typography variant="subtitle1">Available Preferences</Typography>
+            <List
+              sx={{
+                display: "grid",
+                alignItems: "center",
+                gap: "0.2rem",
+              }}
             >
-              <List>
-                {selectedPreferences.map((pref) => (
-                  <SortableItem
+              {preferences
+                .filter((p) => !selectedPreferences.find((s) => s.id === p.id))
+                .map((pref) => (
+                  <Button
                     key={pref.id}
-                    id={pref.id}
-                    label={pref.label}
-                    onRemove={() => handlePreferenceToggle(pref)}
-                  />
+                    onClick={() => handlePreferenceToggle(pref)}
+                    size="small"
+                    variant="outlined"
+                  >
+                    {pref.label}
+                  </Button>
                 ))}
-              </List>
-            </SortableContext>
-          </DndContext>
+            </List>
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle1">Selected Preferences</Typography>
+
+            <DndContext
+              sensors={sensors}
+              onDragEnd={handleDragEnd}
+              collisionDetection={closestCenter}
+            >
+              <SortableContext
+                items={selectedPreferences.map((p) => p.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <List>
+                  {selectedPreferences.map((pref) => (
+                    <SortableItem
+                      key={pref.id}
+                      id={pref.id}
+                      label={pref.label}
+                      onRemove={() => handlePreferenceToggle(pref)}
+                    />
+                  ))}
+                </List>
+              </SortableContext>
+            </DndContext>
+          </Box>
         </Box>
+      </Box>
+
+      <Box display={"flex"}>
+        <Button size="small">
+          <SearchIcon></SearchIcon>
+          Find your place
+        </Button>
       </Box>
     </Box>
   );

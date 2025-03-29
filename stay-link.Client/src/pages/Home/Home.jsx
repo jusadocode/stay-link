@@ -115,7 +115,9 @@ const HomePage = () => {
         We provide a variety of options for all kinds of customer needs.
       </Typography>
 
-      <SearchSection />
+      <Container>
+        <SearchSection />
+      </Container>
 
       <Container sx={{ minWidth: "50vw", minHeight: "80vh" }}>
         <RoomList rooms={rooms} />
