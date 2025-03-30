@@ -2,65 +2,33 @@ import { Box, Button, Container, Link, Typography } from "@mui/material";
 import RoomList from "./components/RoomList";
 import { useAuthentication } from "../../shared/hooks/useAuthentication";
 import useBookings from "../../shared/hooks/useBookings";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../shared/context/AuthContext";
 import { Footer } from "../../components/Footer";
 import SearchSection from "./components/SearchSection";
+import useRooms from "../../shared/hooks/useRooms";
 
 const HomePage = () => {
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
-  const { fetchRooms } = useBookings();
+  const { fetchRooms } = useRooms();
 
   const { logout } = useAuthentication();
 
-  const [rooms, setRooms] = useState([
-    {
-      id: 1,
-      title: "Room 101",
-      roomType: 0,
-      maxOccupancy: 2,
-      price: 80,
-      summary: "Cozy standard room with a balcony.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      hotel: {
-        name: "Seaside Inn",
-        address: "123 Ocean Drive",
-      },
-    },
-    {
-      id: 2,
-      title: "Room 202",
-      roomType: 1,
-      maxOccupancy: 3,
-      price: 120,
-      summary: "Spacious deluxe room with sea view.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      hotel: {
-        name: "Seaside Inn",
-        address: "123 Ocean Drive",
-      },
-    },
-    {
-      id: 3,
-      title: "Room 303",
-      roomType: 2,
-      maxOccupancy: 4,
-      price: 200,
-      summary: "Luxurious suite with private terrace.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      hotel: {
-        name: "Mountain Retreat",
-        address: "456 Hilltop Avenue",
-      },
-    },
-  ]);
+  const [rooms, setRooms] = useState([]);
+
+  const getInitialRooms = async () => {
+    const initialRooms = await fetchRooms();
+    setRooms(initialRooms);
+  };
 
   const handleLogout = async () => {
     await logout();
   };
+
+  useEffect(() => {
+    getInitialRooms();
+  }, []);
+
   return (
     <Container
       maxWidth={false}
@@ -116,7 +84,7 @@ const HomePage = () => {
       </Typography>
 
       <Container>
-        <SearchSection />
+        <SearchSection setRooms={setRooms} />
       </Container>
 
       <Container sx={{ minWidth: "50vw", minHeight: "80vh" }}>

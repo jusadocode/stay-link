@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SortableContext,
   useSortable,
@@ -34,23 +34,18 @@ import {
 } from "@dnd-kit/core";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-import { Bed } from "@mui/icons-material";
+import useRooms from "../../../shared/hooks/useRooms";
 
-const initialPreferences = [
-  { id: "1", label: "Balcony" },
-  { id: "2", label: "Sea View" },
-  { id: "3", label: "Air Conditioning" },
-  { id: "4", label: "Minibar" },
-  { id: "5", label: "Yakuzi" },
-  { id: "6", label: "City View" },
-];
+const initialPreferences = [];
 
-function SearchSection() {
-  const [preferences] = useState(initialPreferences);
+function SearchSection({ setRooms }) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const [features, setFeatures] = useState([]);
   const [bookingDates, setBookingDates] = useState([dayjs(), dayjs()]);
-  const [guests, setGuests] = useState(2);
-  const [rooms, setRooms] = useState(1);
+  const [guestCount, setGuestCount] = useState(2);
+  const [roomCount, setRoomCount] = useState(1);
+
+  const { searchRooms, fetchFeatures } = useRooms();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -84,6 +79,32 @@ function SearchSection() {
     }
   };
 
+  const handleSearchClick = async () => {
+    try {
+      const rooms = await searchRooms({
+        checkIn: bookingDates[0],
+        checkOut: bookingDates[1],
+        guestCount: guestCount,
+        preferenceIds: selectedPreferences.map((p) => parseInt(p.id)),
+      });
+
+      setRooms(rooms);
+
+      console.log("Filtered rooms:", rooms);
+    } catch (err) {
+      console.error("Search error:", err);
+    }
+  };
+
+  const getInitialFeatures = async () => {
+    const initialFeatures = await fetchFeatures();
+    setFeatures(initialFeatures);
+  };
+
+  useEffect(() => {
+    getInitialFeatures();
+  }, []);
+
   return (
     <Box p={3} component={Paper}>
       <Box sx={{ display: "flex", gap: "2rem" }}>
@@ -107,8 +128,10 @@ function SearchSection() {
                 label="Guests"
                 type="number"
                 size="small"
-                value={guests}
-                onChange={(e) => setGuests(Math.max(1, Number(e.target.value)))}
+                value={guestCount}
+                onChange={(e) =>
+                  setGuestCount(Math.max(1, Number(e.target.value)))
+                }
                 InputProps={{ inputProps: { min: 1 } }}
               />
 
@@ -116,8 +139,10 @@ function SearchSection() {
                 label="Rooms"
                 type="number"
                 size="small"
-                value={rooms}
-                onChange={(e) => setRooms(Math.max(1, Number(e.target.value)))}
+                value={roomCount}
+                onChange={(e) =>
+                  setRoomCount(Math.max(1, Number(e.target.value)))
+                }
                 InputProps={{ inputProps: { min: 1 } }}
               />
             </Box>
@@ -136,7 +161,7 @@ function SearchSection() {
                 gap: "0.2rem",
               }}
             >
-              {preferences
+              {features
                 .filter((p) => !selectedPreferences.find((s) => s.id === p.id))
                 .map((pref) => (
                   <Button
@@ -145,7 +170,7 @@ function SearchSection() {
                     size="small"
                     variant="outlined"
                   >
-                    {pref.label}
+                    {pref.name}
                   </Button>
                 ))}
             </List>
@@ -168,7 +193,7 @@ function SearchSection() {
                     <SortableItem
                       key={pref.id}
                       id={pref.id}
-                      label={pref.label}
+                      label={pref.name}
                       onRemove={() => handlePreferenceToggle(pref)}
                     />
                   ))}
@@ -180,7 +205,7 @@ function SearchSection() {
       </Box>
 
       <Box display={"flex"}>
-        <Button size="small">
+        <Button size="small" onClick={handleSearchClick}>
           <SearchIcon></SearchIcon>
           Find your place
         </Button>

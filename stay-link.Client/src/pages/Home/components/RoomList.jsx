@@ -31,7 +31,7 @@ function RoomList({ rooms }) {
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
 
   const filteredRooms = rooms.filter((room) =>
-    room.hotel?.address?.toLowerCase().includes(searchInput.toLowerCase())
+    room.title.toLowerCase().includes(searchInput.toLowerCase())
   );
 
   const handleBookClick = (room) => {
@@ -83,14 +83,12 @@ function RoomList({ rooms }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRooms.map((room) => (
-                <React.Fragment key={room.id}>
+              {filteredRooms.map((room, index) => (
+                <React.Fragment key={index}>
                   <TableRow
                     hover
                     onClick={() =>
-                      setExpandedRoomId(
-                        expandedRoomId === room.id ? null : room.id
-                      )
+                      setExpandedRoomId(expandedRoomId === index ? null : index)
                     }
                     style={{ cursor: "pointer" }}
                   >
@@ -122,7 +120,7 @@ function RoomList({ rooms }) {
                       sx={{ paddingBottom: 0, paddingTop: 0 }}
                     >
                       <Collapse
-                        in={expandedRoomId === room.id}
+                        in={expandedRoomId === index}
                         timeout="auto"
                         unmountOnExit
                       >

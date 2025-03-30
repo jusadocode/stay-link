@@ -1,6 +1,6 @@
 
 import { useAuthentication } from "./useAuthentication";
-import { API_BOOKINGS_URL, API_HOTELS_URL, API_ROOMS_URL } from "../constants/apiConstants";
+import { API_BOOKINGS_URL, API_HOTELS_URL, API_ROOMS_FEATURES_URL, API_ROOMS_SEARCH_URL, API_ROOMS_URL } from "../constants/apiConstants";
 
 const useBookings = () => {
 
@@ -20,6 +20,41 @@ const {customFetch} = useAuthentication();
     //     });
     //     return response.json();
     // };
+
+    const fetchRooms = async () => {
+        const response = await customFetch(API_ROOMS_URL, {
+            method: 'GET'
+        });
+        return await response.json();
+    };
+
+
+    const fetchFeatures = async () => {
+        const response = await customFetch(API_ROOMS_FEATURES_URL, {
+            method: 'GET'
+        });
+        return await response.json();
+    };
+
+    const searchRooms = async ({ checkIn, checkOut, guestCount, preferenceIds }) => {
+        const params = new URLSearchParams({
+          checkIn: checkIn.format("YYYY-MM-DD"),
+          checkOut: checkOut.format("YYYY-MM-DD"),
+          guestCount: guestCount.toString(),
+        });
+      
+        preferenceIds.forEach((id) => params.append("preferenceIds", id.toString()));
+      
+        const response = await customFetch(`${API_ROOMS_URL}/filter?${params.toString()}`, {
+          method: 'GET',
+        });
+      
+        if (!response.ok) {
+          throw new Error("Failed to fetch rooms");
+        }
+      
+        return await response.json();
+      };
 
     const fetchRoom = async (roomId) => {
         const response = await customFetch(API_ROOMS_URL+ `/${roomId}`, {
@@ -71,9 +106,12 @@ const {customFetch} = useAuthentication();
     return {
         addBooking,
         fetchBookings,
+        fetchRooms,
         fetchRoom,
+        searchRooms,
         updateRoom,
         fetchHotelRooms,
+        fetchFeatures,
         deleteBooking
     };
 };

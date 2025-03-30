@@ -14,19 +14,6 @@ import { Login } from "@mui/icons-material";
 import Registration from "./pages/Registration/Registration";
 
 function App() {
-  const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
-  const { fetchRooms } = useBookings();
-
-  const { logout } = useAuthentication();
-
-  const handleLogout = async () => {
-    await logout();
-  };
-
-  useEffect(() => {
-    // populateRoomData();
-  }, []);
-
   return (
     <div style={{ flex: 1 }}>
       <Header />
