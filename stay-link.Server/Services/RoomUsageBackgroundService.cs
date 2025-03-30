@@ -22,7 +22,7 @@
                 }
 
                 // Wait for 24 hours before the next update
-                await Task.Delay(TimeSpan.FromSeconds(24), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
             }
         }
     }

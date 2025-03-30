@@ -265,7 +265,7 @@ namespace stay_link.Server.Services
             foreach (var roomUsage in roomUsages)
             {
                 // Example: Increase wear slightly over time
-                roomUsage.GeneralWear = Math.Round(roomUsage.GeneralWear + 0.05, 2);
+                roomUsage.GeneralWear = Math.Round(roomUsage.GeneralWear + 0.01, 2);
 
                 // Check if maintenance or cleaning is needed
                 if (roomUsage.GeneralWear >= BookingConstants.MaintenanceThreshold)

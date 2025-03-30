@@ -35,8 +35,10 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddDbContext<BookingContext>(options =>
-    options.UseLazyLoadingProxies()
-        .UseNpgsql(Environment.GetEnvironmentVariable("Default_Connection")));
+    options
+        .UseNpgsql(Environment.GetEnvironmentVariable("Default_Connection"))
+        .UseLazyLoadingProxies());
+
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

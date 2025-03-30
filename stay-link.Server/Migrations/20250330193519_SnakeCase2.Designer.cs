@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using stay_link.Server.Data;
@@ -11,9 +12,11 @@ using stay_link.Server.Data;
 namespace stay_link.Server.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    partial class BookingContextModelSnapshot : ModelSnapshot
+    [Migration("20250330193519_SnakeCase2")]
+    partial class SnakeCase2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +43,7 @@ namespace stay_link.Server.Migrations
                     b.HasIndex("BookingsID")
                         .HasDatabaseName("i_x_booking_booking_feature_bookings_i_d");
 
-                    b.ToTable("booking_booking_feature", (string)null);
+                    b.ToTable("booking_booking_feature");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -216,7 +219,7 @@ namespace stay_link.Server.Migrations
                     b.HasIndex("room_feature_id")
                         .HasDatabaseName("i_x_booking_room_features_room_feature_id");
 
-                    b.ToTable("booking_room_features", (string)null);
+                    b.ToTable("booking_room_features");
                 });
 
             modelBuilder.Entity("room_room_features", b =>
@@ -234,7 +237,7 @@ namespace stay_link.Server.Migrations
                     b.HasIndex("room_id")
                         .HasDatabaseName("i_x_room_room_features_room_id");
 
-                    b.ToTable("room_room_features", (string)null);
+                    b.ToTable("room_room_features");
                 });
 
             modelBuilder.Entity("stay_link.Server.Auth.Model.BookingUser", b =>
@@ -350,7 +353,7 @@ namespace stay_link.Server.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("i_x_sessions_user_id");
 
-                    b.ToTable("sessions", (string)null);
+                    b.ToTable("sessions");
                 });
 
             modelBuilder.Entity("stay_link.Server.Models.Booking", b =>
@@ -412,7 +415,7 @@ namespace stay_link.Server.Migrations
                     b.HasIndex("RoomId")
                         .HasDatabaseName("i_x_bookings_room_id");
 
-                    b.ToTable("bookings", (string)null);
+                    b.ToTable("bookings");
                 });
 
             modelBuilder.Entity("stay_link.Server.Models.BookingFeature", b =>
@@ -440,7 +443,7 @@ namespace stay_link.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("booking_feature", (string)null);
+                    b.ToTable("booking_feature");
                 });
 
             modelBuilder.Entity("stay_link.Server.Models.Hotel", b =>
@@ -471,7 +474,7 @@ namespace stay_link.Server.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("hotels", (string)null);
+                    b.ToTable("hotels");
                 });
 
             modelBuilder.Entity("stay_link.Server.Models.Room", b =>
@@ -520,7 +523,7 @@ namespace stay_link.Server.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("rooms", (string)null);
+                    b.ToTable("rooms");
                 });
 
             modelBuilder.Entity("stay_link.Server.Models.RoomFeature", b =>
@@ -547,7 +550,7 @@ namespace stay_link.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("room_features", (string)null);
+                    b.ToTable("room_features");
                 });
 
             modelBuilder.Entity("stay_link.Server.Models.RoomUsage", b =>
@@ -586,7 +589,7 @@ namespace stay_link.Server.Migrations
                         .IsUnique()
                         .HasDatabaseName("i_x_room_usages_room_i_d");
 
-                    b.ToTable("room_usages", (string)null);
+                    b.ToTable("room_usages");
                 });
 
             modelBuilder.Entity("BookingBookingFeature", b =>

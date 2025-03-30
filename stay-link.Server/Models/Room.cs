@@ -10,6 +10,7 @@ namespace stay_link.Server.Models
 
         [StringLength(500, ErrorMessage = "Summary cannot exceed 500 characters and must be atleast 10 characters long.", MinimumLength = 10)]
         public string? Summary { get; set; }
+        public string? ImageUrl { get; set; }
 
         [Required(ErrorMessage = "Room type is required.")]
         [Range(0, 2, ErrorMessage = "Room type value is between 0 and 2.")]
