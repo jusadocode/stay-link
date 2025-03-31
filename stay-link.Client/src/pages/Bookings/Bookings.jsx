@@ -26,7 +26,7 @@ function BookingsPage() {
 
   const { userIsAdmin } = useContext(AuthContext);
 
-  const { fetchBookings, fetchHotel, fetchRoom, deleteBooking } = useBookings();
+  const { fetchBookings, fetchRoom, deleteBooking } = useBookings();
 
   useEffect(() => {
     populateBookingData();
@@ -94,8 +94,8 @@ function BookingsPage() {
                 >
                   {/* Image Section */}
                   <img
-                    src={booking.hotel.imageUrl}
-                    alt={booking.hotel.name}
+                    src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Double room"
                     style={{
                       width: "100%",
                       height: "auto",
@@ -112,9 +112,6 @@ function BookingsPage() {
                       paddingTop: 2,
                     }}
                   >
-                    <Typography variant="h6" gutterBottom>
-                      {booking.hotel.name}
-                    </Typography>
                     <Typography>
                       <strong>Check-in Date:</strong>{" "}
                       {new Date(booking.checkInDate).toLocaleDateString()}
@@ -134,10 +131,10 @@ function BookingsPage() {
                       <strong>Space:</strong>{" "}
                       {booking.room.maxOccupancy === 1
                         ? "For 1 person"
-                        : `For up to ${booking.room.maxOccupancy} people`}
+                        : `For up to ${3} people`}
                     </Typography>
                     <Typography>
-                      <strong>Total:</strong> €{booking.totalPrice}
+                      <strong>Total:</strong> €300
                     </Typography>
                   </Grid>
                   {userIsAdmin() && (
@@ -198,7 +195,6 @@ function BookingsPage() {
 
       const bookingsWithDetails = await Promise.all(
         bookingsData.map(async (booking) => {
-          const hotel = await fetchHotel(booking.hotelId);
           const room = await fetchRoom(booking.roomId);
 
           const checkInDate = dayjs(booking.checkInDate);
@@ -215,7 +211,6 @@ function BookingsPage() {
           return {
             ...booking,
             totalPrice: totalPrice,
-            hotel: hotel,
             room: room,
           };
         })

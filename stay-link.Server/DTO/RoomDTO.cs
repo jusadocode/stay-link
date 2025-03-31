@@ -4,7 +4,9 @@ namespace stay_link.Server.DTO
 {
     public class RoomDTO
     {
+        public int ID { get; set; }
         public string Title { get; set; }
+        public string ImageUrl { get; set; }
         public string Summary { get; set; }
         public RoomType RoomType { get; set; }
         public decimal Price { get; set; }

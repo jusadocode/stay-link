@@ -1,20 +1,23 @@
 import { Box, Button, Container, Link, Typography } from "@mui/material";
 import RoomList from "./components/RoomList";
 import { useAuthentication } from "../../shared/hooks/useAuthentication";
-import useBookings from "../../shared/hooks/useBookings";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../shared/context/AuthContext";
 import { Footer } from "../../components/Footer";
 import SearchSection from "./components/SearchSection";
 import useRooms from "../../shared/hooks/useRooms";
+import LoadingIndicator from "../../shared/components/LoadingIndicator";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
   const { fetchRooms } = useRooms();
+  const navigate = useNavigate();
 
   const { logout } = useAuthentication();
 
   const [rooms, setRooms] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getInitialRooms = async () => {
     const initialRooms = await fetchRooms();
@@ -49,7 +52,7 @@ const HomePage = () => {
           My Account
         </Button>
         {isLoggedIn ? (
-          <Button variant="outlined" component={Link}>
+          <Button variant="outlined" onClick={() => navigate("/bookings")}>
             {userIsAdmin() ? "All Bookings" : "My Bookings"}
           </Button>
         ) : (
@@ -63,7 +66,7 @@ const HomePage = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Github
+          Rooms
         </Button>
         <Button
           variant="outlined"
@@ -72,7 +75,7 @@ const HomePage = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Check out more
+          Hotels
         </Button>
       </Box>
 
@@ -84,12 +87,21 @@ const HomePage = () => {
       </Typography>
 
       <Container>
-        <SearchSection setRooms={setRooms} />
+        <SearchSection setRooms={setRooms} setIsLoading={setIsLoading} />
       </Container>
 
-      <Container sx={{ minWidth: "50vw", minHeight: "80vh" }}>
-        <RoomList rooms={rooms} />
-      </Container>
+      {!isLoading ? (
+        <Container sx={{ minWidth: "50vw", minHeight: "80vh" }}>
+          <RoomList rooms={rooms} />
+        </Container>
+      ) : (
+        <Box display="flex" alignItems="center">
+          <LoadingIndicator />
+          <Typography style={{ marginLeft: "10px" }}>
+            Getting rooms...
+          </Typography>
+        </Box>
+      )}
 
       <Footer
         copyright="Copyright © jusadocode"

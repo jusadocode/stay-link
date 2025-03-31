@@ -38,7 +38,7 @@ namespace stay_link.Server.Models
         public virtual List<RoomFeature> FeaturePreferences { get; set; }
         public virtual List<BookingFeature> BookingPreferences { get; set; }
 
-        public virtual List<Booking> Rooms { get; set; }
+        public virtual List<Room> Rooms { get; set; }
 
         public Booking() { }
 

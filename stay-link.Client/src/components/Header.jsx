@@ -3,10 +3,14 @@ import { useAuthentication } from "../shared/hooks/useAuthentication";
 import useBookings from "../shared/hooks/useBookings";
 import { useContext } from "react";
 import { AuthContext } from "../shared/context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { LOGIN_PATH, REGISTER_PATH } from "../shared/constants/routes";
 
 const Header = () => {
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
   const { fetchRooms } = useBookings();
+
+  const navigate = useNavigate();
 
   const { logout } = useAuthentication();
 
@@ -40,11 +44,11 @@ const Header = () => {
           <Button
             variant="outlined"
             sx={{ marginInline: "1rem" }}
-            component={Link}
+            onClick={() => navigate(LOGIN_PATH)}
           >
             Sign in
           </Button>
-          <Button variant="outlined" component={Link}>
+          <Button variant="outlined" onClick={() => navigate(REGISTER_PATH)}>
             Register
           </Button>
         </Box>

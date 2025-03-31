@@ -24,7 +24,6 @@ export default function BookingDialog({
   open,
   selectedRoom,
   handleCloseDialog,
-  expandedHotel,
 }) {
   useEffect(() => {
     if (!open) {
@@ -90,8 +89,7 @@ export default function BookingDialog({
       const newBooking = {
         checkInDate: bookingDates[0].toISOString().split("T")[0],
         checkOutDate: bookingDates[1].toISOString().split("T")[0],
-        roomId: selectedRoom.id,
-        hotelId: expandedHotel.id,
+        roomIds: [selectedRoom.id],
         breakfastRequests: breakfastRequests,
       };
 
@@ -186,7 +184,6 @@ export default function BookingDialog({
                 selectedRoom={selectedRoom}
                 bookingDates={bookingDates}
                 breakfastRequests={breakfastRequests}
-                expandedHotel={expandedHotel}
               />
             )}
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>

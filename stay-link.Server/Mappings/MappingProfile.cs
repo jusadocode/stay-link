@@ -10,6 +10,9 @@ namespace stay_link.Server.Mappings
     {
         public MappingProfile()
         {
+            CreateMap<CreateBookingDTO, Booking>();
+            CreateMap<Booking, BookingDTO>();
+            CreateMap<BookingDTO, Booking>();
             CreateMap<Room, RoomDTO>();
             CreateMap<CreateRoomDTO, Room>();
             CreateMap<RoomDTO, Room>();

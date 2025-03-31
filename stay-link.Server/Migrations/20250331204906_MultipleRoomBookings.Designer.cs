@@ -12,8 +12,8 @@ using stay_link.Server.Data;
 namespace stay_link.Server.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    [Migration("20250330193519_SnakeCase2")]
-    partial class SnakeCase2
+    [Migration("20250331204906_MultipleRoomBookings")]
+    partial class MultipleRoomBookings
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,6 +222,24 @@ namespace stay_link.Server.Migrations
                     b.ToTable("booking_room_features");
                 });
 
+            modelBuilder.Entity("booking_rooms", b =>
+                {
+                    b.Property<int>("booking_id")
+                        .HasColumnType("integer")
+                        .HasColumnName("booking_id");
+
+                    b.Property<int>("room_id")
+                        .HasColumnType("integer")
+                        .HasColumnName("room_id");
+
+                    b.HasKey("booking_id", "room_id");
+
+                    b.HasIndex("room_id")
+                        .HasDatabaseName("i_x_booking_rooms_room_id");
+
+                    b.ToTable("booking_rooms");
+                });
+
             modelBuilder.Entity("room_room_features", b =>
                 {
                     b.Property<int>("room_feature_id")
@@ -365,10 +383,6 @@ namespace stay_link.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<int?>("BookingID")
-                        .HasColumnType("integer")
-                        .HasColumnName("booking_i_d");
-
                     b.Property<int>("BreakfastRequests")
                         .HasColumnType("integer")
                         .HasColumnName("breakfast_requests");
@@ -408,12 +422,6 @@ namespace stay_link.Server.Migrations
                         .HasColumnName("user_i_d");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("BookingID")
-                        .HasDatabaseName("i_x_bookings_booking_i_d");
-
-                    b.HasIndex("RoomId")
-                        .HasDatabaseName("i_x_bookings_room_id");
 
                     b.ToTable("bookings");
                 });
@@ -683,6 +691,23 @@ namespace stay_link.Server.Migrations
                         .HasConstraintName("f_k_booking_room_features__room_features_room_feature_id");
                 });
 
+            modelBuilder.Entity("booking_rooms", b =>
+                {
+                    b.HasOne("stay_link.Server.Models.Booking", null)
+                        .WithMany()
+                        .HasForeignKey("booking_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_booking_rooms__bookings_booking_id");
+
+                    b.HasOne("stay_link.Server.Models.Room", null)
+                        .WithMany()
+                        .HasForeignKey("room_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_booking_rooms__rooms_room_id");
+                });
+
             modelBuilder.Entity("room_room_features", b =>
                 {
                     b.HasOne("stay_link.Server.Models.RoomFeature", null)
@@ -712,21 +737,6 @@ namespace stay_link.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("stay_link.Server.Models.Booking", b =>
-                {
-                    b.HasOne("stay_link.Server.Models.Booking", null)
-                        .WithMany("Rooms")
-                        .HasForeignKey("BookingID")
-                        .HasConstraintName("f_k_bookings_bookings_booking_i_d");
-
-                    b.HasOne("stay_link.Server.Models.Room", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("f_k_bookings__rooms_room_id");
-                });
-
             modelBuilder.Entity("stay_link.Server.Models.RoomUsage", b =>
                 {
                     b.HasOne("stay_link.Server.Models.Room", "Room")
@@ -739,15 +749,8 @@ namespace stay_link.Server.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("stay_link.Server.Models.Booking", b =>
-                {
-                    b.Navigation("Rooms");
-                });
-
             modelBuilder.Entity("stay_link.Server.Models.Room", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("RoomUsage")
                         .IsRequired();
                 });

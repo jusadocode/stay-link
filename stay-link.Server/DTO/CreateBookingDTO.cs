@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace stay_link.Server.Models
 {
-    public class BookingDTO : IValidatableObject
+    public class CreateBookingDTO : IValidatableObject
     {
-        public int ID { get; set; }
         [Required(ErrorMessage = "Check-in date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Check-in date must be a valid date.")]
         public string CheckInDate { get; set; }
@@ -17,9 +16,9 @@ namespace stay_link.Server.Models
 
         public List<int> RoomIds { get; set; }
 
-        [Required(ErrorMessage = "Hotel ID is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Hotel ID must be a positive number.")]
-        public int HotelId { get; set; }
+        //[Required(ErrorMessage = "Hotel ID is required.")]
+        //[Range(1, int.MaxValue, ErrorMessage = "Hotel ID must be a positive number.")]
+        //public int HotelId { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Breakfast requests must be a non-negative integer.")]
         public int BreakfastRequests { get; set; } = 0;

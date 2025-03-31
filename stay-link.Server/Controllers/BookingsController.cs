@@ -43,7 +43,7 @@ public class BookingsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = BookingRoles.BookingUser)]
-    public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
+    public async Task<ActionResult<BookingDTO>> PostBooking(CreateBookingDTO bookingDTO)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 

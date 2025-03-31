@@ -36,9 +36,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import useRooms from "../../../shared/hooks/useRooms";
 
-const initialPreferences = [];
-
-function SearchSection({ setRooms }) {
+function SearchSection({ setRooms, setIsLoading }) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [features, setFeatures] = useState([]);
   const [bookingDates, setBookingDates] = useState([dayjs(), dayjs()]);
@@ -80,6 +78,7 @@ function SearchSection({ setRooms }) {
   };
 
   const handleSearchClick = async () => {
+    setIsLoading(true);
     try {
       const rooms = await searchRooms({
         checkIn: bookingDates[0],
@@ -93,6 +92,8 @@ function SearchSection({ setRooms }) {
       console.log("Filtered rooms:", rooms);
     } catch (err) {
       console.error("Search error:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 

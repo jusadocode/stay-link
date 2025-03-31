@@ -67,6 +67,15 @@ namespace stay_link.Server.Data
                     j => j.HasOne<Booking>().WithMany().HasForeignKey("booking_id")
                 );
 
+            modelBuilder.Entity<Booking>()
+               .HasMany(b => b.Rooms)
+               .WithMany(r => r.Bookings) 
+               .UsingEntity<Dictionary<string, object>>(
+                   "booking_rooms",
+                   j => j.HasOne<Room>().WithMany().HasForeignKey("room_id"),
+                   j => j.HasOne<Booking>().WithMany().HasForeignKey("booking_id")
+               );
+
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
                 // Convert table name to snake case
@@ -90,9 +99,6 @@ namespace stay_link.Server.Data
                     index.SetDatabaseName(index.GetDatabaseName().ToSnakeCase());
                 }
             }
-
-
-
         }
 
 

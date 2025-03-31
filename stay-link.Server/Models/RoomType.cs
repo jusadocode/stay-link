@@ -3,7 +3,14 @@
     public enum RoomType
     {
         Standart,
+        Single,
+        Double,
+        Twin,
+        Triple,
+        Quad,
         Deluxe,
-        Suite
+        Suite,
+        Executive,
+        Family
     }
 }

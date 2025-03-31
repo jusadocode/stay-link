@@ -20,7 +20,6 @@ import { AuthContext } from "../../../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_PATH } from "../../../shared/constants/routes";
 import { Collapse } from "@mui/material";
-import LoadingIndicator from "../../../shared/components/LoadingIndicator";
 
 function RoomList({ rooms }) {
   const [searchInput, setSearchInput] = useState("");
@@ -65,9 +64,8 @@ function RoomList({ rooms }) {
 
       {rooms.length === 0 ? (
         <Box display="flex" alignItems="center">
-          <LoadingIndicator />
           <Typography style={{ marginLeft: "10px" }}>
-            Loading rooms...
+            No rooms found.
           </Typography>
         </Box>
       ) : filteredRooms.length > 0 ? (
@@ -75,10 +73,11 @@ function RoomList({ rooms }) {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell></TableCell>
                 <TableCell>Room Type</TableCell>
+                <TableCell>Description</TableCell>
                 <TableCell>Guests</TableCell>
                 <TableCell>Price</TableCell>
-                <TableCell>Description</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -140,7 +139,15 @@ function RoomList({ rooms }) {
                               <strong>Summary:</strong> {room.summary}
                             </Typography>
                             <Typography variant="body2">
-                              <strong>Hotel:</strong> {room.hotel?.name}
+                              <strong>Amenities:</strong>{" "}
+                              {room.features.map((item) => (
+                                <Typography
+                                  variant="body1"
+                                  sx={{ color: "#3ddff3" }}
+                                >
+                                  <strong>{item.name}</strong>
+                                </Typography>
+                              ))}
                             </Typography>
                             <Typography variant="body2">
                               <strong>Address:</strong> {room.hotel?.address}
