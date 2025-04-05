@@ -40,7 +40,7 @@ namespace stay_link.Server.Services
         {
             var room = _mapper.Map<Room>(createRoomDTO);
 
-            var hotel = await _context.Hotels.FindAsync(room.HotelID);
+            var hotel = await _context.Hotels.FindAsync(room.HotelId);
             if (hotel == null)
                 throw new Exception("Specified hotel does not exist.");
 
@@ -56,7 +56,7 @@ namespace stay_link.Server.Services
             if (room == null)
                 return false;
 
-            var hotel = await _context.Hotels.FindAsync(roomDTO.HotelID);
+            var hotel = await _context.Hotels.FindAsync(roomDTO.HotelId);
             if (hotel == null)
                 throw new Exception("Specified hotel does not exist.");
 
@@ -79,7 +79,7 @@ namespace stay_link.Server.Services
 
         public async Task<bool> RoomExists(int id)
         {
-            return await _context.Rooms.AnyAsync(e => e.ID == id);
+            return await _context.Rooms.AnyAsync(e => e.Id == id);
         }
 
         public async Task<List<RoomFeature>> GetRoomFeaturesByIds(List<int> preferenceIds)
@@ -203,7 +203,7 @@ namespace stay_link.Server.Services
 
         public async Task UpdateRoomUsageAfterBooking(int roomId, int numberOfGuests, int stayDuration)
         {
-            var roomUsage = await _context.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomID == roomId);
+            var roomUsage = await _context.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomId == roomId);
             if (roomUsage == null)
             {
                 throw new InvalidOperationException("Room usage record not found.");
@@ -233,7 +233,7 @@ namespace stay_link.Server.Services
 
         public async Task UpdateRoomUsageAfterCleaning(int roomId)
         {
-            var roomUsage = await _context.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomID == roomId);
+            var roomUsage = await _context.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomId == roomId);
             if (roomUsage == null)
             {
                 throw new InvalidOperationException("Room usage record not found.");
@@ -246,7 +246,7 @@ namespace stay_link.Server.Services
 
         public async Task UpdateRoomUsageAfterMaintenance(int roomId)
         {
-            var roomUsage = await _context.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomID == roomId);
+            var roomUsage = await _context.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomId == roomId);
             if (roomUsage == null)
             {
                 throw new InvalidOperationException("Room usage record not found.");

@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using stay_link.Server.Auth.Model;
 using stay_link.Server.DTO;
+using stay_link.Server.Models;
+using stay_link.Server.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Security.Policy;
 
-namespace stay_link.Server.Auth
+namespace stay_link.Server.Controllers
 {
-    public static class AuthEndpoints
+    public static class AuthController
     {
         public static void AddAuthApi(this WebApplication app)
         {
@@ -170,10 +171,8 @@ namespace stay_link.Server.Auth
                 httpContext.Response.Cookies.Delete("RefreshToken");
 
                 return Results.Ok(new { message = "Logged out successfully" });
+            });
 
-            })
-            .Produces<ErrorResponse>(StatusCodes.Status200OK)  // 201 Created
-            .Produces<ErrorResponse>(StatusCodes.Status422UnprocessableEntity); // 422 UnprocessableEntity;
         }
 
         public record RegisterUserDTO(string Username, string Email, string Password);

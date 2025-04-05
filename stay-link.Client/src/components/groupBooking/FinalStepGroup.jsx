@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 
 import { Box, Typography } from "@mui/material";
-import RoomTypes from "../data/roomTypes";
+import RoomTypes from "../../data/roomTypes";
 
-export default function FinalStep({
-  selectedRoom,
+export default function FinalStepGroup({
+  selectedRooms,
   bookingDates,
   breakfastRequests,
 }) {
@@ -13,9 +13,9 @@ export default function FinalStep({
   const breakfastDailyFee = 15;
   const totalBreakfast = breakfastRequests * breakfastDailyFee * numberOfNights;
   const totalPrice =
-    selectedRoom.price * numberOfNights + totalBreakfast + cleaningFee;
+    selectedRooms.price * numberOfNights + totalBreakfast + cleaningFee;
 
-  if (!selectedRoom) {
+  if (!selectedRooms) {
     return (
       <Box>
         <Typography variant="h6">No room selected</Typography>
@@ -32,10 +32,10 @@ export default function FinalStep({
       </Typography>
       <Box sx={{ mt: 2 }}>
         <Typography variant="body2">
-          <strong>Room type:</strong> {RoomTypes[selectedRoom.roomType]}
+          <strong>Room type:</strong> {RoomTypes[selectedRooms.roomType]}
         </Typography>
         <Typography variant="body2">
-          <strong>Price per night:</strong> €{selectedRoom.price}
+          <strong>Price per night:</strong> €{selectedRooms.price}
         </Typography>
         <Typography variant="body2">
           <strong>Check-in date:</strong>{" "}
@@ -49,7 +49,7 @@ export default function FinalStep({
           <strong>Breakfast requests:</strong> {breakfastRequests}
         </Typography>
         <Typography variant="body2">
-          <strong>Number of guests:</strong> {selectedRoom.maxOccupancy}
+          <strong>Number of guests:</strong> {selectedRooms.maxOccupancy}
         </Typography>
 
         <Box sx={{ textAlign: "right", mt: 2 }}>

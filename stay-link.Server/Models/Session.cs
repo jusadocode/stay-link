@@ -1,7 +1,6 @@
-﻿using stay_link.Server.Auth.Model;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace stay_link.Server.Auth
+namespace stay_link.Server.Models
 {
     public class Session
     {

@@ -6,7 +6,7 @@ namespace stay_link.Server.Models
 {
     public class Hotel
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         
         [Required(ErrorMessage = "Title is required.")]
         [StringLength(100, ErrorMessage = "Title can't be longer than 100 characters.")]

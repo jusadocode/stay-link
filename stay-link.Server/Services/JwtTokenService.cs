@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace stay_link.Server.Auth
+namespace stay_link.Server.Services
 {
     public class JwtTokenService
     {
@@ -11,7 +11,8 @@ namespace stay_link.Server.Auth
         private readonly string? _issuer;
         private readonly string? _audience;
 
-        public JwtTokenService(IConfiguration configuration) {
+        public JwtTokenService(IConfiguration configuration)
+        {
 
             _authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")));
             _issuer = configuration["JWT:ValidIssuer"];

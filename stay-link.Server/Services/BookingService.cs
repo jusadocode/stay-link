@@ -21,7 +21,7 @@ namespace stay_link.Server.Services
         {
             var bookings = isAdmin
                 ? await _context.Bookings.ToListAsync()
-                : await _context.Bookings.Where(b => b.UserID == userId).ToListAsync();
+                : await _context.Bookings.Where(b => b.UserId == userId).ToListAsync();
 
             return _mapper.Map<IEnumerable<BookingDTO>>(bookings);
 
@@ -32,7 +32,7 @@ namespace stay_link.Server.Services
             var booking = await _context.Bookings.FindAsync(id);
             if (booking == null) return null;
 
-            if (!isAdmin && booking.UserID != userId)
+            if (!isAdmin && booking.UserId != userId)
                 return null; // User is not allowed to see this booking
 
             return booking;
@@ -41,7 +41,7 @@ namespace stay_link.Server.Services
         public async Task<BookingDTO> CreateBooking(CreateBookingDTO bookingDTO, string userId)
         {
             var rooms = await _context.Rooms
-                  .Where(r => bookingDTO.RoomIds.Contains(r.ID))
+                  .Where(r => bookingDTO.RoomIds.Contains(r.Id))
                   .ToListAsync();
 
             //if (bookingDTO.HotelId != null)
@@ -62,7 +62,7 @@ namespace stay_link.Server.Services
                 Rooms = rooms,
                 //HotelId = bookingDTO.HotelId,
                 BreakfastRequests = bookingDTO.BreakfastRequests,
-                UserID = userId
+                UserId = userId
             };
 
             _context.Bookings.Add(booking);
@@ -77,11 +77,11 @@ namespace stay_link.Server.Services
 
             if (booking == null) return false;
 
-            if (!isAdmin && booking.UserID != userId)
+            if (!isAdmin && booking.User.Id != userId)
                 return false; // Unauthorized
 
             var rooms = await _context.Rooms
-                 .Where(r => bookingDTO.RoomIds.Contains(r.ID))
+                 .Where(r => bookingDTO.RoomIds.Contains(r.Id))
                  .ToListAsync();
 
             if (rooms.Count != bookingDTO.RoomIds.Count)

@@ -10,6 +10,8 @@ namespace stay_link.Server.Models
         [DataType(DataType.Date, ErrorMessage = "Check-in date must be a valid date.")]
         public string CheckInDate { get; set; }
 
+        public string? GroupName { get; set; }
+
         [Required(ErrorMessage = "Check-out date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Check-out date must be a valid date.")]
         public string CheckOutDate { get; set; }
@@ -53,6 +55,21 @@ namespace stay_link.Server.Models
                         new[] { nameof(CheckOutDate) }
                     );
                 }
+            }
+
+            if (RoomIds == null || !RoomIds.Any())
+            {
+                yield return new ValidationResult(
+                    "At least one room must be selected.",
+                    new[] { nameof(RoomIds) }
+                );
+            }
+            else if (RoomIds.Any(id => id <= 0))
+            {
+                yield return new ValidationResult(
+                    "All room IDs must be positive integers.",
+                    new[] { nameof(RoomIds) }
+                );
             }
         }
     }

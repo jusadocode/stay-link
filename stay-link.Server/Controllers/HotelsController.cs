@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using stay_link.Server.Auth.Model;
-using stay_link.Server.Data;
 using stay_link.Server.Models;
+using stay_link.Server.Data;
 
 namespace stay_link.Server.Controllers
 {
@@ -33,7 +32,7 @@ namespace stay_link.Server.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         public async Task<ActionResult<Hotel>> GetHotel(int id)
         {
-            var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.ID == id);
+            var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == id);
                 
             if (hotel == null)
             {
@@ -49,14 +48,14 @@ namespace stay_link.Server.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         public async Task<ActionResult<IEnumerable<Room>>> GetHotelRooms(int id)
         {
-            var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.ID == id);
+            var hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == id);
                 
             if (hotel == null)
             {
                 return NotFound(new { message = "Hotel not found." }); // More uniform message
             }
 
-            var rooms = await _context.Rooms.Where(r => r.HotelID == hotel.ID).ToListAsync();
+            var rooms = await _context.Rooms.Where(r => r.HotelId == hotel.Id).ToListAsync();
                 
             return Ok(rooms); // Returning the list of rooms in the hotel
         }
@@ -119,7 +118,7 @@ namespace stay_link.Server.Controllers
             _context.Hotels.Add(hotel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetHotel), new { id = hotel.ID }, hotel); // Use nameof for refactoring safety
+            return CreatedAtAction(nameof(GetHotel), new { id = hotel.Id }, hotel); // Use nameof for refactoring safety
         }
 
         // DELETE: api/Hotels/{id}
@@ -144,7 +143,7 @@ namespace stay_link.Server.Controllers
 
         private bool HotelExists(int id)
         {
-            return _context.Hotels.Any(e => e.ID == id);
+            return _context.Hotels.Any(e => e.Id == id);
         }
     }
 }

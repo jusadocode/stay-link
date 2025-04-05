@@ -28,6 +28,14 @@ const {customFetch} = useAuthentication();
         return response.json();
     };
 
+    
+    const fetchAllRooms = async (roomId) => {
+        const response = await customFetch(API_ROOMS_URL, {
+            method: 'GET'
+        });
+        return response.json();
+    };
+
     const addBooking = async (booking) => {
         const response = await customFetch(API_BOOKINGS_URL, {
             method: 'POST',
@@ -74,7 +82,8 @@ const {customFetch} = useAuthentication();
         fetchRoom,
         updateRoom,
         fetchHotelRooms,
-        deleteBooking
+        deleteBooking,
+        fetchAllRooms
     };
 };
 

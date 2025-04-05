@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using stay_link.Server.Auth;
-using stay_link.Server.Auth.Model;
 using stay_link.Server.Helpers;
 using stay_link.Server.Models;
 

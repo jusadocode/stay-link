@@ -4,9 +4,9 @@ namespace stay_link.Server.Models
 {
     public class RoomUsage
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         [Required]
-        public int RoomID { get; set; }
+        public int RoomId { get; set; }
         [Required]
         public double GeneralWear { get; set; }
         [Required]

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using stay_link.Server.Models;
 using stay_link.Server.Data;
 using Microsoft.AspNetCore.Authorization;
-using stay_link.Server.Auth.Model;
 using stay_link.Server.Services;
 using stay_link.Server.DTO;
+using AutoMapper;
 
 namespace stay_link.Server.Controllers
 {
@@ -79,7 +79,7 @@ namespace stay_link.Server.Controllers
             try
             {
                 var createdRoom = await _roomService.CreateRoom(room);
-                return CreatedAtAction(nameof(GetRoom), new { id = createdRoom.ID }, createdRoom);
+                return CreatedAtAction(nameof(GetRoom), new { id = createdRoom.Id }, createdRoom);
             }
             catch (System.Exception ex)
             {

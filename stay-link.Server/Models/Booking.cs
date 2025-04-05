@@ -1,15 +1,13 @@
-using stay_link.Server.Auth.Model;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace stay_link.Server.Models
 {
     public class Booking : IValidatableObject
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
+        public string UserId { get; set; }
 
-        [Required]
-        public string UserID { get; set; }
+        public string? GroupName { get; set; }
 
         [Required(ErrorMessage = "Check-in date is required.")]
         public DateOnly CheckInDate { get; set; }
@@ -35,8 +33,13 @@ namespace stay_link.Server.Models
         public decimal TotalPrice  { get; set; }
 
         public BookingStatus Status { get; set; }
+        public virtual BookingUser User { get; set; }
         public virtual List<RoomFeature> FeaturePreferences { get; set; }
         public virtual List<BookingFeature> BookingPreferences { get; set; }
+        [Required(ErrorMessage = "")]
+        [Range(1, int.MaxValue, ErrorMessage = "Room ID must be a positive number.")]
+
+
 
         public virtual List<Room> Rooms { get; set; }
 
@@ -50,6 +53,11 @@ namespace stay_link.Server.Models
             {  
                 yield return new ValidationResult("End date must be greater than the start date.", new[] { "EndDate" });  
             }  
+
+            if(Rooms.Count <= 0)
+            {
+                yield return new ValidationResult("Booking must have atleast 1 room.");
+            }
         }  
     }
 }

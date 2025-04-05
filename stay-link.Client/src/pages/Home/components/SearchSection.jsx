@@ -13,9 +13,6 @@ import {
   Paper,
   List,
   ListItem,
-  ListItemText,
-  ListItemButton,
-  Card,
   Button,
   IconButton,
   TextField,
@@ -78,6 +75,7 @@ function SearchSection({ setRooms, setIsLoading }) {
   };
 
   const handleSearchClick = async () => {
+    setIsLoading(true);
     setIsLoading(true);
     try {
       const rooms = await searchRooms({

@@ -1,8 +1,8 @@
-﻿
-using stay_link.Server.Data;
+﻿using stay_link.Server.Data;
 using stay_link.Server.Helpers;
+using stay_link.Server.Models;
 
-namespace stay_link.Server.Auth
+namespace stay_link.Server.Services
 {
     public class SessionService(BookingContext dbContext)
     {
@@ -33,7 +33,7 @@ namespace stay_link.Server.Auth
         public async Task InvalidateSessionAsync(Guid sessionId)
         {
             var session = await dbContext.Sessions.FindAsync(sessionId);
-            if(session is null)
+            if (session is null)
             {
                 return;
             }

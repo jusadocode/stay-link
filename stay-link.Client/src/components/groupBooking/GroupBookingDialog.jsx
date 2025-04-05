@@ -10,11 +10,14 @@ import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 
 import { Dialog, DialogTitle } from "@mui/material";
-import CheckInStep from "./CheckInStep";
-import ExtraStep from "./ExtraStep";
-import FinalStep from "./FinalStep";
-import useBookings from "../shared/hooks/useBookings";
+import CheckInStep from "../roomBooking/CheckInStep";
+import ExtraStep from "../roomBooking/ExtraStep";
+import FinalStep from "../roomBooking/FinalStep";
+import useBookings from "../../shared/hooks/useBookings";
 import React from "react";
+import RoomEditPage from "../../pages/RoomEditPage/RoomEdit";
+import ExtraStepGroup from "./ExtraStepGroup";
+import FinalStepGroup from "./FinalStepGroup";
 
 dayjs.extend(isSameOrAfter);
 
@@ -22,7 +25,7 @@ const steps = ["Select dates", "Extra services", "Finalize booking"];
 
 export default function BookingDialog({
   open,
-  selectedRoom,
+  selectedRooms,
   handleCloseDialog,
 }) {
   useEffect(() => {
@@ -89,7 +92,7 @@ export default function BookingDialog({
       const newBooking = {
         checkInDate: bookingDates[0].toISOString().split("T")[0],
         checkOutDate: bookingDates[1].toISOString().split("T")[0],
-        roomIds: [selectedRoom.id],
+        roomIds: [selectedRooms.map((room) => room.id)],
         breakfastRequests: breakfastRequests,
       };
 
@@ -125,7 +128,7 @@ export default function BookingDialog({
 
   return (
     <Dialog open={open} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
-      <DialogTitle>Book a room</DialogTitle>
+      <DialogTitle>Book rooms</DialogTitle>
 
       <Box sx={{ width: "90%", px: 5, py: 5 }}>
         <Stepper activeStep={activeStep}>
@@ -150,11 +153,11 @@ export default function BookingDialog({
         {activeStep === steps.length ? (
           <React.Fragment>
             <Typography sx={{ my: 2 }}>
-              Room successfully booked
+              Group booking processed successfully
               <DoneIcon fontSize="medium" />
             </Typography>
             <Typography sx={{ my: 2 }}>
-              You can continue browsing the hotels
+              You can continue browsing the hotel
             </Typography>
             <Typography sx={{ my: 2 }}>
               You will be able to check your bookings in My Bookings section
@@ -173,15 +176,15 @@ export default function BookingDialog({
               />
             )}
             {activeStep === 1 && (
-              <ExtraStep
-                selectedRoom={selectedRoom}
+              <ExtraStepGroup
+                selectedRooms={selectedRooms}
                 breakfastRequests={breakfastRequests}
                 setBreakfastRequests={setBreakfastRequests}
               />
             )}
             {activeStep === 2 && (
-              <FinalStep
-                selectedRoom={selectedRoom}
+              <FinalStepGroup
+                selectedRooms={selectedRooms}
                 bookingDates={bookingDates}
                 breakfastRequests={breakfastRequests}
               />

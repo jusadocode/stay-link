@@ -5,7 +5,7 @@ namespace stay_link.Server.Models
 {
     public class Room
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
 
         [StringLength(500, ErrorMessage = "Summary cannot exceed 500 characters and must be atleast 10 characters long.", MinimumLength = 10)]
@@ -22,7 +22,7 @@ namespace stay_link.Server.Models
 
         [Required(ErrorMessage = "Hotel ID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "Hotel ID must be a positive number.")]
-        public int HotelID { get; set; }
+        public int HotelId { get; set; }
         public int FloorNumber { get; set; }
 
         [Required(ErrorMessage = "Max occupancy is required.")]

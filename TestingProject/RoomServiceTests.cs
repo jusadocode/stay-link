@@ -32,8 +32,8 @@ namespace RoomServiceTests
 
                 await databaseContext.Rooms.AddRangeAsync(new List<Room>
                 {
-                    new Room { ID = 1, Title = "Room 101", MaxOccupancy = 2, HotelID = 1, Price = 100 },
-                    new Room { ID = 2, Title = "Room 102", MaxOccupancy = 3, HotelID = 1, Price = 150 }
+                    new Room { ID = 1, Title = "Room 101", MaxOccupancy = 2, HotelId = 1, Price = 100 },
+                    new Room { ID = 2, Title = "Room 102", MaxOccupancy = 3, HotelId = 1, Price = 150 }
                 });
 
                 await databaseContext.SaveChangesAsync();
@@ -104,7 +104,7 @@ namespace RoomServiceTests
             {
                 Title = "Room 103",
                 MaxOccupancy = 4,
-                HotelID = 1,
+                HotelId = 1,
                 Price = 200
             };
 
@@ -129,7 +129,7 @@ namespace RoomServiceTests
             {
                 Title = "Room 200",
                 MaxOccupancy = 2,
-                HotelID = 99,
+                HotelId = 99,
                 Price = 180
             };
 
@@ -150,7 +150,7 @@ namespace RoomServiceTests
             {
                 Title = "Updated Room 101",
                 MaxOccupancy = 3,
-                HotelID = 1,
+                HotelId = 1,
                 Price = 120
             };
 
@@ -175,7 +175,7 @@ namespace RoomServiceTests
             {
                 Title = "Non-Existing",
                 MaxOccupancy = 2,
-                HotelID = 1,
+                HotelId = 1,
                 Price = 100
             };
 

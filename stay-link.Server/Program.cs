@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using stay_link.Server.Auth;
-using stay_link.Server.Auth.Model;
 using stay_link.Server.Data;
 using System.Text;
 using DotNetEnv;
 using stay_link.Server.Services;
 using stay_link.Server.Mappings;
+using stay_link.Server.Controllers;
+using stay_link.Server.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,8 +89,8 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 
 SeedData.Initialize(scope.ServiceProvider);
-//var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
-//await dbSeeder.SeedAsync();
+var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
+await dbSeeder.SeedAsync();
 
 app.UseCors("AllowFrontend");
 

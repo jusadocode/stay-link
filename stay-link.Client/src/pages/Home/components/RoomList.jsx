@@ -14,7 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import BookingDialog from "../../../components/BookingDialog";
+import BookingDialog from "../../../components/roomBooking/RoomBookingDialog";
 import RoomTypes from "../../../data/roomTypes";
 import { AuthContext } from "../../../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";

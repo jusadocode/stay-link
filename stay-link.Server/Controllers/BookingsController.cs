@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using stay_link.Server.Auth.Model;
 using stay_link.Server.Models;
 using stay_link.Server.Services;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,7 +18,7 @@ public class BookingsController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
+    public async Task<ActionResult<IEnumerable<BookingDTO>>> GetBookings()
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
         var isAdmin = User.IsInRole(BookingRoles.Admin);
@@ -51,7 +50,7 @@ public class BookingsController : ControllerBase
 
         var booking = await _bookingService.CreateBooking(bookingDTO, userId);
 
-        return CreatedAtAction(nameof(GetBooking), new { id = booking.ID }, booking);
+        return CreatedAtAction(nameof(GetBooking), new { id = booking.Id }, booking);
     }
 
     [HttpPut("{id}")]

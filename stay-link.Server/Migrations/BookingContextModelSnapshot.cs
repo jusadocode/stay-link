@@ -31,14 +31,14 @@ namespace stay_link.Server.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("booking_preferences_id");
 
-                    b.Property<int>("BookingsID")
+                    b.Property<int>("BookingsId")
                         .HasColumnType("integer")
-                        .HasColumnName("bookings_i_d");
+                        .HasColumnName("bookings_id");
 
-                    b.HasKey("BookingPreferencesId", "BookingsID");
+                    b.HasKey("BookingPreferencesId", "BookingsId");
 
-                    b.HasIndex("BookingsID")
-                        .HasDatabaseName("i_x_booking_booking_feature_bookings_i_d");
+                    b.HasIndex("BookingsId")
+                        .HasDatabaseName("i_x_booking_booking_feature_bookings_id");
 
                     b.ToTable("booking_booking_feature");
                 });
@@ -255,7 +255,94 @@ namespace stay_link.Server.Migrations
                     b.ToTable("room_room_features");
                 });
 
-            modelBuilder.Entity("stay_link.Server.Auth.Model.BookingUser", b =>
+            modelBuilder.Entity("stay_link.Server.Models.Booking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BreakfastRequests")
+                        .HasColumnType("integer")
+                        .HasColumnName("breakfast_requests");
+
+                    b.Property<DateOnly>("CheckInDate")
+                        .HasColumnType("date")
+                        .HasColumnName("check_in_date");
+
+                    b.Property<DateOnly>("CheckOutDate")
+                        .HasColumnType("date")
+                        .HasColumnName("check_out_date");
+
+                    b.Property<string>("GroupName")
+                        .HasColumnType("text")
+                        .HasColumnName("group_name");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("integer")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("integer")
+                        .HasColumnName("room_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
+                    b.Property<int>("TotalGuests")
+                        .HasColumnType("integer")
+                        .HasColumnName("total_guests");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric")
+                        .HasColumnName("total_price");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("i_x_bookings_user_id");
+
+                    b.ToTable("bookings");
+                });
+
+            modelBuilder.Entity("stay_link.Server.Models.BookingFeature", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<decimal?>("ExtraCost")
+                        .HasColumnType("numeric")
+                        .HasColumnName("extra_cost");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("booking_feature");
+                });
+
+            modelBuilder.Entity("stay_link.Server.Models.BookingUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text")
@@ -278,6 +365,16 @@ namespace stay_link.Server.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean")
                         .HasColumnName("email_confirmed");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean")
@@ -334,7 +431,153 @@ namespace stay_link.Server.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("stay_link.Server.Auth.Session", b =>
+            modelBuilder.Entity("stay_link.Server.Models.Hotel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("address");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("image_url");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("hotels");
+                });
+
+            modelBuilder.Entity("stay_link.Server.Models.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FloorNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("floor_number");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("integer")
+                        .HasColumnName("hotel_id");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("image_url");
+
+                    b.Property<int>("MaxOccupancy")
+                        .HasColumnType("integer")
+                        .HasColumnName("max_occupancy");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric")
+                        .HasColumnName("price");
+
+                    b.Property<string>("RoomType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("room_type");
+
+                    b.Property<string>("Summary")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("summary");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("rooms");
+                });
+
+            modelBuilder.Entity("stay_link.Server.Models.RoomFeature", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<decimal?>("ExtraCost")
+                        .HasColumnType("numeric")
+                        .HasColumnName("extra_cost");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("room_features");
+                });
+
+            modelBuilder.Entity("stay_link.Server.Models.RoomUsage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CleaningState")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("cleaning_state");
+
+                    b.Property<double>("GeneralWear")
+                        .HasColumnType("double precision")
+                        .HasColumnName("general_wear");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("integer")
+                        .HasColumnName("room_id");
+
+                    b.Property<int>("TimesBookedSinceMaintenance")
+                        .HasColumnType("integer")
+                        .HasColumnName("times_booked_since_maintenance");
+
+                    b.Property<int>("TimesBookedThisYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("times_booked_this_year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_room_usages_room_id");
+
+                    b.ToTable("room_usages");
+                });
+
+            modelBuilder.Entity("stay_link.Server.Models.Session", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -371,232 +614,6 @@ namespace stay_link.Server.Migrations
                     b.ToTable("sessions");
                 });
 
-            modelBuilder.Entity("stay_link.Server.Models.Booking", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("i_d");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("BreakfastRequests")
-                        .HasColumnType("integer")
-                        .HasColumnName("breakfast_requests");
-
-                    b.Property<DateOnly>("CheckInDate")
-                        .HasColumnType("date")
-                        .HasColumnName("check_in_date");
-
-                    b.Property<DateOnly>("CheckOutDate")
-                        .HasColumnType("date")
-                        .HasColumnName("check_out_date");
-
-                    b.Property<int>("HotelId")
-                        .HasColumnType("integer")
-                        .HasColumnName("hotel_id");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("integer")
-                        .HasColumnName("room_id");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("status");
-
-                    b.Property<int>("TotalGuests")
-                        .HasColumnType("integer")
-                        .HasColumnName("total_guests");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric")
-                        .HasColumnName("total_price");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("user_i_d");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("bookings");
-                });
-
-            modelBuilder.Entity("stay_link.Server.Models.BookingFeature", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<decimal?>("ExtraCost")
-                        .HasColumnType("numeric")
-                        .HasColumnName("extra_cost");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("booking_feature");
-                });
-
-            modelBuilder.Entity("stay_link.Server.Models.Hotel", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("i_d");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("address");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("image_url");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("name");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("hotels");
-                });
-
-            modelBuilder.Entity("stay_link.Server.Models.Room", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("i_d");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("FloorNumber")
-                        .HasColumnType("integer")
-                        .HasColumnName("floor_number");
-
-                    b.Property<int>("HotelID")
-                        .HasColumnType("integer")
-                        .HasColumnName("hotel_i_d");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("image_url");
-
-                    b.Property<int>("MaxOccupancy")
-                        .HasColumnType("integer")
-                        .HasColumnName("max_occupancy");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric")
-                        .HasColumnName("price");
-
-                    b.Property<string>("RoomType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("room_type");
-
-                    b.Property<string>("Summary")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("summary");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("rooms");
-                });
-
-            modelBuilder.Entity("stay_link.Server.Models.RoomFeature", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<decimal?>("ExtraCost")
-                        .HasColumnType("numeric")
-                        .HasColumnName("extra_cost");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("room_features");
-                });
-
-            modelBuilder.Entity("stay_link.Server.Models.RoomUsage", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("i_d");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("CleaningState")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("cleaning_state");
-
-                    b.Property<double>("GeneralWear")
-                        .HasColumnType("double precision")
-                        .HasColumnName("general_wear");
-
-                    b.Property<int>("RoomID")
-                        .HasColumnType("integer")
-                        .HasColumnName("room_i_d");
-
-                    b.Property<int>("TimesBookedSinceMaintenance")
-                        .HasColumnType("integer")
-                        .HasColumnName("times_booked_since_maintenance");
-
-                    b.Property<int>("TimesBookedThisYear")
-                        .HasColumnType("integer")
-                        .HasColumnName("times_booked_this_year");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("RoomID")
-                        .IsUnique()
-                        .HasDatabaseName("i_x_room_usages_room_i_d");
-
-                    b.ToTable("room_usages");
-                });
-
             modelBuilder.Entity("BookingBookingFeature", b =>
                 {
                     b.HasOne("stay_link.Server.Models.BookingFeature", null)
@@ -608,10 +625,10 @@ namespace stay_link.Server.Migrations
 
                     b.HasOne("stay_link.Server.Models.Booking", null)
                         .WithMany()
-                        .HasForeignKey("BookingsID")
+                        .HasForeignKey("BookingsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("f_k_booking_booking_feature__bookings_bookings_i_d");
+                        .HasConstraintName("f_k_booking_booking_feature__bookings_bookings_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -626,7 +643,7 @@ namespace stay_link.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("stay_link.Server.Auth.Model.BookingUser", null)
+                    b.HasOne("stay_link.Server.Models.BookingUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -636,7 +653,7 @@ namespace stay_link.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("stay_link.Server.Auth.Model.BookingUser", null)
+                    b.HasOne("stay_link.Server.Models.BookingUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -653,7 +670,7 @@ namespace stay_link.Server.Migrations
                         .IsRequired()
                         .HasConstraintName("f_k_user_roles_roles_role_id");
 
-                    b.HasOne("stay_link.Server.Auth.Model.BookingUser", null)
+                    b.HasOne("stay_link.Server.Models.BookingUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -663,7 +680,7 @@ namespace stay_link.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("stay_link.Server.Auth.Model.BookingUser", null)
+                    b.HasOne("stay_link.Server.Models.BookingUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -722,14 +739,14 @@ namespace stay_link.Server.Migrations
                         .HasConstraintName("f_k_room_room_features__rooms_room_id");
                 });
 
-            modelBuilder.Entity("stay_link.Server.Auth.Session", b =>
+            modelBuilder.Entity("stay_link.Server.Models.Booking", b =>
                 {
-                    b.HasOne("stay_link.Server.Auth.Model.BookingUser", "User")
+                    b.HasOne("stay_link.Server.Models.BookingUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("f_k_sessions_users_user_id");
+                        .HasConstraintName("f_k_bookings__users_user_id");
 
                     b.Navigation("User");
                 });
@@ -738,12 +755,24 @@ namespace stay_link.Server.Migrations
                 {
                     b.HasOne("stay_link.Server.Models.Room", "Room")
                         .WithOne("RoomUsage")
-                        .HasForeignKey("stay_link.Server.Models.RoomUsage", "RoomID")
+                        .HasForeignKey("stay_link.Server.Models.RoomUsage", "RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("f_k_room_usages_rooms_room_i_d");
+                        .HasConstraintName("f_k_room_usages_rooms_room_id");
 
                     b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("stay_link.Server.Models.Session", b =>
+                {
+                    b.HasOne("stay_link.Server.Models.BookingUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_sessions_users_user_id");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("stay_link.Server.Models.Room", b =>
