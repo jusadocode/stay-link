@@ -140,10 +140,11 @@ function RoomList({ rooms }) {
                             </Typography>
                             <Typography variant="body2">
                               <strong>Amenities:</strong>{" "}
-                              {room.features.map((item) => (
+                              {room.features.map((item, index) => (
                                 <Typography
                                   variant="body1"
                                   sx={{ color: "#3ddff3" }}
+                                  key={index}
                                 >
                                   <strong>{item.name}</strong>
                                 </Typography>

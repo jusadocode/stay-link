@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using stay_link.Server.Data;
@@ -11,9 +12,11 @@ using stay_link.Server.Data;
 namespace stay_link.Server.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    partial class BookingContextModelSnapshot : ModelSnapshot
+    [Migration("20250406094752_BookingCreationTime")]
+    partial class BookingCreationTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,6 +286,10 @@ namespace stay_link.Server.Migrations
                     b.Property<string>("GroupName")
                         .HasColumnType("text")
                         .HasColumnName("group_name");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("integer")
+                        .HasColumnName("hotel_id");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("integer")

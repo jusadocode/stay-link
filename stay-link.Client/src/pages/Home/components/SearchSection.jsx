@@ -20,7 +20,6 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
 import {
   closestCenter,
   DndContext,
@@ -32,15 +31,21 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import useRooms from "../../../shared/hooks/useRooms";
+import dayjs from "dayjs";
 
 function SearchSection({ setRooms, setIsLoading }) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [features, setFeatures] = useState([]);
-  const [bookingDates, setBookingDates] = useState([dayjs(), dayjs()]);
+  const [bookingDates, setBookingDates] = useState([
+    dayjs().add(1, "day"),
+    dayjs().add(3, "day"),
+  ]);
   const [guestCount, setGuestCount] = useState(2);
   const [roomCount, setRoomCount] = useState(1);
 
   const { searchRooms, fetchFeatures } = useRooms();
+
+  const tomorrow = dayjs().add(1, "day");
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -119,6 +124,7 @@ function SearchSection({ setRooms, setIsLoading }) {
             <DateRangePicker
               localeText={{ start: "Check-in", end: "Check-out" }}
               value={bookingDates}
+              minDate={tomorrow}
               onChange={(newValue) => setBookingDates(newValue)}
             />
 

@@ -72,85 +72,111 @@ function BookingsPage() {
               gap: 5,
             }}
           >
-            {bookings.map((booking, index) => (
-              <Paper
-                key={index}
-                elevation={3}
-                sx={{
-                  p: 2,
-                  mb: 2,
-                  maxWidth: "40rem",
-                  width: "100%",
-                  textAlign: "left",
-                }}
-              >
-                <Box
+            {bookings.map((booking, index) => {
+              const checkInDateObj = dayjs(booking.checkInDate);
+              const now = dayjs();
+              const hoursUntilCheckIn = checkInDateObj.diff(now, "hour");
+              const canCancel = hoursUntilCheckIn > 24;
+              return (
+                <Paper
+                  key={index}
+                  elevation={3}
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-around",
-                    height: "100%",
+                    p: 2,
+                    mb: 2,
+                    maxWidth: "40rem",
+                    width: "100%",
+                    textAlign: "left",
                   }}
                 >
-                  {/* Image Section */}
-                  <img
-                    src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="Double room"
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                    }}
-                  />
-
-                  {/* Information Section */}
-                  <Grid
-                    item
-                    xs={12}
+                  <Box
                     sx={{
                       display: "flex",
                       flexDirection: "column",
-                      paddingTop: 2,
+                      justifyContent: "space-around",
+                      height: "100%",
                     }}
                   >
-                    <Typography>
-                      <strong>Check-in Date:</strong>{" "}
-                      {new Date(booking.checkInDate).toLocaleDateString()}
-                    </Typography>
-                    <Typography>
-                      <strong>Check-out Date:</strong>{" "}
-                      {new Date(booking.checkOutDate).toLocaleDateString()}
-                    </Typography>
-                    <Typography>
-                      <strong>Description:</strong> {booking.room.summary}
-                    </Typography>
-                    <Typography>
-                      <strong>Room type:</strong>{" "}
-                      {RoomTypes[booking.room.roomType]}
-                    </Typography>
-                    <Typography>
-                      <strong>Space:</strong>{" "}
-                      {booking.room.maxOccupancy === 1
-                        ? "For 1 person"
-                        : `For up to ${3} people`}
-                    </Typography>
-                    <Typography>
-                      <strong>Total:</strong> €300
-                    </Typography>
-                  </Grid>
-                  {userIsAdmin() && (
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => handleOpenModal(booking)}
-                      sx={{ mt: 2 }}
+                    {/* Image Section */}
+                    <img
+                      src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      alt="Double room"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                      }}
+                    />
+
+                    {/* Information Section */}
+                    <Grid
+                      item
+                      xs={12}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        paddingTop: 2,
+                      }}
                     >
-                      <DeleteForeverIcon />
-                      Delete Booking
+                      <Typography>
+                        <strong>Check-in Date:</strong>{" "}
+                        {new Date(booking.checkInDate).toLocaleDateString()}
+                      </Typography>
+                      <Typography>
+                        <strong>Check-out Date:</strong>{" "}
+                        {new Date(booking.checkOutDate).toLocaleDateString()}
+                      </Typography>
+
+                      <Typography>
+                        <strong>Description:</strong> {booking.room.summary}
+                      </Typography>
+                      <Typography>
+                        <strong>Room type:</strong>{" "}
+                        {RoomTypes[booking.room.roomType]}
+                      </Typography>
+                      <Typography>
+                        <strong>Space:</strong>{" "}
+                        {booking.room.maxOccupancy === 1
+                          ? "For 1 person"
+                          : `For up to ${3} people`}
+                      </Typography>
+                      <Typography>
+                        <strong>Total:</strong> €300
+                      </Typography>
+                    </Grid>
+                    {userIsAdmin() && (
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => handleOpenModal(booking)}
+                        sx={{ mt: 2 }}
+                        disabled={!canCancel}
+                      >
+                        <DeleteForeverIcon sx={{ mr: 1 }} />
+                        {canCancel
+                          ? "Cancel Booking"
+                          : "Cancellation Unavailable"}
+                      </Button>
+                    )}
+
+                    <Typography
+                      variant="body2"
+                      sx={{ mt: 1 }}
+                      color="text.secondary"
+                    >
+                      {canCancel
+                        ? `You can cancel until ${checkInDateObj
+                            .subtract(24, "hour")
+                            .format("DD MMM HH:mm")}`
+                        : "Booking is no longer cancellable (less than 24h to check-in)"}
+                    </Typography>
+
+                    <Button variant="outlined" sx={{ mt: 1 }}>
+                      Check In
                     </Button>
-                  )}
-                </Box>
-              </Paper>
-            ))}
+                  </Box>
+                </Paper>
+              );
+            })}
           </Box>
         ) : (
           <Typography variant="body1" sx={{ mt: 2 }}>

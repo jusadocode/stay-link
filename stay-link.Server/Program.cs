@@ -88,9 +88,9 @@ var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 
-SeedData.Initialize(scope.ServiceProvider);
-var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
-await dbSeeder.SeedAsync();
+await SeedData.Initialize(scope.ServiceProvider);
+//var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
+//await dbSeeder.SeedAsync();
 
 app.UseCors("AllowFrontend");
 

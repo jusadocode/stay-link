@@ -52,7 +52,14 @@ const HomePage = () => {
           My Account
         </Button>
         {isLoggedIn ? (
-          <Button variant="outlined" onClick={() => navigate("/bookings")}>
+          <Button
+            variant="outlined"
+            onClick={() =>
+              userIsAdmin()
+                ? navigate("/bookings/calendar")
+                : navigate("/bookings")
+            }
+          >
             {userIsAdmin() ? "All Bookings" : "My Bookings"}
           </Button>
         ) : (

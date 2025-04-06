@@ -22,7 +22,7 @@ namespace stay_link.Server.Models
         public List<int> RoomIds { get; set; }
 
 
-        public int HotelId { get; set; }
+        public int TotalGuests { get; set; }
 
         public int BreakfastRequests { get; set; }
 

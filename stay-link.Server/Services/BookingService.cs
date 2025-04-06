@@ -62,7 +62,8 @@ namespace stay_link.Server.Services
                 Rooms = rooms,
                 //HotelId = bookingDTO.HotelId,
                 BreakfastRequests = bookingDTO.BreakfastRequests,
-                UserId = userId
+                UserId = userId,
+                CreationTime = DateTime.UtcNow
             };
 
             _context.Bookings.Add(booking);

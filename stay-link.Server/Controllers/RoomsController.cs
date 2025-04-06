@@ -22,7 +22,7 @@ namespace stay_link.Server.Controllers
 
         // GET: api/Rooms
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Room>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomDTO>))]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRooms()
         {
             var rooms = await _roomService.GetRooms();
@@ -30,7 +30,7 @@ namespace stay_link.Server.Controllers
         }
 
         [HttpGet("filter")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Room>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomDTO>))]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsByFilters(
             [FromQuery] DateOnly checkIn,
             [FromQuery] DateOnly checkOut,

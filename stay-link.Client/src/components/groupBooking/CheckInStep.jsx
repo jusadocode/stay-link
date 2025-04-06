@@ -4,8 +4,10 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro";
 
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { Box, Typography } from "@mui/material";
+import dayjs from "dayjs";
 
 export default function CheckInStep({ bookingDates, setBookingDates }) {
+  const tomorrow = dayjs().add(1, "day");
   return (
     <>
       <Box sx={{ mt: 2, mb: 1 }}>
@@ -17,6 +19,7 @@ export default function CheckInStep({ bookingDates, setBookingDates }) {
           <DateRangePicker
             localeText={{ start: "Check-in", end: "Check-out" }}
             value={bookingDates}
+            minDate={tomorrow}
             onChange={(newValue) => setBookingDates(newValue)}
           />
         </LocalizationProvider>

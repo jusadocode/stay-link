@@ -14,14 +14,12 @@ namespace stay_link.Server.Models
 
         [Required(ErrorMessage = "Check-out date is required.")]
         public DateOnly CheckOutDate { get; set; }
+        public DateTime CreationTime { get; set; }
 
         [Required(ErrorMessage = "Room ID is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "Room ID must be a positive number.")]
         public int RoomId { get; set; }
 
-        [Required(ErrorMessage = "Hotel ID is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Hotel ID must be a positive number.")]
-        public int HotelId { get; set; }
         public decimal CleaningFee = 20m;
         public decimal BreakfastFee = 15m;
 
