@@ -19,9 +19,11 @@ namespace stay_link.Server.Mappings
             CreateMap<Room, RoomDTO>()
                 .ForMember(dest => dest.RoomType,
                     opt => opt.MapFrom(src => src.RoomType.ToString()));
+
             CreateMap<CreateRoomDTO, Room>();
             CreateMap<RoomDTO, Room>();
             CreateMap<UpdateRoomDTO, Room>();
+
             CreateMap<RoomFeatureDTO, RoomFeature>();
             CreateMap<RoomFeature, RoomFeatureDTO>();
             CreateMap<RoomFeature, RoomFeatureDetailsDTO>()
@@ -29,6 +31,12 @@ namespace stay_link.Server.Mappings
                     opt => opt.MapFrom(src => src.Bookings != null ? src.Bookings.Count : 0))
                 .ForMember(dest => dest.RoomCount,
                     opt => opt.MapFrom(src => src.Rooms != null ? src.Rooms.Count : 0));
+
+            CreateMap<RoomUsage, RoomUsageDTO>()
+            .ForMember(dest => dest.CleaningState,
+                    opt => opt.MapFrom(src => src.CleaningState.ToString()));
+
+
         }
     }
 }

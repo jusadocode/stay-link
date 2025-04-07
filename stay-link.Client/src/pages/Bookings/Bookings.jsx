@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import { AuthContext } from "../../shared/context/AuthContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import LoadingIndicator from "../../shared/components/LoadingIndicator";
+import React from "react";
 
 function BookingsPage() {
   const [bookings, setBookings] = useState([]);

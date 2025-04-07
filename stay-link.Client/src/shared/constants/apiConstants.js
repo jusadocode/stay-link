@@ -7,5 +7,6 @@ export const REFRESH_TOKEN_URL = API_URL+ "/accessToken";
 export const API_BOOKINGS_URL = API_URL+ "/Bookings";
 export const API_HOTELS_URL = API_URL+ "/Hotels";
 export const API_ROOMS_URL = API_URL+ "/Rooms";
+export const API_ROOMS_USAGES_URL = API_URL+ "/Rooms/usages";
 export const API_ROOMS_FEATURES_URL = API_URL+ "/Rooms/features";
 export const API_ROOMS_SEARCH_URL = API_ROOMS_URL+ "/filter";

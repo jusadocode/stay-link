@@ -5,6 +5,7 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { Box, Typography } from "@mui/material";
 import dayjs from "dayjs";
+import React from "react";
 
 export default function CheckInStep({ bookingDates, setBookingDates }) {
   const tomorrow = dayjs().add(1, "day");

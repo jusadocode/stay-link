@@ -101,6 +101,15 @@ namespace stay_link.Server.Services
 
         }
 
+        public async Task<List<RoomUsageDTO>> GetRoomsUsages()
+        {
+            var usages = await _context.RoomUsages
+                .ToListAsync();
+
+            return _mapper.Map<List<RoomUsageDTO>>(usages);
+
+        }
+
         public async Task <List<Room?>> FindMatchingRoomsByPreference(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
         {
             var availableRooms = await _context.Rooms
@@ -157,7 +166,7 @@ namespace stay_link.Server.Services
 
             }
 
-            return roomScores.OrderByDescending(r => r.Value).Select(r => r.Key).Take(5).ToList();
+            return roomScores.OrderByDescending(r => r.Value).Select(r => r.Key).Take(10).ToList();
         }
 
         public async Task<IEnumerable<Room?>> FindMatchingRoomsByBookingPreference(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences, List<BookingFeature> bookingPreferences)
@@ -268,10 +277,20 @@ namespace stay_link.Server.Services
                 roomUsage.GeneralWear = Math.Round(roomUsage.GeneralWear + 0.01, 2);
 
                 // Check if maintenance or cleaning is needed
-                if (roomUsage.GeneralWear >= BookingConstants.MaintenanceThreshold)
+                if (roomUsage.GeneralWear >= 0.4)
                 {
                     roomUsage.CleaningState = CleaningState.NeedsCleaning;
                 }
+                else if (roomUsage.GeneralWear >= 0.8)
+                {
+                    roomUsage.CleaningState = CleaningState.DeepCleaning;
+                }
+
+                if(roomUsage.TimesBookedThisYear >= 20)
+                {
+                    roomUsage.CleaningState = CleaningState.DeepCleaning;
+                }
+
             }
 
             await _context.SaveChangesAsync();

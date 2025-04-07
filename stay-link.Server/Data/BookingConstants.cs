@@ -2,12 +2,13 @@
 {
     public static class BookingConstants
     {
-        public const int MaintenanceThreshold = 1; // Number of bookings before maintenance is required
+        public const double GeneralCleaningThreshold = 0.4; // Number of bookings before maintenance is required
+        public const double DeepMaintenanceThreshold = 0.8; // Number of bookings before maintenance is required
         public const double WearThreshold = 0.8; // General wear threshold for maintenance
-        public const double WearIncreasePerBooking = 0.01; // Wear increase per booking
+        public const double WearIncreasePerBooking = 0.10; // Wear increase per booking
         public const double WearReductionAfterMaintenance = 0.5; // Wear reduction after maintenance
 
-        public const int CleaningThreshold = 5; // Number of bookings before cleaning is required
+        public const int DeepCleaningThreshold = 2; // Number of bookings before cleaning is required
         public const double CleaningWearThreshold = 0.6; // Wear threshold for cleaning
 
         public const int MaxOccupancyDefault = 2; // Default maximum occupancy for rooms

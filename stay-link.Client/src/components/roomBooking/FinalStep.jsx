@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
-
 import { Box, Typography } from "@mui/material";
 import RoomTypes from "../../data/roomTypes";
+import React from "react";
 
 export default function FinalStep({
   selectedRoom,

@@ -8,6 +8,7 @@ import SearchSection from "./components/SearchSection";
 import useRooms from "../../shared/hooks/useRooms";
 import LoadingIndicator from "../../shared/components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
 const HomePage = () => {
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);

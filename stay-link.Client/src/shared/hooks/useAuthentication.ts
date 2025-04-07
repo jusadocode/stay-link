@@ -1,27 +1,25 @@
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import {
   LOGIN_API_URL,
   LOGOUT_API_URL,
   REGISTER_API_URL,
-  REFRESH_TOKEN_URL
-} from '../constants/apiConstants';
-import { LOGIN_PATH } from '../constants/routes';
-import { useNavigate} from 'react-router-dom';
+  REFRESH_TOKEN_URL,
+} from "../constants/apiConstants";
+import { LOGIN_PATH } from "../constants/routes";
+import { useNavigate } from "react-router-dom";
 
 export const useAuthentication = () => {
-  const { isLoggedIn, setAuthData, clearUserData } = useContext(
-    AuthContext
-  ) ;
+  const { isLoggedIn, setAuthData, clearUserData } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
   const login = async (data) => {
-    const response= await fetch(LOGIN_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch(LOGIN_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-      credentials: 'include'
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -31,8 +29,7 @@ export const useAuthentication = () => {
 
     const userData = await response.json();
 
-
-    setAuthData(userData)
+    setAuthData(userData);
 
     return true;
   };
@@ -40,8 +37,8 @@ export const useAuthentication = () => {
   const logout = async () => {
     try {
       const response = await fetch(LOGOUT_API_URL, {
-        method: 'POST',
-        credentials: 'include'
+        method: "POST",
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -52,7 +49,7 @@ export const useAuthentication = () => {
 
       return true;
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
       return false;
     }
   };
@@ -60,10 +57,10 @@ export const useAuthentication = () => {
   const registerUser = async (data) => {
     try {
       const response = await fetch(REGISTER_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-        credentials: 'include'
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -73,52 +70,47 @@ export const useAuthentication = () => {
 
       return true;
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Unknown error');
+      throw new Error(error instanceof Error ? error.message : "Unknown error");
     }
   };
 
-  const customFetch = async (
-    url,
-    options = {}
-  ) => {
-    
+  const customFetch = async (url, options = {}) => {
     try {
       const response = await fetch(url, {
         ...options,
-        credentials: 'include', 
+        credentials: "include",
       });
-  
-      if (response.ok)
-        return response; 
-      
+
+      if (response.ok) return response;
+
       if (response.status === 401) {
-        console.log('Access token expired. Attempting to refresh...');
+        console.log("Access token expired. Attempting to refresh...");
         const refreshResponse = await fetch(REFRESH_TOKEN_URL, {
-          method: 'POST',
-          credentials: 'include', 
+          method: "POST",
+          credentials: "include",
         });
-  
+
         if (refreshResponse.ok) {
-          console.log('Token refreshed. Retrying original request...');
+          console.log("Token refreshed. Retrying original request...");
           return fetch(url, {
             ...options,
-            credentials: 'include',
+            credentials: "include",
           });
         }
-  
-        console.error('Failed to refresh token. Logging out...');
+
+        console.error("Failed to refresh token. Logging out...");
         clearUserData();
         navigate(LOGIN_PATH);
 
-        throw new Error('Unauthorized');
+        throw new Error("Unauthorized");
       }
-  
+
       return response;
     } catch (error) {
-      console.error('Error occurred during fetchWithRefresh:', error);
+      console.error("Error occurred during fetchWithRefresh:", error);
       throw error;
     }
-};
+  };
 
-  return { login, logout, registerUser, customFetch, isLoggedIn};
+  return { login, logout, registerUser, customFetch, isLoggedIn };
 };

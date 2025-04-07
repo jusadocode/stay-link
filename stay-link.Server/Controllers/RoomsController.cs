@@ -51,6 +51,14 @@ namespace stay_link.Server.Controllers
             return Ok(features); // Wrap the result in Ok()
         }
 
+        [HttpGet("usages")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomFeatureDetailsDTO>))]
+        public async Task<ActionResult<IEnumerable<RoomUsageDTO>>> GetRoomsUsages()
+        {
+            var usages = await _roomService.GetRoomsUsages();
+            return Ok(usages); // Wrap the result in Ok()
+        }
+
         // GET: api/Rooms/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Room))]

@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
-
 import { Box, Typography } from "@mui/material";
 import RoomTypes from "../../data/roomTypes";
+import React from "react";
 
 export default function FinalStepGroup({
   selectedRooms,
@@ -64,7 +63,7 @@ export default function FinalStepGroup({
             </Typography>
           )}
           <Typography variant="body2">Cleaning fee: €{cleaningFee}</Typography>
-          <Typography variant="body4">
+          <Typography variant="body2">
             <strong>Total:</strong> €{totalPrice}
           </Typography>
         </Box>

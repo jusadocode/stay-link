@@ -1,4 +1,5 @@
 import { Select, MenuItem, Typography, Box } from "@mui/material";
+import React from "react";
 
 export default function ExtraStepGroup({
   selectedRooms,

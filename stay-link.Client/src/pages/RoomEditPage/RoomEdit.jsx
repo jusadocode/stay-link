@@ -11,15 +11,15 @@ import {
 import RoomTypes from "../../data/roomTypes";
 import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
 const RoomEditPage = () => {
   const { id } = useParams();
 
   const navigate = useNavigate();
 
-  const { fetchRoom, fetchHotel, updateRoom } = useBookings(); // Assuming you have an updateRoom method
+  const { fetchRoom, updateRoom } = useBookings(); // Assuming you have an updateRoom method
   const [room, setRoom] = useState(null);
-  const [hotel, setHotel] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
   const [updateLoading, setUpdateLoading] = useState(false); // Add update button loading state
 
@@ -28,9 +28,6 @@ const RoomEditPage = () => {
     try {
       const roomData = await fetchRoom(id);
       setRoom(roomData);
-
-      const hotelData = await fetchHotel(roomData.hotelID);
-      setHotel(hotelData);
     } catch (error) {
       console.error("Failed to load room or hotel data:", error);
     } finally {
@@ -45,14 +42,6 @@ const RoomEditPage = () => {
   // Handle changes in room data
   const handleRoomChange = (field, value) => {
     setRoom((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  // Handle changes in hotel data
-  const handleHotelChange = (field, value) => {
-    setHotel((prev) => ({
       ...prev,
       [field]: value,
     }));
@@ -82,7 +71,7 @@ const RoomEditPage = () => {
     );
   }
 
-  if (!room || !hotel) {
+  if (!room) {
     return (
       <Box sx={{ mt: 5, textAlign: "center" }}>
         <Typography variant="h6">Room or Hotel not found.</Typography>
@@ -104,27 +93,7 @@ const RoomEditPage = () => {
           gap: "2rem",
           alignItems: "center",
         }}
-      >
-        <Typography variant="h6" gutterBottom>
-          Located in {hotel.name}, {hotel.address}
-        </Typography>
-
-        <Box
-          component="img"
-          src={hotel.imageUrl}
-          alt={hotel.name}
-          sx={{
-            borderRadius: "0.5rem",
-            width: "100%",
-            height: "50%",
-            objectFit: "cover",
-            transition: "transform 1s ease-in-out", // Smooth transition
-            "&:hover": {
-              transform: "scale(1.2)", // Slight zoom-in effect
-            },
-          }}
-        />
-      </Box>
+      ></Box>
 
       <Box sx={{ mb: 3 }}>
         <Typography variant="h6" gutterBottom>

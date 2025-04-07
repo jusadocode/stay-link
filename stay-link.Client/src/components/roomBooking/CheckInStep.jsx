@@ -5,6 +5,7 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { Box, Typography } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
+import React from "react";
 
 export default function CheckInStep({ bookingDates, setBookingDates }) {
   const lastSunday = dayjs().startOf("week").subtract(1, "day");

@@ -1,14 +1,13 @@
 import { Box, Button, Link, Typography } from "@mui/material";
 import { useAuthentication } from "../shared/hooks/useAuthentication";
-import useBookings from "../shared/hooks/useBookings";
 import { useContext } from "react";
 import { AuthContext } from "../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_PATH, REGISTER_PATH } from "../shared/constants/routes";
+import React from "react";
 
 const Header = () => {
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
-  const { fetchRooms } = useBookings();
 
   const navigate = useNavigate();
 

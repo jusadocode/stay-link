@@ -88,12 +88,12 @@ namespace stay_link.Server.Services
             if (rooms.Count != bookingDTO.RoomIds.Count)
                 throw new Exception("One or more selected rooms were not found.");
 
-            if (bookingDTO.HotelId != null)
-            {
-                var hotel = await _context.Hotels.FindAsync(bookingDTO.HotelId);
-                if (hotel == null)
-                    throw new Exception("Hotel not found.");
-            }
+            //if (bookingDTO.HotelId != null)
+            //{
+            //    var hotel = await _context.Hotels.FindAsync(bookingDTO.HotelId);
+            //    if (hotel == null)
+            //        throw new Exception("Hotel not found.");
+            //}
 
             booking.CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate);
             booking.CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate);

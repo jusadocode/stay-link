@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
   SortableContext,
-  useSortable,
   verticalListSortingStrategy,
   arrayMove,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import {
-  Box,
-  Typography,
-  Paper,
-  List,
-  ListItem,
-  Button,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Box, Typography, Paper, List, Button, TextField } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -28,10 +17,10 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import useRooms from "../../../shared/hooks/useRooms";
 import dayjs from "dayjs";
+import SortableItem from "./SortableItem";
 
 function SearchSection({ setRooms, setIsLoading }) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
@@ -216,66 +205,6 @@ function SearchSection({ setRooms, setIsLoading }) {
         </Button>
       </Box>
     </Box>
-  );
-}
-
-function SortableItem({ id, label, onRemove }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id,
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    backgroundColor: "#e0f7fa",
-    marginBottom: "8px",
-    borderRadius: "8px",
-    cursor: "pointer",
-  };
-
-  return (
-    <ListItem
-      ref={setNodeRef}
-      style={style}
-      disablePadding
-      sx={{
-        "&:hover": {
-          backgroundColor: "#FFD95F",
-        },
-        "&:hover .remove-btn": {
-          opacity: 1,
-        },
-      }}
-      secondaryAction={
-        <IconButton
-          edge="end"
-          aria-label="delete"
-          className="remove-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            onRemove();
-          }}
-          sx={{ opacity: 0, transition: "opacity 0.2s" }}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      }
-      {...attributes}
-      {...listeners}
-    >
-      <Button fullWidth variant="contained" disableElevation>
-        {label}
-      </Button>
-    </ListItem>
   );
 }
 
