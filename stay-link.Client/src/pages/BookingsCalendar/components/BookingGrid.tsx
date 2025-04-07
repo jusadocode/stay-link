@@ -96,7 +96,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
         gridTemplateColumns={gridTemplateColumns}
         sx={{ minWidth: `${150 + numDays * 80}px` }} // Ensure minimum width
       >
-        {/* Header Row: Corner */}
         <Box
           sx={{
             p: 1,
@@ -107,7 +106,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
           }}
         ></Box>
 
-        {/* Header Row: Dates */}
         {dateArray.map((date, index) => (
           <Box
             key={index}
@@ -179,10 +177,14 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                         gridColumn: 1,
                       }}
                     >
-                      <Stack spacing={0.5}>
+                      <Stack>
                         {" "}
                         {/* Use Stack for vertical layout */}
-                        <Typography variant="body2" fontWeight="medium">
+                        <Typography
+                          variant="body2"
+                          fontWeight="medium"
+                          minWidth={"100%"}
+                        >
                           {room.title}
                         </Typography>
                         {/* Display Usage Info if available */}

@@ -33,14 +33,14 @@ namespace stay_link.Server.Services
             var token = new JwtSecurityToken(
                 issuer: _issuer,
                 audience: _audience,
-                expires: DateTime.Now.AddMinutes(15),
+                expires: DateTime.Now.AddMinutes(1),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(_authSigningKey, SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string CreateRefreshToken(Guid sessionId, string userId, DateTime expires)
+        public string CreateRefreshToken(Guid sessionId, string userId)
         {
             var authClaims = new List<Claim>
             {

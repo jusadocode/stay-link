@@ -64,7 +64,7 @@ namespace stay_link.Server.Controllers
                 var sessionId = Guid.NewGuid();
                 var expiresAt = DateTime.UtcNow.AddMinutes(60);
                 var accessToken = jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
-                var refreshToken = jwtTokenService.CreateRefreshToken(sessionId, user.Id, expiresAt);
+                var refreshToken = jwtTokenService.CreateRefreshToken(sessionId, user.Id);
 
                 await sessionService.CreateSessionAsync(sessionId, user.Id, refreshToken, expiresAt);
 
@@ -120,9 +120,9 @@ namespace stay_link.Server.Controllers
 
                 var roles = await userManager.GetRolesAsync(user);
 
-                var expiresAt = DateTime.UtcNow.AddDays(1);
+                var expiresAt = DateTime.UtcNow.AddMinutes(60);
                 var accessToken = jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
-                var newRefreshToken = jwtTokenService.CreateRefreshToken(sessionIdAsGuid, user.Id, expiresAt);
+                var newRefreshToken = jwtTokenService.CreateRefreshToken(sessionIdAsGuid, user.Id);
 
                 var cookieOptions = new CookieOptions
                 {

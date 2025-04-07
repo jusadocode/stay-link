@@ -56,7 +56,10 @@ builder.Services.AddAuthentication(configureOptions =>
     configureOptions.MapInboundClaims = false;
     configureOptions.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:ValidAudience"];
     configureOptions.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
+    configureOptions.TokenValidationParameters.ValidateLifetime = true;
+    configureOptions.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
     configureOptions.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")));
+
 
     configureOptions.Events = new JwtBearerEvents
     {
