@@ -85,6 +85,11 @@ builder.Services.AddScoped<AuthSeeder>();
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddScoped<RoomService>();
 
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true; 
+});
+
 
 
 var app = builder.Build();
@@ -111,5 +116,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();

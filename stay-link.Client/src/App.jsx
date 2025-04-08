@@ -8,6 +8,8 @@ import Login from "./pages/Login/Login";
 import BookingsCalendar from "./pages/BookingsCalendar/BookingCalendar";
 import React from "react";
 import RoomEditPage from "./pages/RoomEditPage/RoomEdit";
+import AdminRoomPage from "./pages/AdminRoomPage/AdminRoomPage";
+import RoomAdditionPage from "./pages/RoomAdditionPage/RoomAdditionPage";
 
 function App() {
   return (
@@ -18,8 +20,10 @@ function App() {
         <Route path={"/login"} element={<Login />} />
         <Route path={"/register"} element={<Registration />} />
         <Route path={"/bookings"} element={<BookingsPage />} />
+        <Route path={"/rooms"} element={<AdminRoomPage />} />
         <Route path={"/bookings/calendar"} element={<BookingsCalendar />} />
         <Route path={"/rooms/edit/:id"} element={<RoomEditPage />} />
+        <Route path="/rooms/new" element={<RoomAdditionPage />} />
       </Routes>
     </div>
   );

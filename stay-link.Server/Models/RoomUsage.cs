@@ -8,14 +8,14 @@ namespace stay_link.Server.Models
         [Required]
         public int RoomId { get; set; }
         [Required]
-        public double GeneralWear { get; set; }
+        public double GeneralWear { get; set; } = 0.0;
         [Required]
-        public CleaningState CleaningState { get; set; }
+        public CleaningState CleaningState { get; set; } = CleaningState.Clean;
         [Required]
 
-        public int TimesBookedThisYear { get; set; }
+        public int TimesBookedThisYear { get; set; } = 0;
         [Required]
-        public int TimesBookedSinceMaintenance { get; set; }
+        public int TimesBookedSinceMaintenance { get; set; } = 0;
         public virtual Room Room { get; set; }
 
     }

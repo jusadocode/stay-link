@@ -1,36 +1,11 @@
 import { useAuthentication } from "./useAuthentication";
-import {
-  API_BOOKINGS_URL,
-  API_HOTELS_URL,
-  API_ROOMS_URL,
-} from "../constants/apiConstants";
+import { API_BOOKINGS_URL } from "../constants/apiConstants";
 
 const useBookings = () => {
   const { customFetch } = useAuthentication();
 
   const fetchBookings = async () => {
     const response = await customFetch(API_BOOKINGS_URL, {
-      method: "GET",
-    });
-    return response.json();
-  };
-
-  // const fetchHotel = async (hotelId) => {
-  //     const response = await customFetch(API_HOTELS_URL+`/${hotelId}`, {
-  //         method: 'GET'
-  //     });
-  //     return response.json();
-  // };
-
-  const fetchRoom = async (roomId: string) => {
-    const response = await customFetch(API_ROOMS_URL + `/${roomId}`, {
-      method: "GET",
-    });
-    return response.json();
-  };
-
-  const fetchAllRooms = async () => {
-    const response = await customFetch(API_ROOMS_URL, {
       method: "GET",
     });
     return response.json();
@@ -47,26 +22,6 @@ const useBookings = () => {
     return data;
   };
 
-  const updateRoom = async (room) => {
-    const response = await customFetch(API_ROOMS_URL + `/${room.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(room),
-    });
-
-    return response;
-  };
-
-  // async function fetchHotels() {
-  //     const response = await fetch(API_HOTELS_URL);
-  //     return response.json();
-  // }
-
-  async function fetchHotelRooms(hotelId: number) {
-    const response = await fetch(API_HOTELS_URL + `/${hotelId}/Rooms`);
-    return response.json();
-  }
-
   const deleteBooking = async (bookingId: number) => {
     const response = await customFetch(API_BOOKINGS_URL + `/${bookingId}`, {
       method: "DELETE",
@@ -79,11 +34,7 @@ const useBookings = () => {
   return {
     addBooking,
     fetchBookings,
-    fetchRoom,
-    updateRoom,
-    fetchHotelRooms,
     deleteBooking,
-    fetchAllRooms,
   };
 };
 

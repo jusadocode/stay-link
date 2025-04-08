@@ -98,8 +98,6 @@ export const useAuthentication = () => {
           });
         }
 
-        console.error("Failed to refresh token. Logging out...");
-        clearUserData();
         navigate(LOGIN_PATH);
 
         throw new Error("Unauthorized");

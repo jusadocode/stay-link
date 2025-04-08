@@ -62,17 +62,17 @@ namespace stay_link.Server.Controllers
                 var roles = await userManager.GetRolesAsync(user);
 
                 var sessionId = Guid.NewGuid();
-                var expiresAt = DateTime.UtcNow.AddMinutes(60);
+                var cookieExpiresAt = DateTime.UtcNow.AddHours(72);
                 var accessToken = jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
                 var refreshToken = jwtTokenService.CreateRefreshToken(sessionId, user.Id);
 
-                await sessionService.CreateSessionAsync(sessionId, user.Id, refreshToken, expiresAt);
+                await sessionService.CreateSessionAsync(sessionId, user.Id, refreshToken, cookieExpiresAt);
 
                 var cookieOptions = new CookieOptions
                 {
                     HttpOnly = true,
                     SameSite = SameSiteMode.None,
-                    Expires = expiresAt,
+                    Expires = cookieExpiresAt,
                     Secure = true,
                 };
 
@@ -120,7 +120,7 @@ namespace stay_link.Server.Controllers
 
                 var roles = await userManager.GetRolesAsync(user);
 
-                var expiresAt = DateTime.UtcNow.AddMinutes(60);
+                var cookieExpiresAt = DateTime.UtcNow.AddHours(72);
                 var accessToken = jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
                 var newRefreshToken = jwtTokenService.CreateRefreshToken(sessionIdAsGuid, user.Id);
 
@@ -128,14 +128,14 @@ namespace stay_link.Server.Controllers
                 {
                     HttpOnly = true,
                     SameSite = SameSiteMode.None,
-                    Expires = expiresAt,
+                    Expires = cookieExpiresAt,
                     Secure = true
                 };
 
                 httpContext.Response.Cookies.Append("AccessToken", accessToken, cookieOptions);
                 httpContext.Response.Cookies.Append("RefreshToken", newRefreshToken, cookieOptions);
 
-                await sessionService.ExtendSessionAsync(sessionIdAsGuid, newRefreshToken, expiresAt);
+                await sessionService.ExtendSessionAsync(sessionIdAsGuid, newRefreshToken, cookieExpiresAt);
 
                 return Results.Ok(new { message = "Access token refreshed" });
 

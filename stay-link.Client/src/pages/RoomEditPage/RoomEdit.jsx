@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useBookings from "../../shared/hooks/useBookings";
 import {
   TextField,
   Button,
@@ -8,17 +7,17 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import RoomTypes from "../../data/roomTypes";
 import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-
+import useRooms from "../../shared/hooks/useRooms";
+import { roomTypeOptions } from "../../shared/utils/roomTypeUtils";
 const RoomEditPage = () => {
   const { id } = useParams();
 
   const navigate = useNavigate();
 
-  const { fetchRoom, updateRoom } = useBookings(); // Assuming you have an updateRoom method
+  const { fetchRoom, updateRoom } = useRooms(); // Assuming you have an updateRoom method
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
   const [updateLoading, setUpdateLoading] = useState(false); // Add update button loading state
@@ -74,7 +73,7 @@ const RoomEditPage = () => {
   if (!room) {
     return (
       <Box sx={{ mt: 5, textAlign: "center" }}>
-        <Typography variant="h6">Room or Hotel not found.</Typography>
+        <Typography variant="h6">Room not found.</Typography>
       </Box>
     );
   }
@@ -111,13 +110,13 @@ const RoomEditPage = () => {
           <Select
             labelId="room-type-label"
             id="room-type-select"
-            value={room.roomType || 0}
+            value={room.roomType}
             onChange={(e) => handleRoomChange("roomType", e.target.value)}
             label="Room Type"
           >
-            {RoomTypes.map((type, index) => (
-              <MenuItem key={index} value={index}>
-                {type}
+            {roomTypeOptions.map((type) => (
+              <MenuItem key={type.value} value={type.value}>
+                {type.label}
               </MenuItem>
             ))}
           </Select>

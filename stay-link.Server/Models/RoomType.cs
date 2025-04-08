@@ -2,7 +2,7 @@
 {
     public enum RoomType
     {
-        Standart,
+        Standard,
         Single,
         Double,
         Twin,

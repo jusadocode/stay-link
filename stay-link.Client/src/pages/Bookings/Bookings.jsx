@@ -12,13 +12,13 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import RoomTypes from "../../data/roomTypes";
 import useBookings from "../../shared/hooks/useBookings";
 import dayjs from "dayjs";
 import { AuthContext } from "../../shared/context/AuthContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import LoadingIndicator from "../../shared/components/LoadingIndicator";
 import React from "react";
+import useRooms from "../../shared/hooks/useRooms";
 
 function BookingsPage() {
   const [bookings, setBookings] = useState([]);
@@ -27,8 +27,8 @@ function BookingsPage() {
 
   const { userIsAdmin } = useContext(AuthContext);
 
-  const { fetchBookings, fetchRoom, deleteBooking } = useBookings();
-
+  const { fetchBookings, deleteBooking } = useBookings();
+  const { fetchRoom } = useRooms();
   useEffect(() => {
     populateBookingData();
   }, []);
@@ -131,8 +131,7 @@ function BookingsPage() {
                         <strong>Description:</strong> {booking.room.summary}
                       </Typography>
                       <Typography>
-                        <strong>Room type:</strong>{" "}
-                        {RoomTypes[booking.room.roomType]}
+                        <strong>Room type:</strong> {booking.room.roomType}
                       </Typography>
                       <Typography>
                         <strong>Space:</strong>{" "}

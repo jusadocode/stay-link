@@ -67,18 +67,18 @@ namespace stay_link.Server.Data
                     // Seed rooms and associate with hotels
                     var rooms = new List<Room>
                     {
-                        new Room { Title = "Standard Room", Summary = "Standard room with garden view", RoomType = RoomType.Standart, Price = 100, HotelId = hotels[0].Id, MaxOccupancy = 4, Features = new List<RoomFeature> { roomFeatures[5] } }, // AC
-                        new Room { Title = "Deluxe Room", Summary = "Deluxe room with sea view", RoomType = RoomType.Deluxe, Price = 200, HotelId = hotels[0].Id, MaxOccupancy = 5, Features = new List<RoomFeature> { roomFeatures[1], roomFeatures[5] } }, // Sea View, AC
-                        new Room { Title = "Suite", Summary = "Suite room with luxury amenities", RoomType = RoomType.Suite, Price = 300, HotelId = hotels[0].Id, MaxOccupancy = 3, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[2], roomFeatures[5] } }, // Balcony, Double Bed, AC
-                        new Room { Title = "Cozy Room", Summary = "Cozy room with snow view", RoomType = RoomType.Standart, Price = 130, HotelId = hotels[0].Id, MaxOccupancy = 2, Features = new List<RoomFeature> { roomFeatures[5] } }, // AC
-                        new Room { Title = "Ski Suite", Summary = "Ski-in/ski-out suite", RoomType = RoomType.Suite, Price = 150, HotelId = hotels[0].Id, MaxOccupancy = 2, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] } }, // Balcony, AC
-                        new Room { Title = "Family Chalet", Summary = "Family chalet with kitchen", RoomType = RoomType.Deluxe, Price = 160, HotelId = hotels[0].Id, MaxOccupancy = 5, Features = new List<RoomFeature> { roomFeatures[2], roomFeatures[5] } }, // Double Bed, AC
-                        new Room { Title = "Oasis Room", Summary = "Oasis view room", RoomType = RoomType.Standart, Price = 120, HotelId = hotels[0].Id, MaxOccupancy = 7, Features = new List<RoomFeature> { roomFeatures[5] } }, // AC
-                        new Room { Title = "Luxury Tent", Summary = "Luxury tent with amenities", RoomType = RoomType.Deluxe, Price = 200, HotelId = hotels[0].Id, MaxOccupancy = 8, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] } }, // Balcony, AC
-                        new Room { Title = "Desert Suite", Summary = "Desert suite with panoramic view", RoomType = RoomType.Suite, Price = 220, HotelId = hotels[0].Id, MaxOccupancy = 9, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] } }, // Balcony, AC
-                        new Room { Title = "River View Room", Summary = "River view room", RoomType = RoomType.Standart, Price = 180, HotelId = hotels[0].Id, MaxOccupancy = 2, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] } }, // Balcony, AC
-                        new Room { Title = "Balcony Room", Summary = "Deluxe room with balcony", RoomType = RoomType.Deluxe, Price = 160, HotelId = hotels[0].Id, MaxOccupancy = 3, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] } }, // Balcony, AC
-                        new Room { Title = "River Access Suite", Summary = "Suite with river access", RoomType = RoomType.Suite, Price = 120, HotelId = hotels[0].Id, MaxOccupancy = 2, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] } } // Balcony, AC
+                        new Room { Title = "Standard Room", Summary = "Standard room with garden view", RoomType = RoomType.Standard, Price = 100, HotelId = hotels[0].Id, MaxOccupancy = 4, Features = new List<RoomFeature> { roomFeatures[5] }, ImageUrl =  "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // AC
+                        new Room { Title = "Deluxe Room", Summary = "Deluxe room with sea view", RoomType = RoomType.Deluxe, Price = 200, HotelId = hotels[0].Id, MaxOccupancy = 5, Features = new List<RoomFeature> { roomFeatures[1], roomFeatures[5] },  ImageUrl =  "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },// Sea View, AC
+                        new Room { Title = "Suite", Summary = "Suite room with luxury amenities", RoomType = RoomType.Suite, Price = 300, HotelId = hotels[0].Id, MaxOccupancy = 3, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[2], roomFeatures[5] },  ImageUrl =  "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // Balcony, Double Bed, AC
+                        new Room { Title = "Cozy Room", Summary = "Cozy room with snow view", RoomType = RoomType.Standard, Price = 130, HotelId = hotels[0].Id, MaxOccupancy = 2, Features = new List<RoomFeature> { roomFeatures[5] } , ImageUrl = "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}, // AC
+                        new Room { Title = "Ski Suite", Summary = "Ski-in/ski-out suite", RoomType = RoomType.Suite, Price = 150, HotelId = hotels[0].Id, MaxOccupancy = 2, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] } , ImageUrl =  "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // Balcony, AC
+                        new Room { Title = "Family Chalet", Summary = "Family chalet with kitchen", RoomType = RoomType.Deluxe, Price = 160, HotelId = hotels[0].Id, MaxOccupancy = 5, Features = new List<RoomFeature> { roomFeatures[2], roomFeatures[5] },  ImageUrl =  "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // Double Bed, AC
+                        new Room { Title = "Oasis Room", Summary = "Oasis view room", RoomType = RoomType.Standard, Price = 120, HotelId = hotels[0].Id, MaxOccupancy = 7, Features = new List<RoomFeature> { roomFeatures[5] }, ImageUrl =  "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // AC
+                        new Room { Title = "Luxury Tent", Summary = "Luxury tent with amenities", RoomType = RoomType.Deluxe, Price = 200, HotelId = hotels[0].Id, MaxOccupancy = 8, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] },  ImageUrl =  "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // Balcony, AC
+                        new Room { Title = "Desert Suite", Summary = "Desert suite with panoramic view", RoomType = RoomType.Suite, Price = 220, HotelId = hotels[0].Id, MaxOccupancy = 9, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] }, ImageUrl = "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // Balcony, AC
+                        new Room { Title = "River View Room", Summary = "River view room", RoomType = RoomType.Standard, Price = 180, HotelId = hotels[0].Id, MaxOccupancy = 2, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] },  ImageUrl =  "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // Balcony, AC
+                        new Room { Title = "Balcony Room", Summary = "Deluxe room with balcony", RoomType = RoomType.Deluxe, Price = 160, HotelId = hotels[0].Id, MaxOccupancy = 3, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] }, ImageUrl = "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // Balcony, AC
+                        new Room { Title = "River Access Suite", Summary = "Suite with river access", RoomType = RoomType.Suite, Price = 120, HotelId = hotels[0].Id, MaxOccupancy = 2, Features = new List<RoomFeature> { roomFeatures[0], roomFeatures[5] }, ImageUrl = "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }, // Balcony, AC
                     };
 
 
@@ -91,8 +91,8 @@ namespace stay_link.Server.Data
                     {
                         new Booking
                         {
-                            CheckInDate = new DateOnly(2025, 5, 24),
-                            CheckOutDate = new DateOnly(2025, 5, 27),
+                            CheckInDate = new DateOnly(2025, 4, 24),
+                            CheckOutDate = new DateOnly(2025, 4, 27),
                             Rooms = new List<Room> {rooms[0]},
                             BreakfastRequests = 3,
                             TotalGuests = rooms[0].MaxOccupancy - 1,
@@ -102,8 +102,8 @@ namespace stay_link.Server.Data
                         },
                         new Booking
                         {
-                            CheckInDate = new DateOnly(2025, 6, 20),
-                            CheckOutDate = new DateOnly(2025, 6, 21),
+                            CheckInDate = new DateOnly(2025, 4, 20),
+                            CheckOutDate = new DateOnly(2025, 4, 21),
                             Rooms = new List<Room> {rooms[1]},
                             TotalGuests = rooms[1].MaxOccupancy - 1,
                             BreakfastRequests = 2,
@@ -112,8 +112,8 @@ namespace stay_link.Server.Data
                         },
                         new Booking
                         {
-                            CheckInDate = new DateOnly(2025, 7, 15),
-                            CheckOutDate = new DateOnly(2025, 7, 18),
+                            CheckInDate = new DateOnly(2025, 4, 15),
+                            CheckOutDate = new DateOnly(2025, 4, 18),
                             Rooms = new List<Room> {rooms[2], rooms[3] },
                             TotalGuests = rooms[2].MaxOccupancy - 1 + rooms[3].MaxOccupancy -2,
                             BreakfastRequests = 4,
@@ -122,8 +122,8 @@ namespace stay_link.Server.Data
                         },
                         new Booking
                         {
-                            CheckInDate = new DateOnly(2025, 8, 10),
-                            CheckOutDate = new DateOnly(2025, 8, 12),
+                            CheckInDate = new DateOnly(2025, 4, 10),
+                            CheckOutDate = new DateOnly(2025, 4, 12),
                             Rooms = new List<Room> {rooms[4], rooms[5] },
                             TotalGuests = rooms[4].MaxOccupancy - 1 + rooms[5].MaxOccupancy -1,
                             BreakfastRequests = 1,

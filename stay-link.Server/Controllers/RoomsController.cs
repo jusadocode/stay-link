@@ -43,6 +43,20 @@ namespace stay_link.Server.Controllers
             return Ok(rooms); // Wrap the result in Ok()
         }
 
+        [HttpGet("filter/group")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomDTO>))]
+        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetGroupRoomsByFilters(
+        [FromQuery] DateOnly checkIn,
+        [FromQuery] DateOnly checkOut,
+        [FromQuery] int guestCount,
+        [FromQuery] List<int> preferenceIds)
+        {
+
+            var preferences = await _roomService.GetRoomFeaturesByIds(preferenceIds);
+            var rooms = await _roomService.GetRooms(checkIn, checkOut, guestCount, preferences);
+            return Ok(rooms); // Wrap the result in Ok()
+        }
+
         [HttpGet("features")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomFeatureDetailsDTO>))]
         public async Task<ActionResult<IEnumerable<RoomFeatureDetailsDTO>>> GetRoomsFeatures()
@@ -79,7 +93,7 @@ namespace stay_link.Server.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<Room>> PostRoom(CreateRoomDTO room)
+        public async Task<ActionResult<RoomDTO>> PostRoom(CreateRoomDTO room)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { message = "Invalid room data.", errors = ModelState });

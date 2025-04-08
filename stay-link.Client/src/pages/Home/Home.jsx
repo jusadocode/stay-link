@@ -70,7 +70,7 @@ const HomePage = () => {
         <Button
           variant="outlined"
           component="a"
-          href="https://github.com/jusadocode"
+          onClick={() => navigate("/rooms")}
           target="_blank"
           rel="noopener noreferrer"
         >

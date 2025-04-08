@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import RoomTypes from "../../data/roomTypes";
 import React from "react";
 
 export default function FinalStepGroup({
@@ -31,7 +30,7 @@ export default function FinalStepGroup({
       </Typography>
       <Box sx={{ mt: 2 }}>
         <Typography variant="body2">
-          <strong>Room type:</strong> {RoomTypes[selectedRooms.roomType]}
+          <strong>Room type:</strong> {selectedRooms.roomType}
         </Typography>
         <Typography variant="body2">
           <strong>Price per night:</strong> €{selectedRooms.price}

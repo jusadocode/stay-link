@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Features;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using stay_link.Server.Data;
@@ -36,18 +37,29 @@ namespace stay_link.Server.Services
             return _mapper.Map<RoomDTO>(room);
         }
 
-        public async Task<Room> CreateRoom(CreateRoomDTO createRoomDTO)
+        public async Task<RoomDTO> CreateRoom(CreateRoomDTO createRoomDTO)
         {
+            var features  = await _context.RoomFeatures
+                  .Where(r => createRoomDTO.FeatureIds.Contains(r.Id))
+                  .ToListAsync();
+
             var room = _mapper.Map<Room>(createRoomDTO);
 
-            var hotel = await _context.Hotels.FindAsync(room.HotelId);
-            if (hotel == null)
-                throw new Exception("Specified hotel does not exist.");
+
+            room.Features = features;
 
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
 
-            return room;
+            var roomUsage = new RoomUsage
+            {
+                RoomId = room.Id
+            };
+
+            _context.RoomUsages.Add(roomUsage);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<RoomDTO>(room);
         }
 
         public async Task<bool> UpdateRoom(int id, UpdateRoomDTO roomDTO)
@@ -56,9 +68,7 @@ namespace stay_link.Server.Services
             if (room == null)
                 return false;
 
-            var hotel = await _context.Hotels.FindAsync(roomDTO.HotelId);
-            if (hotel == null)
-                throw new Exception("Specified hotel does not exist.");
+            room.RoomType = Enum.Parse<RoomType>(roomDTO.RoomType);
 
             _mapper.Map(roomDTO, room); // Update room properties from DTO
             _context.Entry(room).State = EntityState.Modified;

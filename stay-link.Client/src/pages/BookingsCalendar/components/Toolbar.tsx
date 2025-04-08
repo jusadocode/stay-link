@@ -65,15 +65,7 @@ function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
         </IconButton>
       </Box>
 
-      <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Button variant="contained" color="primary" size="small">
-          + Reservation
-        </Button>
-
-        <Button variant="contained" color="primary" size="small">
-          + Room Closure
-        </Button>
-      </Box>
+      <Box sx={{ display: "flex", gap: "1rem" }}></Box>
     </Box>
   );
 }

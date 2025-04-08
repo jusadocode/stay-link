@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import BookingDialog from "../../../components/roomBooking/RoomBookingDialog";
-import RoomTypes from "../../../data/roomTypes";
 import { AuthContext } from "../../../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_PATH } from "../../../shared/constants/routes";
@@ -27,7 +26,7 @@ function RoomList({ rooms }) {
   const [expandedRoomId, setExpandedRoomId] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
-  const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
+  const { isLoggedIn } = useContext(AuthContext);
 
   const filteredRooms = rooms.filter((room) =>
     room.title.toLowerCase().includes(searchInput.toLowerCase())
@@ -45,10 +44,6 @@ function RoomList({ rooms }) {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setSelectedRoom(null);
-  };
-
-  const handleEditClick = (room) => {
-    navigate(`rooms/edit/${room.id}`);
   };
 
   return (
@@ -104,7 +99,7 @@ function RoomList({ rooms }) {
                       />
                     </TableCell>
                     <TableCell>{room.title}</TableCell>
-                    <TableCell>{RoomTypes[room.roomType]}</TableCell>
+                    <TableCell>{room.roomType}</TableCell>
                     <TableCell>
                       {Array.from({ length: room.maxOccupancy }).map((_, i) => (
                         <PersonIcon key={i} fontSize="small" />
@@ -165,18 +160,6 @@ function RoomList({ rooms }) {
                           >
                             Book
                           </Button>
-                          {userIsAdmin() && (
-                            <Button
-                              variant="outlined"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditClick(room);
-                              }}
-                            >
-                              Edit
-                            </Button>
-                          )}
-                          {/* You can add more here (features, usage, etc) */}
                         </Box>
                       </Collapse>
                     </TableCell>

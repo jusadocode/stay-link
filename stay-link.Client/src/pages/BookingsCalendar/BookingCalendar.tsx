@@ -5,6 +5,7 @@ import useBookings from "../../shared/hooks/useBookings";
 import Toolbar from "./components/Toolbar";
 import BookingGrid from "./components/BookingGrid";
 import React from "react";
+import useRooms from "../../shared/hooks/useRooms";
 
 function BookingsCalendar() {
   const [currentDate, setCurrentDate] = useState(startOfDay(new Date()));
@@ -12,7 +13,8 @@ function BookingsCalendar() {
   const [rooms, setRooms] = useState([]);
   const [bookings, setBookings] = useState([]);
 
-  const { fetchBookings, fetchRoom } = useBookings();
+  const { fetchBookings } = useBookings();
+  const { fetchRoom } = useRooms();
 
   async function populateBookingData() {
     try {
