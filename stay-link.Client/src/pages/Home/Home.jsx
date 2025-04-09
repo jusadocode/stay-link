@@ -67,24 +67,19 @@ const HomePage = () => {
           ""
         )}
 
-        <Button
-          variant="outlined"
-          component="a"
-          onClick={() => navigate("/rooms")}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Rooms
-        </Button>
-        <Button
-          variant="outlined"
-          component="a"
-          href="https://google.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Hotels
-        </Button>
+        {userIsAdmin() ? (
+          <Button
+            variant="outlined"
+            component="a"
+            onClick={() => navigate("/rooms")}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Rooms
+          </Button>
+        ) : (
+          ""
+        )}
       </Box>
 
       <Typography variant="h3" gutterBottom>

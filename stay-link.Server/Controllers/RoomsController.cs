@@ -109,6 +109,30 @@ namespace stay_link.Server.Controllers
             }
         }
 
+        // POST: api/Rooms
+        [HttpPost("batch")]
+        [Authorize(Roles = BookingRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Room))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> PostRooms(CreateRoomDTO room, [FromQuery] int numOfRooms)
+        
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = "Invalid room data.", errors = ModelState });
+
+            try
+            {
+                var createdRooms = await _roomService.CreateRooms(room, numOfRooms);
+                return Ok(createdRooms);
+            }
+            catch (System.Exception ex)
+            {
+                return UnprocessableEntity(new { message = ex.Message });
+            }
+        }
+
         // PUT: api/Rooms/5
         [HttpPut("{id}")]
         [Authorize(Roles = BookingRoles.Admin)]

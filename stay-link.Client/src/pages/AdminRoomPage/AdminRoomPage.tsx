@@ -20,6 +20,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -29,7 +30,7 @@ import useRooms from "../../shared/hooks/useRooms";
 
 function AdminRoomPage() {
   const [searchInput, setSearchInput] = useState("");
-  const [roomToDelete, setRoomToDelete] = useState(null); // Store room object for delete confirmation
+  const [roomToDelete, setRoomToDelete] = useState(null);
   const { fetchRooms, deleteRoom } = useRooms();
 
   const navigate = useNavigate();
@@ -38,15 +39,44 @@ function AdminRoomPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [roomUsages, setRoomUsages] = useState<{ [roomId: number]: RoomUsage }>(
+    {}
+  );
+
+  const { fetchRoomsUsages } = useRooms();
+
+  async function populateUsageData() {
+    try {
+      const usageData: RoomUsage[] = await fetchRoomsUsages();
+      const usageMap = usageData.reduce((acc, usage) => {
+        acc[usage.roomId] = usage;
+        return acc;
+      }, {});
+      setRoomUsages(usageMap);
+    } catch (error) {
+      console.error("Error fetching usage data:", error);
+    }
+  }
+
+  const getWearColor = (wear: number) => {
+    if (wear < 30) return "success";
+    if (wear < 70) return "warning";
+    return "error";
+  };
+
+  useEffect(() => {
+    populateUsageData();
+  }, []);
+
   const filteredRooms = rooms.filter((room) =>
     room.title.toLowerCase().includes(searchInput.toLowerCase())
   );
 
-  const handleEditClick = (room: RoomType) => {
+  const handleEditClick = (room: Room) => {
     navigate(`/rooms/edit/${room.id}`); // Navigate to admin edit route
   };
 
-  const handleOpenDeleteDialog = (room: RoomType) => {
+  const handleOpenDeleteDialog = (room: Room) => {
     setRoomToDelete(room);
   };
 
@@ -58,11 +88,8 @@ function AdminRoomPage() {
     if (!roomToDelete) return;
 
     try {
-      // Replace with your actual delete call, potentially from a hook
-      // await deleteRoomMutation.mutateAsync(roomToDelete.id);
       await deleteRoom(roomToDelete.id); // Using the mock/real function
 
-      console.log(`Room ${roomToDelete.title} deleted.`);
       handleCloseDeleteDialog();
     } catch (err) {
       console.error("Error deleting room:", err);
@@ -134,83 +161,131 @@ function AdminRoomPage() {
             <TableHead>
               <TableRow>
                 <TableCell sx={{ width: "100px" }}>Image</TableCell>{" "}
-                {/* Optional Image */}
                 <TableCell>Title</TableCell>
                 <TableCell>Type</TableCell>
                 <TableCell>Guests</TableCell>
                 <TableCell>Price (€)</TableCell>
+                <TableCell>Wear</TableCell>
                 <TableCell align="right">Actions</TableCell>{" "}
-                {/* Actions Column */}
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRooms.map((room) => (
-                // Removed React.Fragment and Collapse for simplicity in admin view
-                <TableRow key={room.id} hover>
-                  <TableCell>
-                    {room.imageUrl ? (
-                      <img
-                        src={room.imageUrl}
-                        alt={room.title}
-                        style={{
-                          width: 80, // Smaller image
-                          height: 50,
-                          objectFit: "cover",
-                          borderRadius: 4,
-                        }}
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          width: 80,
-                          height: 50,
-                          backgroundColor: "#eee",
-                          borderRadius: 1,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#999",
-                        }}
-                      >
-                        <Typography variant="caption">No Image</Typography>
+              {filteredRooms.map((room) => {
+                const usage = roomUsages[room.id];
+                const usagePercentage = usage
+                  ? Math.round(usage.generalWear * 100)
+                  : 0;
+
+                return (
+                  <TableRow key={room.id} hover>
+                    <TableCell>
+                      {room.imageUrl ? (
+                        <img
+                          src={room.imageUrl}
+                          alt={room.title}
+                          style={{
+                            width: 80, // Smaller image
+                            height: 50,
+                            objectFit: "cover",
+                            borderRadius: 4,
+                          }}
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            width: 80,
+                            height: 50,
+                            backgroundColor: "#eee",
+                            borderRadius: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#999",
+                          }}
+                        >
+                          <Typography variant="caption">No Image</Typography>
+                        </Box>
+                      )}
+                    </TableCell>
+                    <TableCell>{room.title}</TableCell>
+                    {/* Use RoomTypes mapping, provide fallback */}
+                    <TableCell>{room.roomType}</TableCell>
+                    <TableCell>
+                      <Box display="flex" alignItems="center">
+                        <PersonIcon fontSize="small" sx={{ mr: 0.5 }} />{" "}
+                        {room.maxOccupancy}
                       </Box>
-                    )}
-                  </TableCell>
-                  <TableCell>{room.title}</TableCell>
-                  {/* Use RoomTypes mapping, provide fallback */}
-                  <TableCell>{room.roomType}</TableCell>
-                  <TableCell>
-                    <Box display="flex" alignItems="center">
-                      <PersonIcon fontSize="small" sx={{ mr: 0.5 }} />{" "}
-                      {room.maxOccupancy}
-                    </Box>
-                  </TableCell>
-                  <TableCell>€{room.price.toFixed(2)}</TableCell>{" "}
-                  {/* Format price */}
-                  <TableCell align="right">
-                    {" "}
-                    {/* Actions Cell */}
-                    <Tooltip title="Edit Room">
-                      <IconButton
-                        onClick={() => handleEditClick(room)}
-                        color="primary"
-                        size="small"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete Room">
-                      <IconButton
-                        onClick={() => handleOpenDeleteDialog(room)}
-                        color="error"
-                        size="small"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell>€{room.price.toFixed(2)}</TableCell>{" "}
+                    <TableCell>
+                      {usage ? (
+                        <Tooltip
+                          title={`General Wear: ${usagePercentage}%, Status: ${usage.cleaningState}`}
+                        >
+                          <Box
+                            sx={{
+                              position: "relative",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <CircularProgress
+                              variant="determinate"
+                              value={usagePercentage}
+                              size={40}
+                              thickness={5}
+                              color={getWearColor(usagePercentage)}
+                            />
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Typography
+                                variant="caption"
+                                component="div"
+                                color="textSecondary"
+                              >
+                                {`${usagePercentage}%`}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Tooltip>
+                      ) : (
+                        <Typography variant="body2" color="textSecondary">
+                          —
+                        </Typography>
+                      )}
+                    </TableCell>
+                    <TableCell align="right">
+                      {" "}
+                      {/* Actions Cell */}
+                      <Tooltip title="Edit Room">
+                        <IconButton
+                          onClick={() => handleEditClick(room)}
+                          color="primary"
+                          size="small"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete Room">
+                        <IconButton
+                          onClick={() => handleOpenDeleteDialog(room)}
+                          color="error"
+                          size="small"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>

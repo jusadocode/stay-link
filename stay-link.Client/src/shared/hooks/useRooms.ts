@@ -1,5 +1,6 @@
 import { useAuthentication } from "./useAuthentication";
 import {
+  API_MULTIPLE_ROOMS_URL,
   API_ROOMS_FEATURES_URL,
   API_ROOMS_URL,
   API_ROOMS_USAGES_URL,
@@ -75,6 +76,22 @@ const useRooms = () => {
     return await response.json();
   };
 
+  const addRooms = async (
+    roomData: RoomCreationRequest,
+    roomQuantity: number
+  ) => {
+    const response = await customFetch(
+      `${API_MULTIPLE_ROOMS_URL}/?numOfRooms=${roomQuantity}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(roomData),
+      }
+    );
+
+    return await response.json();
+  };
+
   const updateRoom = async (room) => {
     const response = await customFetch(API_ROOMS_URL + `/${room.id}`, {
       method: "PUT",
@@ -103,6 +120,7 @@ const useRooms = () => {
     updateRoom,
     fetchFeatures,
     addRoom,
+    addRooms,
   };
 };
 

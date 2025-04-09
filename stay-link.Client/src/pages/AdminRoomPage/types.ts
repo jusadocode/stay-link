@@ -1,11 +1,26 @@
 interface Room {
   id: number | string;
   title: string;
-  roomType: string; // Adjust based on RoomTypes keys
+  roomType: string;
   maxOccupancy: number;
   price: number;
   imageUrl?: string;
-  // Add other relevant fields displayed or needed for delete/edit
 }
 
-interface AdminRoomListProps {}
+interface RoomCreationRequest {
+  title: string;
+  summary: string;
+  roomType: string;
+  price: number;
+  maxOccupancy: number;
+  featureIds: number[];
+}
+
+interface RoomUsage {
+  id: number;
+  roomId: number;
+  generalWear: number;
+  cleaningState: string;
+  timesBookedThisYear: number;
+  timesBookedSinceMaintenance: number;
+}

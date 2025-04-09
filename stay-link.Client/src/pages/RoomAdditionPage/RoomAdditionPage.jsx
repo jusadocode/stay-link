@@ -16,9 +16,10 @@ import useRooms from "../../shared/hooks/useRooms";
 
 const RoomAdditionPage = () => {
   const navigate = useNavigate();
-  const { addRoom, fetchFeatures } = useRooms();
+  const { addRoom, addRooms, fetchFeatures } = useRooms();
 
   const [roomFeatures, setFeatures] = useState([]);
+  const [roomQuantity, setRoomQuantity] = useState(1);
 
   const [newRoom, setNewRoom] = useState({
     title: "",
@@ -37,6 +38,10 @@ const RoomAdditionPage = () => {
       ...prev,
       [field]: value,
     }));
+  };
+
+  const handleQuantityChange = (event) => {
+    if (event > 0) setRoomQuantity(event);
   };
 
   const handleFeatureToggle = (event) => {
@@ -60,10 +65,16 @@ const RoomAdditionPage = () => {
         maxOccupancy: parseInt(newRoom.maxOccupancy),
       };
 
-      const response = await addRoom(payload);
+      let response;
+
+      if (roomQuantity > 1) {
+        response = await addRooms(payload, roomQuantity);
+      }
+
+      response = await addRoom(payload);
 
       if (response.ok || response.id) {
-        navigate("/admin/rooms"); // Or wherever your list is
+        navigate("/rooms"); // Or wherever your list is
       } else {
         throw new Error("Failed to create room");
       }
@@ -74,7 +85,6 @@ const RoomAdditionPage = () => {
     }
   };
 
-  // Load room and hotel information
   const loadFeatures = async () => {
     try {
       const featuresData = await fetchFeatures();
@@ -179,6 +189,14 @@ const RoomAdditionPage = () => {
           type="url"
           value={newRoom.imageUrl}
           onChange={(e) => handleRoomChange("imageUrl", e.target.value)}
+          fullWidth
+        />
+        <Typography>Want to insert several identical rooms?</Typography>
+        <TextField
+          label="Room amount"
+          type="number"
+          value={roomQuantity}
+          onChange={(e) => handleQuantityChange(e.target.value)}
           fullWidth
         />
 

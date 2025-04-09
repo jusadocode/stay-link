@@ -52,7 +52,7 @@ namespace stay_link.Server.Services
             var token = new JwtSecurityToken(
                 issuer: _issuer,
                 audience: _audience,
-                expires: DateTime.Now.AddMinutes(60),
+                expires: DateTime.Now.AddHours(72),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(_authSigningKey, SecurityAlgorithms.HmacSha256));
 

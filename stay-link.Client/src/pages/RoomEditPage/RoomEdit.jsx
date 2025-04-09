@@ -17,12 +17,14 @@ const RoomEditPage = () => {
 
   const navigate = useNavigate();
 
-  const { fetchRoom, updateRoom } = useRooms(); // Assuming you have an updateRoom method
+  const { fetchRoom, updateRoom } = useRooms();
   const [room, setRoom] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [updateLoading, setUpdateLoading] = useState(false); // Add update button loading state
+  const [loading, setLoading] = useState(true);
+  const [updateLoading, setUpdateLoading] = useState(false);
 
-  // Load room and hotel information
+  const [roomFeatures, setRoomFeatures] = useState([]);
+  const { fetchFeatures } = useRooms();
+
   const loadRoomInfo = async () => {
     try {
       const roomData = await fetchRoom(id);
@@ -35,10 +37,19 @@ const RoomEditPage = () => {
   };
 
   useEffect(() => {
+    const loadFeatures = async () => {
+      try {
+        const features = await fetchFeatures();
+        setRoomFeatures(features);
+      } catch (err) {
+        console.error("Failed to load room features", err);
+      }
+    };
+
+    loadFeatures();
     loadRoomInfo();
   }, [id]);
 
-  // Handle changes in room data
   const handleRoomChange = (field, value) => {
     setRoom((prev) => ({
       ...prev,
@@ -46,7 +57,6 @@ const RoomEditPage = () => {
     }));
   };
 
-  // Handle form submission to update room info
   const handleUpdate = async () => {
     try {
       setUpdateLoading(true);
@@ -54,7 +64,6 @@ const RoomEditPage = () => {
       if (response.ok) {
         navigate("/");
       }
-      // Assuming the updateRoom function takes id and updated room object
     } catch (error) {
       console.error("Failed to update room:", error);
     } finally {
@@ -99,6 +108,13 @@ const RoomEditPage = () => {
           Room Description
         </Typography>
         <TextField
+          label="Room Title"
+          fullWidth
+          sx={{ mb: 2 }}
+          value={room.title || ""}
+          onChange={(e) => handleRoomChange("title", e.target.value)}
+        />
+        <TextField
           label="Room Summary"
           fullWidth
           sx={{ mb: 2 }}
@@ -122,6 +138,45 @@ const RoomEditPage = () => {
           </Select>
         </FormControl>
 
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="features-label">Room Features</InputLabel>
+          <Select
+            labelId="features-label"
+            id="features-select"
+            multiple
+            value={room.featureIds || []}
+            onChange={(e) =>
+              handleRoomChange(
+                "featureIds",
+                typeof e.target.value === "string"
+                  ? e.target.value.split(",")
+                  : e.target.value
+              )
+            }
+            renderValue={(selected) => {
+              const selectedNames = roomFeatures
+                ?.filter((f) => selected.includes(f.id))
+                .map((f) => f.name)
+                .join(", ");
+              return selectedNames || "None";
+            }}
+          >
+            {roomFeatures.map((feature) => (
+              <MenuItem key={feature.id} value={feature.id}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    checked={room.featureIds?.includes(feature.id)}
+                    readOnly
+                    style={{ marginRight: "8px" }}
+                  />
+                  {feature.name}
+                </Box>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <TextField
           label="Max Occupancy"
           fullWidth
@@ -139,6 +194,14 @@ const RoomEditPage = () => {
           onChange={(e) =>
             handleRoomChange("price", parseFloat(e.target.value))
           }
+        />
+
+        <TextField
+          label="Image URL"
+          fullWidth
+          sx={{ mb: 2 }}
+          value={room.imageUrl || ""}
+          onChange={(e) => handleRoomChange("imageUrl", e.target.value)}
         />
       </Box>
 

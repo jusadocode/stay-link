@@ -39,28 +39,59 @@ namespace stay_link.Server.Services
 
         public async Task<RoomDTO> CreateRoom(CreateRoomDTO createRoomDTO)
         {
-            var features  = await _context.RoomFeatures
-                  .Where(r => createRoomDTO.FeatureIds.Contains(r.Id))
-                  .ToListAsync();
+
+            var features = await _context.RoomFeatures
+                .Where(rf => createRoomDTO.FeatureIds.Contains(rf.Id))
+                .ToListAsync();
 
             var room = _mapper.Map<Room>(createRoomDTO);
 
+            room.Title = $"{room.Title}";
 
-            room.Features = features;
+            room.Features = new List<RoomFeature>(features);
 
             _context.Rooms.Add(room);
-            await _context.SaveChangesAsync();
 
-            var roomUsage = new RoomUsage
-            {
-                RoomId = room.Id
-            };
+            var roomUsage = new RoomUsage { RoomId = room.Id };
 
-            _context.RoomUsages.Add(roomUsage);
+            _context.RoomUsages.AddRange(roomUsage);
             await _context.SaveChangesAsync();
 
             return _mapper.Map<RoomDTO>(room);
+
         }
+
+        public async Task<List<RoomDTO>> CreateRooms(CreateRoomDTO createRoomDTO, int amountOfRooms)
+        {
+            var createdRooms = new List<Room>();
+
+            var features = await _context.RoomFeatures
+                .Where(rf => createRoomDTO.FeatureIds.Contains(rf.Id))
+                .ToListAsync();
+
+            for (int index = 1; index <= amountOfRooms; index++)
+            {
+                var room = _mapper.Map<Room>(createRoomDTO);
+
+                room.Title = $"{room.Title} {index}";
+
+                room.Features = new List<RoomFeature>(features);
+
+                _context.Rooms.Add(room);
+
+                createdRooms.Add(room);
+            }
+
+            await _context.SaveChangesAsync();
+
+            var roomUsages = createdRooms.Select(room => new RoomUsage { RoomId = room.Id }).ToList();
+
+            _context.RoomUsages.AddRange(roomUsages);
+            await _context.SaveChangesAsync();
+
+            return createdRooms.Select(room => _mapper.Map<RoomDTO>(room)).ToList();
+        }
+
 
         public async Task<bool> UpdateRoom(int id, UpdateRoomDTO roomDTO)
         {
