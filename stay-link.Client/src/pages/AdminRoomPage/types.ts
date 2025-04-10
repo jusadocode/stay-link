@@ -7,6 +7,11 @@ interface Room {
   imageUrl?: string;
 }
 
+interface RoomGroup {
+  rooms: Room[];
+  totalPrice: number;
+}
+
 interface RoomCreationRequest {
   title: string;
   summary: string;

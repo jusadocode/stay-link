@@ -5,7 +5,16 @@ import {
   arrayMove,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { Box, Typography, Paper, List, Button, TextField } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  List,
+  Button,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,17 +31,23 @@ import useRooms from "../../../shared/hooks/useRooms";
 import dayjs from "dayjs";
 import SortableItem from "./SortableItem";
 
-function SearchSection({ setRooms, setIsLoading }) {
+function SearchSection({
+  setRooms,
+  setRoomGroups,
+  setResultType,
+  setIsLoading,
+}) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [features, setFeatures] = useState([]);
+  const [showAllRooms, setShowAllRooms] = useState(false);
   const [bookingDates, setBookingDates] = useState([
     dayjs().add(1, "day"),
     dayjs().add(3, "day"),
   ]);
   const [guestCount, setGuestCount] = useState(2);
-  const [roomCount, setRoomCount] = useState(1);
+  // const [roomCount, setRoomCount] = useState(1);
 
-  const { searchRooms, fetchFeatures } = useRooms();
+  const { searchRooms, searchRoomGroups, fetchFeatures } = useRooms();
 
   const tomorrow = dayjs().add(1, "day");
 
@@ -70,18 +85,23 @@ function SearchSection({ setRooms, setIsLoading }) {
 
   const handleSearchClick = async () => {
     setIsLoading(true);
-    setIsLoading(true);
     try {
-      const rooms = await searchRooms({
+      const payload = {
         checkIn: bookingDates[0],
         checkOut: bookingDates[1],
-        guestCount: guestCount,
         preferenceIds: selectedPreferences.map((p) => parseInt(p.id)),
-      });
+        guestCount: showAllRooms ? 0 : Number(guestCount),
+      };
 
-      setRooms(rooms);
-
-      console.log("Filtered rooms:", rooms);
+      if (guestCount > 1) {
+        const roomGroups = await searchRoomGroups(payload);
+        setResultType("grouped");
+        setRoomGroups(roomGroups);
+      } else {
+        const rooms = await searchRooms(payload);
+        setResultType("flat");
+        setRooms(rooms);
+      }
     } catch (err) {
       console.error("Search error:", err);
     } finally {
@@ -119,17 +139,26 @@ function SearchSection({ setRooms, setIsLoading }) {
 
             <Box sx={{ display: "flex", gap: 2 }}>
               <TextField
-                label="Guests"
+                label="Guest amount"
                 type="number"
                 size="small"
+                disabled={showAllRooms}
                 value={guestCount}
                 onChange={(e) =>
                   setGuestCount(Math.max(1, Number(e.target.value)))
                 }
                 InputProps={{ inputProps: { min: 1 } }}
               />
-
-              <TextField
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={showAllRooms}
+                    onChange={(e) => setShowAllRooms(e.target.checked)}
+                  />
+                }
+                label="Show all rooms"
+              />
+              {/* <TextField
                 label="Rooms"
                 type="number"
                 size="small"
@@ -138,7 +167,7 @@ function SearchSection({ setRooms, setIsLoading }) {
                   setRoomCount(Math.max(1, Number(e.target.value)))
                 }
                 InputProps={{ inputProps: { min: 1 } }}
-              />
+              /> */}
             </Box>
           </Box>
         </LocalizationProvider>
@@ -169,10 +198,8 @@ function SearchSection({ setRooms, setIsLoading }) {
                 ))}
             </List>
           </Box>
-
           <Box>
             <Typography variant="subtitle1">Selected Preferences</Typography>
-
             <DndContext
               sensors={sensors}
               onDragEnd={handleDragEnd}

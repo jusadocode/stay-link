@@ -22,6 +22,7 @@ namespace stay_link.Server.Mappings
 
             CreateMap<CreateRoomDTO, Room>();
             CreateMap<RoomDTO, Room>();
+            CreateMap<RoomGroup, RoomGroupDTO>();
             CreateMap<UpdateRoomDTO, Room>();
 
             CreateMap<RoomFeatureDTO, RoomFeature>();

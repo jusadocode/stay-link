@@ -60,6 +60,36 @@ const useRooms = () => {
     return await response.json();
   };
 
+  const searchRoomGroups = async ({
+    checkIn,
+    checkOut,
+    guestCount,
+    preferenceIds,
+  }) => {
+    const params = new URLSearchParams({
+      checkIn: checkIn.format("YYYY-MM-DD"),
+      checkOut: checkOut.format("YYYY-MM-DD"),
+      guestCount: guestCount.toString(),
+    });
+
+    preferenceIds.forEach((id) =>
+      params.append("preferenceIds", id.toString())
+    );
+
+    const response = await customFetch(
+      `${API_ROOMS_URL}/filter/group?${params.toString()}`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch room groups");
+    }
+
+    return await response.json();
+  };
+
   const fetchRoom = async (roomId) => {
     const response = await customFetch(API_ROOMS_URL + `/${roomId}`, {
       method: "GET",
@@ -117,6 +147,7 @@ const useRooms = () => {
     fetchRoom,
     deleteRoom,
     searchRooms,
+    searchRoomGroups,
     updateRoom,
     fetchFeatures,
     addRoom,

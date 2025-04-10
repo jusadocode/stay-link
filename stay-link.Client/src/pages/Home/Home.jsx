@@ -9,6 +9,7 @@ import useRooms from "../../shared/hooks/useRooms";
 import LoadingIndicator from "../../shared/components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
 import React from "react";
+import RoomGroupList from "./components/RoomGroupList";
 
 const HomePage = () => {
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
@@ -18,6 +19,10 @@ const HomePage = () => {
   const { logout } = useAuthentication();
 
   const [rooms, setRooms] = useState([]);
+  const [roomGroups, setRoomGroups] = useState([]);
+
+  const [resultType, setResultType] = useState("flat");
+
   const [isLoading, setIsLoading] = useState(false);
 
   const getInitialRooms = async () => {
@@ -90,12 +95,21 @@ const HomePage = () => {
       </Typography>
 
       <Container>
-        <SearchSection setRooms={setRooms} setIsLoading={setIsLoading} />
+        <SearchSection
+          setRooms={setRooms}
+          setRoomGroups={setRoomGroups}
+          setResultType={setResultType}
+          setIsLoading={setIsLoading}
+        />
       </Container>
 
       {!isLoading ? (
         <Container sx={{ minWidth: "50vw", minHeight: "80vh" }}>
-          <RoomList rooms={rooms} />
+          {resultType === "flat" ? (
+            <RoomList rooms={rooms} />
+          ) : (
+            <RoomGroupList roomGroups={roomGroups} />
+          )}
         </Container>
       ) : (
         <Box display="flex" alignItems="center">

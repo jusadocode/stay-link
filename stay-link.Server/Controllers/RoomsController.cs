@@ -39,22 +39,22 @@ namespace stay_link.Server.Controllers
         {
 
             var preferences = await _roomService.GetRoomFeaturesByIds(preferenceIds);
-            var rooms = await _roomService.GetRooms(checkIn, checkOut, guestCount, preferences);
+            var rooms = guestCount > 0 ? await _roomService.GetRooms(checkIn, checkOut, guestCount, preferences) : await _roomService.GetRooms();
+
             return Ok(rooms); // Wrap the result in Ok()
         }
 
         [HttpGet("filter/group")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomDTO>))]
-        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetGroupRoomsByFilters(
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomGroupDTO>))]
+        public async Task<ActionResult<IEnumerable<RoomGroupDTO>>> GetGroupRoomsByFilters(
         [FromQuery] DateOnly checkIn,
         [FromQuery] DateOnly checkOut,
         [FromQuery] int guestCount,
         [FromQuery] List<int> preferenceIds)
         {
-
             var preferences = await _roomService.GetRoomFeaturesByIds(preferenceIds);
-            var rooms = await _roomService.GetRooms(checkIn, checkOut, guestCount, preferences);
-            return Ok(rooms); // Wrap the result in Ok()
+            var roomGroups = await _roomService.GetRoomGroups(checkIn, checkOut, guestCount, preferences);
+            return Ok(roomGroups);
         }
 
         [HttpGet("features")]

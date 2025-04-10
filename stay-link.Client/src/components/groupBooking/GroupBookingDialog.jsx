@@ -11,11 +11,8 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 
 import { Dialog, DialogTitle } from "@mui/material";
 import CheckInStep from "../roomBooking/CheckInStep";
-import ExtraStep from "../roomBooking/ExtraStep";
-import FinalStep from "../roomBooking/FinalStep";
 import useBookings from "../../shared/hooks/useBookings";
 import React from "react";
-import RoomEditPage from "../../pages/RoomEditPage/RoomEdit";
 import ExtraStepGroup from "./ExtraStepGroup";
 import FinalStepGroup from "./FinalStepGroup";
 
@@ -23,14 +20,13 @@ dayjs.extend(isSameOrAfter);
 
 const steps = ["Select dates", "Extra services", "Finalize booking"];
 
-export default function BookingDialog({
+export default function GroupBookingDialog({
   open,
   selectedRooms,
   handleCloseDialog,
 }) {
   useEffect(() => {
     if (!open) {
-      // Reset state when dialog is closed
       setActiveStep(0);
       setSkipped(new Set());
       setBookingDates([dayjs(), dayjs()]);
