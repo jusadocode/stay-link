@@ -23,12 +23,12 @@ export default function BookingDialog({
   open,
   selectedRooms,
   handleCloseDialog,
+  bookingDates,
 }) {
   useEffect(() => {
     if (!open) {
       setActiveStep(0);
       setSkipped(new Set());
-      setBookingDates([dayjs(), dayjs()]);
       setBreakfastRequests(0);
     }
   }, [open]);
@@ -36,7 +36,6 @@ export default function BookingDialog({
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const [groupName, setGroupName] = useState("");
   const isGroupBooking = selectedRooms.length > 1;
 
   const { addBooking } = useBookings();
@@ -91,7 +90,7 @@ export default function BookingDialog({
         checkOutDate: bookingDates[1].toISOString().split("T")[0],
         roomIds: selectedRooms.map((room) => room.id),
         breakfastRequests: breakfastRequests,
-        groupName: groupName,
+        displayName: "someName",
       };
 
       const result = await addBooking(newBooking);
@@ -119,8 +118,6 @@ export default function BookingDialog({
       return newSkipped;
     });
   };
-
-  const [bookingDates, setBookingDates] = useState([dayjs(), dayjs()]);
 
   const [breakfastRequests, setBreakfastRequests] = useState(0);
 
@@ -167,15 +164,7 @@ export default function BookingDialog({
           </React.Fragment>
         ) : (
           <React.Fragment>
-            {activeStep === 0 && (
-              <CheckInStep
-                bookingDates={bookingDates}
-                setBookingDates={setBookingDates}
-                groupName={groupName}
-                setGroupName={setGroupName}
-                isGroupBooking={isGroupBooking}
-              />
-            )}
+            {activeStep === 0 && <CheckInStep />}
             {activeStep === 1 && (
               <ExtraStep
                 selectedRooms={selectedRooms}
@@ -188,8 +177,6 @@ export default function BookingDialog({
                 selectedRooms={selectedRooms}
                 bookingDates={bookingDates}
                 breakfastRequests={breakfastRequests}
-                isGroupBooking={isGroupBooking}
-                groupName={groupName}
               />
             )}
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>

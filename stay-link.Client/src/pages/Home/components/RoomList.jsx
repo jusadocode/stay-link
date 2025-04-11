@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { LOGIN_PATH } from "../../../shared/constants/routes";
 import GroupBookingDialog from "../../../components/roomBooking/BookingDialog";
 
-function RoomList({ roomOffers }) {
+function RoomList({ roomOffers, bookingDates }) {
   const [searchInput, setSearchInput] = useState("");
   const [selectedOffer, setSelectedoffer] = useState(null);
   const [expandedRoomId, setExpandedRoomId] = useState(null);
@@ -291,6 +291,7 @@ function RoomList({ roomOffers }) {
         open={dialogOpen}
         selectedRooms={selectedOffer?.rooms || []}
         handleCloseDialog={handleCloseDialog}
+        bookingDates={bookingDates}
       />
     </Container>
   );

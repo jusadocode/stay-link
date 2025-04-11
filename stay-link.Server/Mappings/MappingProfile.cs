@@ -12,8 +12,6 @@ namespace stay_link.Server.Mappings
         {
             CreateMap<CreateBookingDTO, Booking>();
             CreateMap<Booking, BookingDTO>()
-                .ForMember(dest => dest.GuestFullName,
-                    opt => opt.MapFrom(src => src.User != null ? $"{src.User.FirstName} {src.User.LastName}" : ""))
                 .ForMember(dest => dest.RoomIds,
                     opt => opt.MapFrom(src => src.Rooms.Select(r => r.Id).ToList()));
             CreateMap<Room, RoomDTO>()

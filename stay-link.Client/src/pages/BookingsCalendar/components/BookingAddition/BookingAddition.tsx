@@ -1,4 +1,3 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Container,
@@ -14,32 +13,37 @@ import useRooms from "../../../../shared/hooks/useRooms";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
-export default function BookingEditPage() {
-  const { id } = useParams();
+export default function BookingCreatePage() {
   const navigate = useNavigate();
-  const { fetchBooking, updateBooking } = useBookings();
+  const { addBooking } = useBookings();
   const { fetchRooms, getRoomAvailability } = useRooms();
 
-  const [booking, setBooking] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [availableRoomIds, setAvailableRoomIds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [booking, setBooking] = useState({
+    displayName: "",
+    breakfastRequests: 0,
+    checkInDate: dayjs().add(1, "day").format("YYYY-MM-DD"),
+    checkOutDate: dayjs().add(2, "day").format("YYYY-MM-DD"),
+    roomIds: [],
+  });
+
   useEffect(() => {
     const load = async () => {
-      const b = await fetchBooking(id);
       const r = await fetchRooms();
-      setBooking(b);
       setRooms(r);
 
-      await getAvailability(b.checkInDate, b.checkOutDate);
+      await getAvailability(booking.checkInDate, booking.checkOutDate);
 
       setIsLoading(false);
     };
 
     load();
-  }, [id]);
+  }, []);
 
   const getAvailability = async (checkIn, checkOut) => {
     if (!checkIn || !checkOut) return;
@@ -54,7 +58,6 @@ export default function BookingEditPage() {
   const handleChange = (field) => (e) => {
     const value = e.target.value;
     const updated = { ...booking, [field]: value };
-
     setBooking(updated);
 
     if (field === "checkInDate" || field === "checkOutDate") {
@@ -67,30 +70,27 @@ export default function BookingEditPage() {
 
   const handleSubmit = async () => {
     try {
-      await updateBooking(booking);
+      await addBooking(booking);
       navigate("/bookings/calendar");
     } catch (error) {
-      console.error("Failed to update booking", error);
+      console.error("Failed to create booking", error);
     }
   };
 
-  const filteredRooms = rooms.filter(
-    (r) => availableRoomIds.includes(r.id) || booking.roomIds.includes(r.id)
-  );
+  const filteredRooms = rooms.filter((r) => availableRoomIds.includes(r.id));
 
   if (isLoading) return <CircularProgress />;
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h5" gutterBottom>
-        Edit Booking #{id}
+        Create Booking
       </Typography>
 
       <TextField
         fullWidth
         label="Display Name"
         value={booking.displayName}
-        defaultValue={""}
         onChange={handleChange("displayName")}
         sx={{ mb: 2 }}
       />
@@ -135,9 +135,7 @@ export default function BookingEditPage() {
         fullWidth
         select
         label="Rooms"
-        SelectProps={{
-          multiple: true,
-        }}
+        SelectProps={{ multiple: true }}
         value={booking.roomIds}
         onChange={handleChange("roomIds")}
         sx={{ mb: 3 }}
@@ -150,7 +148,7 @@ export default function BookingEditPage() {
       </TextField>
 
       <Button variant="contained" onClick={handleSubmit}>
-        Save Changes
+        Create Booking
       </Button>
     </Container>
   );

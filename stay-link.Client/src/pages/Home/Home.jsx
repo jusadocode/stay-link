@@ -20,6 +20,11 @@ const HomePage = () => {
   const [roomOffers, setRoomOffers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [bookingDates, setBookingDates] = useState([
+    dayjs().add(1, "day"),
+    dayjs().add(3, "day"),
+  ]);
+
   const defaultRoomSearch = {
     checkIn: dayjs().startOf("week").add(1, "day"), // Monday
     checkOut: dayjs().endOf("week"), // Sunday
@@ -104,12 +109,14 @@ const HomePage = () => {
         <SearchSection
           setRoomOffers={setRoomOffers}
           setIsLoading={setIsLoading}
+          setBookingDates={setBookingDates}
+          bookingDates={bookingDates}
         />
       </Container>
 
       {!isLoading ? (
         <Container sx={{ minWidth: "50vw", minHeight: "80vh" }}>
-          <RoomList roomOffers={roomOffers} />
+          <RoomList roomOffers={roomOffers} bookingDates={bookingDates} />
         </Container>
       ) : (
         <Box display="flex" alignItems="center" mt={4}>

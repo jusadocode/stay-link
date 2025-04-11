@@ -7,7 +7,7 @@ namespace stay_link.Server.Models
         public int Id { get; set; }
         public string UserId { get; set; }
 
-        public string? GroupName { get; set; }
+        public string DisplayName { get; set; }
 
         [Required(ErrorMessage = "Check-in date is required.")]
         public DateOnly CheckInDate { get; set; }

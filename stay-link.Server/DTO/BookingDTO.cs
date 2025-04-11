@@ -8,10 +8,7 @@ namespace stay_link.Server.Models
     {
         public int Id { get; set; }
 
-        public string GuestFullName { get; set; }
-
-        public string GroupName { get; set; }
-
+        public string? DisplayName { get; set; }
 
         public string CheckInDate { get; set; }
 

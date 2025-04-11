@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using stay_link.Server.Data;
 using stay_link.Server.DTO;
@@ -38,30 +39,39 @@ namespace stay_link.Server.Services
             return _mapper.Map<BookingDTO>(booking);
         }
 
-        public async Task<BookingDTO> CreateBooking(CreateBookingDTO bookingDTO, string userId)
+        public async Task<BookingDTO> CreateBooking(CreateBookingDTO bookingDTO, string userId, bool isAdmin)
         {
             var rooms = await _context.Rooms
-                  .Where(r => bookingDTO.RoomIds.Contains(r.Id))
-                  .ToListAsync();
-
-            //if (bookingDTO.HotelId != null)
-            //{
-            //    var hotel = await _context.Hotels.FindAsync(bookingDTO.HotelId);
-            //    if (hotel == null)
-            //        throw new Exception("Hotel not found.");
-            //}
+                .Where(r => bookingDTO.RoomIds.Contains(r.Id))
+                .ToListAsync();
 
             if (rooms.Count != bookingDTO.RoomIds.Count)
                 throw new Exception("One or more selected rooms were not found.");
 
+            string displayName;
+
+            if (isAdmin)
+            {
+                if (string.IsNullOrWhiteSpace(bookingDTO.DisplayName))
+                    throw new Exception("Display name must be provided for admin-created bookings.");
+
+                displayName = bookingDTO.DisplayName;
+            }
+            else
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null)
+                    throw new Exception("User not found.");
+
+                displayName = $"{user.FirstName} {user.LastName}";
+            }
 
             var booking = new Booking
             {
                 CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate),
                 CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate),
                 Rooms = rooms,
-                GroupName = bookingDTO.GroupName,
-                //HotelId = bookingDTO.HotelId,
+                DisplayName = displayName,
                 BreakfastRequests = bookingDTO.BreakfastRequests,
                 UserId = userId,
                 CreationTime = DateTime.UtcNow
@@ -98,6 +108,7 @@ namespace stay_link.Server.Services
 
             booking.CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate);
             booking.CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate);
+            booking.DisplayName = bookingDTO.DisplayName;
             booking.Rooms.Clear();
             booking.Rooms = rooms;
             booking.BreakfastRequests = bookingDTO.BreakfastRequests;

@@ -5,8 +5,6 @@ export default function FinalStep({
   selectedRooms = [],
   bookingDates,
   breakfastRequests,
-  groupName,
-  isGroupBooking,
 }) {
   const numberOfNights = bookingDates[1].diff(bookingDates[0], "day");
   const cleaningFee = 20;
@@ -37,12 +35,6 @@ export default function FinalStep({
       <Typography variant="body1" sx={{ mb: 2 }}>
         Please confirm the details before finalizing your booking.
       </Typography>
-
-      {isGroupBooking && (
-        <Typography variant="body2">
-          <strong>Group:</strong> {groupName}
-        </Typography>
-      )}
 
       {selectedRooms.map((room, index) => (
         <Box key={room.id} sx={{ mb: 2, pl: 1, borderLeft: "4px solid #ccc" }}>

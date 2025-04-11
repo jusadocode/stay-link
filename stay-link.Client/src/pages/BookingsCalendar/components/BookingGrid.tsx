@@ -343,9 +343,7 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                               }
                             >
                               {/* Uses your guest name field */}
-                              {coveringBooking.groupName
-                                ? coveringBooking.groupName
-                                : coveringBooking.guestFullName}
+                              {coveringBooking.displayName}
                             </Box>
                           );
                         } else {

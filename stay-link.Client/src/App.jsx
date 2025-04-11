@@ -11,6 +11,7 @@ import RoomEditPage from "./pages/RoomEditPage/RoomEdit";
 import AdminRoomPage from "./pages/AdminRoomPage/AdminRoomPage";
 import RoomAdditionPage from "./pages/RoomAdditionPage/RoomAdditionPage";
 import BookingEditPage from "./pages/BookingsCalendar/components/BookingEdit/BookingEditPage";
+import BookingCreatePage from "./pages/BookingsCalendar/components/BookingAddition/BookingAddition";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path={"/rooms/edit/:id"} element={<RoomEditPage />} />
         <Route path="/rooms/new" element={<RoomAdditionPage />} />
         <Route path="/bookings/:id/edit" element={<BookingEditPage />} />
+        <Route path="/bookings/new" element={<BookingCreatePage />} />
       </Routes>
     </div>
   );

@@ -105,19 +105,19 @@ namespace stay_link.Server.Data
                     var bookings = new List<Booking>();
 
                     // Past Booking (Room 0)
-                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 3, 10), CheckOutDate = new DateOnly(2025, 3, 13), Rooms = new List<Room> { rooms[0] }, TotalGuests = 1, BreakfastRequests = 1, UserId = user1.Id, CreationTime = DateTime.UtcNow.AddDays(-40) });
+                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 3, 10), CheckOutDate = new DateOnly(2025, 3, 13), Rooms = new List<Room> { rooms[0] }, TotalGuests = 1, BreakfastRequests = 1, UserId = user1.Id, DisplayName = user1.FirstName, CreationTime = DateTime.UtcNow.AddDays(-40) });
                     // Current/Overlapping Booking (Room 1)
-                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 4, 9), CheckOutDate = new DateOnly(2025, 4, 14), Rooms = new List<Room> { rooms[1] }, TotalGuests = 2, BreakfastRequests = 2, UserId = user2.Id, CreationTime = DateTime.UtcNow.AddDays(-5) });
+                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 4, 9), CheckOutDate = new DateOnly(2025, 4, 14), Rooms = new List<Room> { rooms[1] }, TotalGuests = 2, BreakfastRequests = 2, UserId = user2.Id, DisplayName = user2.FirstName, CreationTime = DateTime.UtcNow.AddDays(-5) });
                     // Future Booking (Room 2)
-                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 5, 1), CheckOutDate = new DateOnly(2025, 5, 5), Rooms = new List<Room> { rooms[2] }, TotalGuests = 2, BreakfastRequests = 0, UserId = user1.Id, CreationTime = DateTime.UtcNow.AddDays(-2) });
+                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 5, 1), CheckOutDate = new DateOnly(2025, 5, 5), Rooms = new List<Room> { rooms[2] }, TotalGuests = 2, BreakfastRequests = 0, UserId = user1.Id, DisplayName = user1.FirstName,CreationTime = DateTime.UtcNow.AddDays(-2) });
                     // Future Multi-Room Booking (Rooms 4 & 5)
-                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 6, 15), CheckOutDate = new DateOnly(2025, 6, 20), Rooms = new List<Room> { rooms[4], rooms[5] }, TotalGuests = 4, BreakfastRequests = 4, UserId = user1.Id, CreationTime = DateTime.UtcNow.AddDays(-1) });
+                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 6, 15), CheckOutDate = new DateOnly(2025, 6, 20), Rooms = new List<Room> { rooms[4], rooms[5] }, TotalGuests = 4, BreakfastRequests = 4, UserId = user1.Id, DisplayName = user1.FirstName, CreationTime = DateTime.UtcNow.AddDays(-1) });
                     // Future Booking (Room 6)
-                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 4, 25), CheckOutDate = new DateOnly(2025, 4, 28), Rooms = new List<Room> { rooms[6] }, TotalGuests = 2, BreakfastRequests = 0, UserId = user2.Id, CreationTime = DateTime.UtcNow });
+                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 4, 25), CheckOutDate = new DateOnly(2025, 4, 28), Rooms = new List<Room> { rooms[6] }, TotalGuests = 2, BreakfastRequests = 0, UserId = user2.Id, DisplayName = user2.FirstName,CreationTime = DateTime.UtcNow });
                     // Future Booking (Room 9)
-                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 5, 20), CheckOutDate = new DateOnly(2025, 5, 22), Rooms = new List<Room> { rooms[9] }, TotalGuests = 2, BreakfastRequests = 2, UserId = user1.Id, CreationTime = DateTime.UtcNow });
+                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 5, 20), CheckOutDate = new DateOnly(2025, 5, 22), Rooms = new List<Room> { rooms[9] }, TotalGuests = 2, BreakfastRequests = 2, UserId = user1.Id, DisplayName = user1.FirstName,CreationTime = DateTime.UtcNow });
                     // Another Past Booking (Room 10)
-                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 2, 1), CheckOutDate = new DateOnly(2025, 2, 5), Rooms = new List<Room> { rooms[10] }, TotalGuests = 1, BreakfastRequests = 0, UserId = user2.Id, CreationTime = DateTime.UtcNow.AddDays(-70) });
+                    bookings.Add(new Booking { CheckInDate = new DateOnly(2025, 2, 1), CheckOutDate = new DateOnly(2025, 2, 5), Rooms = new List<Room> { rooms[10] }, TotalGuests = 1, BreakfastRequests = 0, UserId = user2.Id, DisplayName = user2.FirstName, CreationTime = DateTime.UtcNow.AddDays(-70) });
 
                     context.Bookings.AddRange(bookings);
                     context.SaveChanges();

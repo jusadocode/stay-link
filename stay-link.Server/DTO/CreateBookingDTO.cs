@@ -10,7 +10,7 @@ namespace stay_link.Server.Models
         [DataType(DataType.Date, ErrorMessage = "Check-in date must be a valid date.")]
         public string CheckInDate { get; set; }
 
-        public string? GroupName { get; set; }
+        public string? DisplayName { get; set; }
 
         [Required(ErrorMessage = "Check-out date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Check-out date must be a valid date.")]
