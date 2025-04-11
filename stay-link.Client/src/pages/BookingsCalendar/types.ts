@@ -18,6 +18,7 @@ export interface Booking {
   id: string | number;
   roomIds: number[]; // Assuming number based on usageData
   guestFullName: string;
+  groupName: string;
   checkInDate: string; // ISO date string
   checkOutDate: string; // ISO date string
   // Add other booking properties

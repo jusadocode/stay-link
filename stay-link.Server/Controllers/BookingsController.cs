@@ -29,7 +29,7 @@ public class BookingsController : ControllerBase
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<ActionResult<Booking>> GetBooking(int id)
+    public async Task<ActionResult<BookingDTO>> GetBooking(int id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
         var isAdmin = User.IsInRole(BookingRoles.Admin);

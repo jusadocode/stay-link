@@ -33,10 +33,21 @@ namespace stay_link.Server.Services
             return _mapper.Map<IEnumerable<RoomDTO>>(rooms);
         }
 
-        public async Task<IEnumerable<RoomGroupDTO>> GetRoomGroups(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
+
+        public async Task<IEnumerable<int>> GetAvailableRoomIds(DateOnly checkIn, DateOnly checkOut)
+        {
+            var availableRoomIds = await _context.Rooms
+              .Where(r => !r.Bookings.Any(b => b.CheckInDate < checkOut && checkIn < b.CheckOutDate))
+              .Select(r => r.Id)  
+              .ToListAsync();
+
+            return availableRoomIds;
+        }
+
+        public async Task<IEnumerable<RoomOfferDTO>> GetRoomOffers(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
         {
             var roomGroups = await FindMatchingRoomGroupsPreference(checkIn, checkOut, guestCount, preferences);
-            return _mapper.Map<IEnumerable<RoomGroupDTO>>(roomGroups);
+            return _mapper.Map<IEnumerable<RoomOfferDTO>>(roomGroups);
         }
 
         public async Task<RoomDTO?> GetRoom(int id)
@@ -274,14 +285,14 @@ namespace stay_link.Server.Services
             return roomScores;
         }
 
-        public async Task<List<RoomGroup?>> FindMatchingRoomGroupsPreference(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
+        public async Task<List<RoomOffer?>> FindMatchingRoomGroupsPreference(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
         {
 
             int MAX_ROOMS_TO_COMBINE = 3;
 
             var roomScores = await FindCandidateRoomScoresForGroups(checkIn, checkOut, preferences); 
 
-            var availableRooms = roomScores.OrderByDescending(r => r.Value).Select(r => r.Key).Take(20).ToList();
+            var availableRooms = roomScores.OrderByDescending(r => r.Value).Select(r => r.Key).ToList();
 
             //var wearHeuristicRooms = scoreHeuristicRooms.OrderByDescending(r => r.Value).Select(r => r.Key).Take(20);
 
@@ -335,7 +346,7 @@ namespace stay_link.Server.Services
                 }
             }
 
-            var rankedOptions = new List<RoomGroup>();
+            var rankedOptions = new List<RoomOffer>();
             foreach (var combo in allCombinations)
             {
                 // Ensure combo is not null or empty before scoring
@@ -343,14 +354,14 @@ namespace stay_link.Server.Services
                 {
                     double score = RoomCalculationUtils.CalculateCombinationScore(combo, preferences, guestCount, roomScores);
                     decimal totalPrice = combo.Sum(r => r.Price); // Assuming Room has a Price property
-                    rankedOptions.Add(new RoomGroup { Rooms = combo, Score = score, TotalPrice = totalPrice });
+                    rankedOptions.Add(new RoomOffer { Rooms = combo, Score = score, TotalPrice = totalPrice });
                 }
             }
 
             return rankedOptions
                 .OrderByDescending(opt => opt.Score)
                 .ThenBy(opt => opt.TotalPrice)
-                .Take(3)
+                .Take(10)
                 .ToList();
 
         }

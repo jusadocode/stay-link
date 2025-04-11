@@ -10,6 +10,7 @@ import React from "react";
 import RoomEditPage from "./pages/RoomEditPage/RoomEdit";
 import AdminRoomPage from "./pages/AdminRoomPage/AdminRoomPage";
 import RoomAdditionPage from "./pages/RoomAdditionPage/RoomAdditionPage";
+import BookingEditPage from "./pages/BookingsCalendar/components/BookingEdit/BookingEditPage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path={"/bookings/calendar"} element={<BookingsCalendar />} />
         <Route path={"/rooms/edit/:id"} element={<RoomEditPage />} />
         <Route path="/rooms/new" element={<RoomAdditionPage />} />
+        <Route path="/bookings/:id/edit" element={<BookingEditPage />} />
       </Routes>
     </div>
   );

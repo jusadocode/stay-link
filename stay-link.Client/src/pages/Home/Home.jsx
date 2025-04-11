@@ -9,25 +9,34 @@ import useRooms from "../../shared/hooks/useRooms";
 import LoadingIndicator from "../../shared/components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import RoomGroupList from "./components/RoomGroupList";
+import dayjs from "dayjs";
 
 const HomePage = () => {
   const { isLoggedIn, userIsAdmin } = useContext(AuthContext);
-  const { fetchRooms } = useRooms();
+  const { searchRooms } = useRooms();
   const navigate = useNavigate();
-
   const { logout } = useAuthentication();
 
-  const [rooms, setRooms] = useState([]);
-  const [roomGroups, setRoomGroups] = useState([]);
-
-  const [resultType, setResultType] = useState("flat");
-
+  const [roomOffers, setRoomOffers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const defaultRoomSearch = {
+    checkIn: dayjs().startOf("week").add(1, "day"), // Monday
+    checkOut: dayjs().endOf("week"), // Sunday
+    guestCount: 0, // 'Auto' search
+    preferenceIds: [],
+  };
+
   const getInitialRooms = async () => {
-    const initialRooms = await fetchRooms();
-    setRooms(initialRooms);
+    try {
+      setIsLoading(true);
+      const initialRooms = await searchRooms(defaultRoomSearch);
+      setRoomOffers(initialRooms);
+    } catch (err) {
+      console.error("Failed to fetch initial room offers", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -57,7 +66,7 @@ const HomePage = () => {
         <Button variant="outlined" component={Link}>
           My Account
         </Button>
-        {isLoggedIn ? (
+        {isLoggedIn && (
           <Button
             variant="outlined"
             onClick={() =>
@@ -68,10 +77,7 @@ const HomePage = () => {
           >
             {userIsAdmin() ? "All Bookings" : "My Bookings"}
           </Button>
-        ) : (
-          ""
         )}
-
         {userIsAdmin() ? (
           <Button
             variant="outlined"
@@ -96,27 +102,19 @@ const HomePage = () => {
 
       <Container>
         <SearchSection
-          setRooms={setRooms}
-          setRoomGroups={setRoomGroups}
-          setResultType={setResultType}
+          setRoomOffers={setRoomOffers}
           setIsLoading={setIsLoading}
         />
       </Container>
 
       {!isLoading ? (
         <Container sx={{ minWidth: "50vw", minHeight: "80vh" }}>
-          {resultType === "flat" ? (
-            <RoomList rooms={rooms} />
-          ) : (
-            <RoomGroupList roomGroups={roomGroups} />
-          )}
+          <RoomList roomOffers={roomOffers} />
         </Container>
       ) : (
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" mt={4}>
           <LoadingIndicator />
-          <Typography style={{ marginLeft: "10px" }}>
-            Getting rooms...
-          </Typography>
+          <Typography sx={{ ml: 2 }}>Getting rooms...</Typography>
         </Box>
       )}
 

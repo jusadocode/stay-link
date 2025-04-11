@@ -31,12 +31,7 @@ import useRooms from "../../../shared/hooks/useRooms";
 import dayjs from "dayjs";
 import SortableItem from "./SortableItem";
 
-function SearchSection({
-  setRooms,
-  setRoomGroups,
-  setResultType,
-  setIsLoading,
-}) {
+function SearchSection({ setRoomOffers, setIsLoading }) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [features, setFeatures] = useState([]);
   const [showAllRooms, setShowAllRooms] = useState(false);
@@ -44,10 +39,10 @@ function SearchSection({
     dayjs().add(1, "day"),
     dayjs().add(3, "day"),
   ]);
-  const [guestCount, setGuestCount] = useState(2);
+  const [guestCount, setGuestCount] = useState(1);
   // const [roomCount, setRoomCount] = useState(1);
 
-  const { searchRooms, searchRoomGroups, fetchFeatures } = useRooms();
+  const { searchRooms, fetchFeatures } = useRooms();
 
   const tomorrow = dayjs().add(1, "day");
 
@@ -93,15 +88,8 @@ function SearchSection({
         guestCount: showAllRooms ? 0 : Number(guestCount),
       };
 
-      if (guestCount > 1) {
-        const roomGroups = await searchRoomGroups(payload);
-        setResultType("grouped");
-        setRoomGroups(roomGroups);
-      } else {
-        const rooms = await searchRooms(payload);
-        setResultType("flat");
-        setRooms(rooms);
-      }
+      const offers = await searchRooms(payload);
+      setRoomOffers(offers);
     } catch (err) {
       console.error("Search error:", err);
     } finally {

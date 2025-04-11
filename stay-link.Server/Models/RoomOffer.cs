@@ -1,6 +1,6 @@
 ﻿namespace stay_link.Server.Models
 {
-    public class RoomGroup
+    public class RoomOffer
     {
         public List<Room> Rooms { get; set; }
         public double Score { get; set; }

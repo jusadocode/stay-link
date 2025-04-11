@@ -11,6 +11,13 @@ const useBookings = () => {
     return response.json();
   };
 
+  const fetchBooking = async (bookingId) => {
+    const response = await customFetch(`${API_BOOKINGS_URL}/${bookingId}`, {
+      method: "GET",
+    });
+    return response.json();
+  };
+
   const addBooking = async (booking) => {
     const response = await customFetch(API_BOOKINGS_URL, {
       method: "POST",
@@ -20,6 +27,16 @@ const useBookings = () => {
 
     const data = await response.json();
     return data;
+  };
+
+  const updateBooking = async (booking) => {
+    const response = await customFetch(`${API_BOOKINGS_URL}/${booking.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(booking),
+    });
+
+    if (response.status === 204) return;
   };
 
   const deleteBooking = async (bookingId: number) => {
@@ -34,7 +51,9 @@ const useBookings = () => {
   return {
     addBooking,
     fetchBookings,
+    fetchBooking,
     deleteBooking,
+    updateBooking,
   };
 };
 

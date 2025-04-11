@@ -27,7 +27,7 @@ namespace stay_link.Server.Services
 
         }
 
-        public async Task<Booking?> GetBooking(int id, string userId, bool isAdmin)
+        public async Task<BookingDTO?> GetBooking(int id, string userId, bool isAdmin)
         {
             var booking = await _context.Bookings.FindAsync(id);
             if (booking == null) return null;
@@ -35,7 +35,7 @@ namespace stay_link.Server.Services
             if (!isAdmin && booking.UserId != userId)
                 return null; // User is not allowed to see this booking
 
-            return booking;
+            return _mapper.Map<BookingDTO>(booking);
         }
 
         public async Task<BookingDTO> CreateBooking(CreateBookingDTO bookingDTO, string userId)
@@ -60,6 +60,7 @@ namespace stay_link.Server.Services
                 CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate),
                 CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate),
                 Rooms = rooms,
+                GroupName = bookingDTO.GroupName,
                 //HotelId = bookingDTO.HotelId,
                 BreakfastRequests = bookingDTO.BreakfastRequests,
                 UserId = userId,
@@ -97,12 +98,14 @@ namespace stay_link.Server.Services
 
             booking.CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate);
             booking.CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate);
+            booking.Rooms.Clear();
             booking.Rooms = rooms;
-            //booking.HotelId = bookingDTO.HotelId;
             booking.BreakfastRequests = bookingDTO.BreakfastRequests;
 
             _context.Entry(booking).State = EntityState.Modified;
+
             await _context.SaveChangesAsync();
+
             return true;
         }
 

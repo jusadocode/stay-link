@@ -23,11 +23,14 @@ import {
   CheckCircleOutline,
   CleaningServicesOutlined,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
   const parseBookingDate = (dateStr) => startOfDay(parseISO(dateStr));
 
   const [roomUsages, setRoomUsages] = useState([]);
+
+  const navigate = useNavigate();
 
   const { fetchRoomsUsages } = useRooms();
 
@@ -133,7 +136,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
         {Object.entries(groupedRooms).map(
           ([roomType, roomsOfType], typeIndex) => (
             <React.Fragment key={roomType}>
-              {/* Room Type Header Row */}
               <Box
                 gridColumn={`1 / span ${numDays + 1}`}
                 sx={{
@@ -148,12 +150,10 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                 <Typography variant="subtitle2">{roomType}</Typography>
               </Box>
 
-              {/* Individual Room Rows */}
               {roomsOfType.map((room) => {
                 const usage = roomUsages.find((u) => u.roomId === room.id);
                 const wearPercentage = usage ? usage.generalWear * 100 : 0;
 
-                // Determine progress bar color based on wear (Example thresholds)
                 let progressBarColor: "success" | "warning" | "error" =
                   "success";
 
@@ -166,7 +166,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                 const isClean = usage?.cleaningState === "Clean";
                 return (
                   <React.Fragment key={room.id}>
-                    {/* Room Name Cell */}
                     <Box
                       sx={{
                         p: 1,
@@ -179,7 +178,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                     >
                       <Stack>
                         {" "}
-                        {/* Use Stack for vertical layout */}
                         <Typography
                           variant="body2"
                           fontWeight="medium"
@@ -187,7 +185,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                         >
                           {room.title}
                         </Typography>
-                        {/* Display Usage Info if available */}
                         {usage && (
                           <>
                             <Tooltip
@@ -250,61 +247,44 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                       </Stack>
                     </Box>
 
-                    {/* Date Cells for this Room */}
                     {dateArray.map((date, dateIndex) => {
                       const coveringBooking = bookings.find(
                         (b) =>
                           b.roomIds.includes(room.id) &&
                           isWithinInterval(date, {
                             start: parseBookingDate(b.checkInDate),
-                            // *** IMPORTANT: isWithinInterval is usually inclusive.
-                            // If your checkOutDate means "the day *of* checkout", you might need to subtract a day
-                            // from b.checkOutDate for accurate interval checking, depending on how you store/define it.
-                            // Assuming checkOutDate is the day *after* the last night stayed for now:
-                            end: parseBookingDate(b.checkOutDate), // This usually means up to the START of the checkout day.
-                            // If checkOutDate *is* the last day of stay, use end: addDays(parseBookingDate(b.checkOutDate), 1)
-                            // Or adjust the differenceInDays calculation later. Let's assume checkout is the day AFTER last night for now.
+                            end: parseBookingDate(b.checkOutDate),
                           })
                       );
 
-                      let renderCellContent = null; // What to render in this cell
+                      let renderCellContent = null;
 
                       if (coveringBooking) {
                         const bookingStartDate = parseBookingDate(
                           coveringBooking.checkInDate
                         );
-                        // Assuming checkOutDate is the day AFTER the last night stayed.
-                        // The last night is checkOutDate - 1 day.
-                        // const bookingLastNight = subDays(
-                        //   parseBookingDate(coveringBooking.checkOutDate),
-                        //   1
-                        // );
 
                         const bookingLastNight: DateOrStringOrNumber =
                           coveringBooking.checkOutDate;
 
-                        // Determine if this 'date' cell is where the *visible* part of the booking should START rendering
                         const isActualStartDate = isSameDay(
                           date,
                           bookingStartDate
                         );
                         const startedBeforeView =
                           bookingStartDate < dateArray[0];
-                        // Check if it's the first day *of the view* AND the booking started before
+
                         const isFirstVisibleDayOfBooking =
                           startedBeforeView && dateIndex === 0;
 
-                        // Render the block if it's the actual start date OR if it's the first visible day of a booking that started earlier
                         const shouldRenderBlockInThisCell =
                           isActualStartDate || isFirstVisibleDayOfBooking;
 
                         if (shouldRenderBlockInThisCell) {
-                          // Calculate the STARTING date for the visible block span
                           const visibleStartDate = startedBeforeView
                             ? date
                             : bookingStartDate; // Start from view start or actual start
 
-                          // Calculate the ENDING date for the visible block span (last night of stay, clamped by view end)
                           const visibleEndDate = min([
                             bookingLastNight,
                             dateArray[dateArray.length - 1],
@@ -315,15 +295,12 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                             differenceInDays(visibleEndDate, visibleStartDate) +
                             1;
 
-                          // Calculate the grid column span based on duration
-                          // It cannot exceed remaining days in view starting from current cell
                           const remainingDaysInView = numDays - dateIndex;
                           const bookingSpan = Math.min(
                             spanDuration,
                             remainingDaysInView
                           );
 
-                          // Style adjustments for partial bookings (optional)
                           const blockStyle = {
                             position: "relative",
                             gridColumn: `${dateIndex + 2} / span ${
@@ -361,9 +338,14 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                                 "yyyy-MM-dd"
                               )}`}
                               sx={blockStyle}
+                              onClick={() =>
+                                navigate(`/bookings/${coveringBooking.id}/edit`)
+                              }
                             >
                               {/* Uses your guest name field */}
-                              {coveringBooking.guestFullName}
+                              {coveringBooking.groupName
+                                ? coveringBooking.groupName
+                                : coveringBooking.guestFullName}
                             </Box>
                           );
                         } else {

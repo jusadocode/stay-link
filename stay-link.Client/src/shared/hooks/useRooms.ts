@@ -1,7 +1,9 @@
 import { useAuthentication } from "./useAuthentication";
 import {
   API_MULTIPLE_ROOMS_URL,
+  API_ROOMS_AVAILABILITY_URL,
   API_ROOMS_FEATURES_URL,
+  API_ROOMS_SEARCH_URL,
   API_ROOMS_URL,
   API_ROOMS_USAGES_URL,
 } from "../constants/apiConstants";
@@ -13,6 +15,16 @@ const useRooms = () => {
     const response = await customFetch(API_ROOMS_URL, {
       method: "GET",
     });
+    return await response.json();
+  };
+
+  const getRoomAvailability = async (checkIn, checkOut) => {
+    const response = await customFetch(
+      `${API_ROOMS_AVAILABILITY_URL}?checkIn=${checkIn}&checkOut=${checkOut}`,
+      {
+        method: "GET",
+      }
+    );
     return await response.json();
   };
 
@@ -47,7 +59,7 @@ const useRooms = () => {
     );
 
     const response = await customFetch(
-      `${API_ROOMS_URL}/filter?${params.toString()}`,
+      `${API_ROOMS_SEARCH_URL}?${params.toString()}`,
       {
         method: "GET",
       }
@@ -145,6 +157,7 @@ const useRooms = () => {
     fetchRooms,
     fetchRoomsUsages,
     fetchRoom,
+    getRoomAvailability,
     deleteRoom,
     searchRooms,
     searchRoomGroups,

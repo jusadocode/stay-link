@@ -29,31 +29,31 @@ namespace stay_link.Server.Controllers
             return Ok(rooms); // Wrap the result in Ok()
         }
 
-        [HttpGet("filter")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomDTO>))]
-        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsByFilters(
-            [FromQuery] DateOnly checkIn,
-            [FromQuery] DateOnly checkOut,
-            [FromQuery] int guestCount,
-            [FromQuery] List<int> preferenceIds)
-        {
+        //[HttpGet("filter")]
+        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomDTO>))]
+        //public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsByFilters(
+        //    [FromQuery] DateOnly checkIn,
+        //    [FromQuery] DateOnly checkOut,
+        //    [FromQuery] int guestCount,
+        //    [FromQuery] List<int> preferenceIds)
+        //{
 
-            var preferences = await _roomService.GetRoomFeaturesByIds(preferenceIds);
-            var rooms = guestCount > 0 ? await _roomService.GetRooms(checkIn, checkOut, guestCount, preferences) : await _roomService.GetRooms();
+        //    var preferences = await _roomService.GetRoomFeaturesByIds(preferenceIds);
+        //    var rooms = guestCount > 0 ? await _roomService.GetRooms(checkIn, checkOut, guestCount, preferences) : await _roomService.GetRooms();
 
-            return Ok(rooms); // Wrap the result in Ok()
-        }
+        //    return Ok(rooms); // Wrap the result in Ok()
+        //}
 
-        [HttpGet("filter/group")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomGroupDTO>))]
-        public async Task<ActionResult<IEnumerable<RoomGroupDTO>>> GetGroupRoomsByFilters(
+        [HttpGet("offers/filter")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomOfferDTO>))]
+        public async Task<ActionResult<IEnumerable<RoomOfferDTO>>> GetRoomsByFilters(
         [FromQuery] DateOnly checkIn,
         [FromQuery] DateOnly checkOut,
         [FromQuery] int guestCount,
         [FromQuery] List<int> preferenceIds)
         {
             var preferences = await _roomService.GetRoomFeaturesByIds(preferenceIds);
-            var roomGroups = await _roomService.GetRoomGroups(checkIn, checkOut, guestCount, preferences);
+            var roomGroups = await _roomService.GetRoomOffers(checkIn, checkOut, guestCount, preferences);
             return Ok(roomGroups);
         }
 
@@ -63,6 +63,15 @@ namespace stay_link.Server.Controllers
         {
             var features = await _roomService.GetAllFeatures();
             return Ok(features); // Wrap the result in Ok()
+        }
+
+        [HttpGet("availability")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<int>))]
+        public async Task<ActionResult<IEnumerable<int>>> GetAvailableRooms(DateOnly checkIn, DateOnly checkOut)
+        {
+            var availableRooms = await _roomService.GetAvailableRoomIds(checkIn, checkOut);
+
+            return Ok(availableRooms);
         }
 
         [HttpGet("usages")]

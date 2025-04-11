@@ -58,6 +58,44 @@ function BookingsPage() {
     }
   };
 
+  async function populateBookingData() {
+    try {
+      const bookingsData = await fetchBookings();
+
+      const bookingsWithDetails = await Promise.all(
+        bookingsData.map(async (booking) => {
+          const rooms = await Promise.all(
+            booking.roomIds.map((id) => fetchRoom(id))
+          );
+
+          const checkIn = dayjs(booking.checkInDate);
+          const checkOut = dayjs(booking.checkOutDate);
+          const nights = checkOut.diff(checkIn, "day");
+
+          const roomCost = rooms.reduce(
+            (sum, room) => sum + room.price * nights,
+            0
+          );
+          const breakfastCost = booking.breakfastRequests * 15 * nights;
+          const cleaningFee = 20;
+          const total = roomCost + breakfastCost + cleaningFee;
+
+          return {
+            ...booking,
+            rooms,
+            totalPrice: total,
+            checkIn,
+            checkOut,
+          };
+        })
+      );
+
+      setBookings(bookingsWithDetails);
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
+  }
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -74,10 +112,16 @@ function BookingsPage() {
             }}
           >
             {bookings.map((booking, index) => {
-              const checkInDateObj = dayjs(booking.checkInDate);
+              const { checkIn, checkOut, totalPrice, rooms } = booking;
               const now = dayjs();
-              const hoursUntilCheckIn = checkInDateObj.diff(now, "hour");
-              const canCancel = hoursUntilCheckIn > 24;
+              const canCancel = checkIn.diff(now, "hour") > 24;
+              const canCheckOut = !canCancel && checkOut.diff(now, "hour") > 0;
+              const totalGuests = rooms.reduce(
+                (acc, r) => acc + r.maxOccupancy,
+                0
+              );
+              const nights = checkOut.diff(checkIn, "day");
+              const previewImage = rooms[0]?.imageUrl;
               return (
                 <Paper
                   key={index}
@@ -100,8 +144,8 @@ function BookingsPage() {
                   >
                     {/* Image Section */}
                     <img
-                      src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                      alt="Double room"
+                      src={previewImage}
+                      alt={rooms[0].title}
                       style={{
                         width: "100%",
                         height: "auto",
@@ -128,19 +172,46 @@ function BookingsPage() {
                       </Typography>
 
                       <Typography>
-                        <strong>Description:</strong> {booking.room.summary}
+                        <strong>Nights:</strong> {nights}
+                      </Typography>
+
+                      <Box sx={{ mt: 1 }}>
+                        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                          <strong>Booked Rooms:</strong>
+                        </Typography>
+
+                        {rooms.map((room, i) => (
+                          <Box
+                            key={room.id || i}
+                            sx={{
+                              borderBottom: "1px solid #e0e0e0",
+                              pb: 1,
+                              mb: 1,
+                            }}
+                          >
+                            <Typography
+                              variant="body1"
+                              sx={{ fontWeight: "bold" }}
+                            >
+                              {room.title}
+                            </Typography>
+                            <Typography variant="body2">
+                              Type: {room.roomType}
+                            </Typography>
+                            <Typography variant="body2">
+                              Max Occupancy: {room.maxOccupancy}
+                            </Typography>
+                            <Typography variant="body2">
+                              Price per night: €{room.price}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                      <Typography>
+                        <strong>Total guests expected:</strong> {totalGuests}
                       </Typography>
                       <Typography>
-                        <strong>Room type:</strong> {booking.room.roomType}
-                      </Typography>
-                      <Typography>
-                        <strong>Space:</strong>{" "}
-                        {booking.room.maxOccupancy === 1
-                          ? "For 1 person"
-                          : `For up to ${3} people`}
-                      </Typography>
-                      <Typography>
-                        <strong>Total:</strong> €300
+                        <strong>Total price:</strong> €{totalPrice}
                       </Typography>
                     </Grid>
                     {userIsAdmin() && (
@@ -164,14 +235,22 @@ function BookingsPage() {
                       color="text.secondary"
                     >
                       {canCancel
-                        ? `You can cancel until ${checkInDateObj
+                        ? `You can cancel until ${checkIn
                             .subtract(24, "hour")
                             .format("DD MMM HH:mm")}`
-                        : "Booking is no longer cancellable (less than 24h to check-in)"}
+                        : ""}
                     </Typography>
 
+                    {canCancel ? (
+                      <Button variant="outlined" sx={{ mt: 1 }}>
+                        Cancel
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+
                     <Button variant="outlined" sx={{ mt: 1 }}>
-                      Check In
+                      {canCheckOut ? "Check out" : "Check In"}
                     </Button>
                   </Box>
                 </Paper>
@@ -214,39 +293,6 @@ function BookingsPage() {
       </Dialog>
     </Container>
   );
-
-  async function populateBookingData() {
-    try {
-      const bookingsData = await fetchBookings();
-
-      const bookingsWithDetails = await Promise.all(
-        bookingsData.map(async (booking) => {
-          const room = await fetchRoom(booking.roomId);
-
-          const checkInDate = dayjs(booking.checkInDate);
-          const checkOutDate = dayjs(booking.checkOutDate);
-
-          const numberOfNights = checkOutDate.diff(checkInDate, "day") + 1;
-          const cleaningFee = 20;
-          const breakfastDailyFee = 15;
-          const totalBreakfast =
-            booking.breakfastRequests * breakfastDailyFee * numberOfNights;
-          const totalPrice =
-            room.price * numberOfNights + totalBreakfast + cleaningFee;
-
-          return {
-            ...booking,
-            totalPrice: totalPrice,
-            room: room,
-          };
-        })
-      );
-
-      setBookings(bookingsWithDetails);
-    } catch (error) {
-      console.error("Error fetching booking data:", error);
-    }
-  }
 }
 
 export default BookingsPage;
