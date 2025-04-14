@@ -1,6 +1,7 @@
 import { useAuthentication } from "./useAuthentication";
 import {
   API_MULTIPLE_ROOMS_URL,
+  API_ROOM_CLOSURES_URL,
   API_ROOMS_AVAILABILITY_URL,
   API_ROOMS_FEATURES_URL,
   API_ROOMS_SEARCH_URL,
@@ -25,6 +26,22 @@ const useRooms = () => {
         method: "GET",
       }
     );
+    return await response.json();
+  };
+
+  const getRoomClosures = async () => {
+    const response = await customFetch(API_ROOM_CLOSURES_URL, {
+      method: "GET",
+    });
+    return response.json();
+  };
+
+  const createRoomClosure = async (closure) => {
+    const response = await customFetch(API_ROOM_CLOSURES_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(closure),
+    });
     return await response.json();
   };
 
@@ -157,6 +174,8 @@ const useRooms = () => {
     fetchRooms,
     fetchRoomsUsages,
     fetchRoom,
+    getRoomClosures,
+    createRoomClosure,
     getRoomAvailability,
     deleteRoom,
     searchRooms,

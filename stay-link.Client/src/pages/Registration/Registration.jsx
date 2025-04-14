@@ -92,6 +92,30 @@ const Registration = () => {
           <TextField
             margin="normal"
             fullWidth
+            id="firstName"
+            label="First name"
+            placeholder="e.g., John"
+            autoFocus
+            {...register("firstName")}
+            error={Boolean(errors.firstName)}
+            helperText={errors.firstName?.message}
+          />
+
+          <TextField
+            margin="normal"
+            fullWidth
+            id="lastName"
+            label="Last name"
+            placeholder="e.g., Marston"
+            autoFocus
+            {...register("lastName")}
+            error={Boolean(errors.lastName)}
+            helperText={errors.lastName?.message}
+          />
+
+          <TextField
+            margin="normal"
+            fullWidth
             id="email"
             label="Email Address"
             placeholder="e.g., name@gmail.com"

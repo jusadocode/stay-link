@@ -25,6 +25,8 @@ namespace stay_link.Server.Controllers
                 var newUser = new BookingUser()
                 {
                     Email = userDTO.Email,
+                    FirstName = userDTO.FirstName,
+                    LastName = userDTO.LastName,
                     UserName = userDTO.Username
                 };
 
@@ -175,7 +177,7 @@ namespace stay_link.Server.Controllers
 
         }
 
-        public record RegisterUserDTO(string Username, string Email, string Password);
+        public record RegisterUserDTO(string Username, string FirstName, string LastName, string Email, string Password);
         public record LoginUserDTO(string Username, string Password);
         public record SuccessfulLoginDTO(string userId, IList<string> roles);
     }

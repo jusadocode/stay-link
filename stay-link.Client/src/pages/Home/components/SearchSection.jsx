@@ -5,16 +5,7 @@ import {
   arrayMove,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import {
-  Box,
-  Typography,
-  Paper,
-  List,
-  Button,
-  TextField,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import { Box, Typography, Paper, List, Button, TextField } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -31,16 +22,17 @@ import useRooms from "../../../shared/hooks/useRooms";
 import dayjs from "dayjs";
 import SortableItem from "./SortableItem";
 
-function SearchSection({ setRoomOffers, setIsLoading }) {
+function SearchSection({
+  setRoomOffers,
+  setIsLoading,
+  setBookingDates,
+  bookingDates,
+}) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [features, setFeatures] = useState([]);
-  const [showAllRooms, setShowAllRooms] = useState(false);
-  const [bookingDates, setBookingDates] = useState([
-    dayjs().add(1, "day"),
-    dayjs().add(3, "day"),
-  ]);
+  // const [showAllRooms, setShowAllRooms] = useState(false);
+
   const [guestCount, setGuestCount] = useState(1);
-  // const [roomCount, setRoomCount] = useState(1);
 
   const { searchRooms, fetchFeatures } = useRooms();
 
@@ -85,7 +77,8 @@ function SearchSection({ setRoomOffers, setIsLoading }) {
         checkIn: bookingDates[0],
         checkOut: bookingDates[1],
         preferenceIds: selectedPreferences.map((p) => parseInt(p.id)),
-        guestCount: showAllRooms ? 0 : Number(guestCount),
+        // guestCount: showAllRooms ? 0 : Number(guestCount),
+        guestCount: 0,
       };
 
       const offers = await searchRooms(payload);
@@ -130,32 +123,13 @@ function SearchSection({ setRoomOffers, setIsLoading }) {
                 label="Guest amount"
                 type="number"
                 size="small"
-                disabled={showAllRooms}
+                // disabled={showAllRooms}
                 value={guestCount}
                 onChange={(e) =>
                   setGuestCount(Math.max(1, Number(e.target.value)))
                 }
                 InputProps={{ inputProps: { min: 1 } }}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showAllRooms}
-                    onChange={(e) => setShowAllRooms(e.target.checked)}
-                  />
-                }
-                label="Show all rooms"
-              />
-              {/* <TextField
-                label="Rooms"
-                type="number"
-                size="small"
-                value={roomCount}
-                onChange={(e) =>
-                  setRoomCount(Math.max(1, Number(e.target.value)))
-                }
-                InputProps={{ inputProps: { min: 1 } }}
-              /> */}
             </Box>
           </Box>
         </LocalizationProvider>

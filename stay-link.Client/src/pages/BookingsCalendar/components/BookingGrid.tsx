@@ -29,19 +29,44 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
   const parseBookingDate = (dateStr) => startOfDay(parseISO(dateStr));
 
   const [roomUsages, setRoomUsages] = useState([]);
+  const [roomClosures, setRoomClosures] = useState([]);
 
   const navigate = useNavigate();
 
-  const { fetchRoomsUsages } = useRooms();
+  const { fetchRoomsUsages, getRoomClosures } = useRooms();
 
   async function populateUsageData() {
     try {
       const usageData = await fetchRoomsUsages();
+      const closureData = await getRoomClosures();
       setRoomUsages(usageData);
+      setRoomClosures(closureData);
     } catch (error) {
-      console.error("Error fetching usage data:", error);
+      console.error("Error fetching usage or closure data:", error);
     }
   }
+
+  const getBookingsForCell = (roomId, date) => {
+    return bookings.find(
+      (b) =>
+        b.roomIds.includes(roomId) &&
+        isWithinInterval(date, {
+          start: parseBookingDate(b.checkInDate),
+          end: parseBookingDate(b.checkOutDate),
+        })
+    );
+  };
+
+  const getClosureForCell = (roomId, date) => {
+    return roomClosures.find(
+      (closure) =>
+        roomId === closure.roomId &&
+        isWithinInterval(date, {
+          start: parseBookingDate(closure.startDate),
+          end: parseBookingDate(closure.endDate),
+        })
+    );
+  };
 
   useEffect(() => {
     populateUsageData();
@@ -68,29 +93,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
 
   // Calculate grid column template: 1 for room names + 1 for each day
   const gridTemplateColumns = `150px repeat(${numDays}, 80px)`;
-
-  // Find booking for a specific room and date cell
-  const getBookingForCell = (roomId, date) => {
-    // Find bookings that *start* on this specific date for this room
-    return bookings.find(
-      (b) =>
-        b.roomIds.includes(roomId) &&
-        isSameDay(parseBookingDate(b.checkInDate), date)
-    );
-  };
-
-  // Check if a date cell is part of an *ongoing* booking (but not the start)
-  const isCellBooked = (roomId, date) => {
-    return bookings.some(
-      (b) =>
-        b.roomIds.includes(roomId) &&
-        !isSameDay(parseBookingDate(b.checkInDate), date) && // Exclude the start date itself
-        isWithinInterval(date, {
-          start: parseBookingDate(b.checkInDate),
-          end: parseBookingDate(b.checkOutDate),
-        })
-    );
-  };
 
   return (
     <Paper elevation={1} sx={{ overflowX: "auto" }}>
@@ -120,6 +122,9 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
               borderLeft: index === 0 ? "none" : undefined, // Remove left border for first date cell
               backgroundColor: "#f9f9f9",
               fontWeight: "bold",
+              position: "sticky",
+              top: 0,
+              zIndex: 2,
             }}
           >
             <Typography variant="caption" display="block">
@@ -132,7 +137,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
           </Box>
         ))}
 
-        {/* Room Rows */}
         {Object.entries(groupedRooms).map(
           ([roomType, roomsOfType], typeIndex) => (
             <React.Fragment key={roomType}>
@@ -248,14 +252,9 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                     </Box>
 
                     {dateArray.map((date, dateIndex) => {
-                      const coveringBooking = bookings.find(
-                        (b) =>
-                          b.roomIds.includes(room.id) &&
-                          isWithinInterval(date, {
-                            start: parseBookingDate(b.checkInDate),
-                            end: parseBookingDate(b.checkOutDate),
-                          })
-                      );
+                      const coveringBooking = getBookingsForCell(room.id, date);
+
+                      const coveringClosure = getClosureForCell(room.id, date);
 
                       let renderCellContent = null;
 
@@ -350,6 +349,68 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                           // This cell is covered by a booking, but the visual block
                           // starts in an earlier cell within the view. Render nothing (null).
                           renderCellContent = null;
+                        }
+                      } else if (coveringClosure) {
+                        // Only render once per closure block
+                        const isActualStartDate = isSameDay(
+                          date,
+                          parseBookingDate(coveringClosure.startDate)
+                        );
+                        const startedBeforeView =
+                          parseBookingDate(coveringClosure.startDate) <
+                          dateArray[0];
+                        const isFirstVisibleDayOfClosure =
+                          startedBeforeView && dateIndex === 0;
+                        const shouldRenderClosureBlock =
+                          isActualStartDate || isFirstVisibleDayOfClosure;
+
+                        if (shouldRenderClosureBlock) {
+                          const visibleStartDate = startedBeforeView
+                            ? date
+                            : parseBookingDate(coveringClosure.startDate);
+                          const visibleEndDate = min([
+                            parseBookingDate(coveringClosure.endDate),
+                            dateArray[dateArray.length - 1],
+                          ]);
+
+                          const spanDuration =
+                            differenceInDays(visibleEndDate, visibleStartDate) +
+                            1;
+                          const remainingDaysInView = numDays - dateIndex;
+                          const closureSpan = Math.min(
+                            spanDuration,
+                            remainingDaysInView
+                          );
+
+                          return (
+                            <Box
+                              key={`closure-${room.id}-${format(
+                                date,
+                                "yyyy-MM-dd"
+                              )}`}
+                              sx={{
+                                position: "relative",
+                                gridColumn: `${
+                                  dateIndex + 2
+                                } / span ${closureSpan}`,
+                                margin: 0.5,
+                                backgroundColor: "grey.400",
+                                color: "white",
+                                borderRadius: 1,
+                                border: "1px dashed grey",
+                                fontSize: "0.75rem",
+                                minHeight: "40px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                textAlign: "center",
+                              }}
+                            >
+                              {coveringClosure.reason || "Room Closed"}
+                            </Box>
+                          );
+                        } else {
+                          return null;
                         }
                       } else {
                         // This cell is completely empty

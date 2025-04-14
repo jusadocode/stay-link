@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { addDays, addWeeks, format, subDays, subWeeks } from "date-fns";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
   const handlePrevWeek = () => setCurrentDate((prev) => subWeeks(prev, 1));
@@ -16,6 +17,8 @@ function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
   const handleNextDay = () => setCurrentDate((prev) => addDays(prev, 1));
   const handleNextWeek = () => setCurrentDate((prev) => addWeeks(prev, 1));
   const handleToday = () => setCurrentDate(new Date());
+
+  const navigator = useNavigate();
 
   return (
     <Box
@@ -65,7 +68,24 @@ function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
         </IconButton>
       </Box>
 
-      <Box sx={{ display: "flex", gap: "1rem" }}></Box>
+      <Box sx={{ display: "flex", gap: "1rem" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => navigator("/bookings/new")}
+        >
+          + Add booking
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => navigator("/closures/new")}
+        >
+          + Room Closure
+        </Button>
+      </Box>
     </Box>
   );
 }

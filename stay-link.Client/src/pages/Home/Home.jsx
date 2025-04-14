@@ -67,10 +67,7 @@ const HomePage = () => {
         top hotels with just a few clicks.
       </Typography>
 
-      <Box display="flex" justifyContent="space-between" width="100%" my={2}>
-        <Button variant="outlined" component={Link}>
-          My Account
-        </Button>
+      <Box display="flex" gap={"2rem"} my={2}>
         {isLoggedIn && (
           <Button
             variant="outlined"

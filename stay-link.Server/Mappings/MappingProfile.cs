@@ -37,7 +37,8 @@ namespace stay_link.Server.Mappings
             .ForMember(dest => dest.CleaningState,
                     opt => opt.MapFrom(src => src.CleaningState.ToString()));
 
-
+            CreateMap<CreateRoomClosureDTO, RoomClosure>();
+            CreateMap<RoomClosure, RoomClosureDTO>();
         }
     }
 }

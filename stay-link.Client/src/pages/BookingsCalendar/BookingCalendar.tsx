@@ -58,7 +58,6 @@ function BookingsCalendar() {
         checkInDate={currentDate}
         numDays={numDays}
       />
-      {/* Add other dashboard elements here */}
     </Container>
   );
 }

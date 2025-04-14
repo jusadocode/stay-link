@@ -9,6 +9,12 @@ export const RegistrationSchema = object({
     .required("Email address is required.")
     .email("Invalid email address."),
 
+  firstName: string()
+  .required("First name is required."),
+
+  lastName: string()
+  .required("Email address is required."),
+
   password: string()
     .required("Password is required.")
     .min(8, "Password must be at least 8 characters long.")

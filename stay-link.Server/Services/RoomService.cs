@@ -50,6 +50,14 @@ namespace stay_link.Server.Services
             return _mapper.Map<IEnumerable<RoomOfferDTO>>(roomGroups);
         }
 
+        public async Task<IEnumerable<RoomClosureDTO>> GetRoomClosures()
+        {
+            var closures = await _context.RoomClosure
+              .ToListAsync();
+
+            return _mapper.Map<IEnumerable<RoomClosureDTO>>(closures);
+        }
+
         public async Task<RoomDTO?> GetRoom(int id)
         {
             var room = await _context.Rooms.FindAsync(id);
@@ -366,6 +374,34 @@ namespace stay_link.Server.Services
 
         }
 
+        public async Task<RoomClosureDTO> CreateRoomClosure(CreateRoomClosureDTO closureDto)
+        {
+            // Check if the room exists
+            var room = await _context.Rooms
+                .Include(r => r.Bookings)
+                .FirstOrDefaultAsync(r => r.Id == closureDto.RoomId);
+
+            if (room == null)
+            {
+                throw new InvalidOperationException("Room not found.");
+            }
+
+            bool isBooked = room.Bookings.Any(b =>
+                b.CheckInDate < closureDto.EndDate && closureDto.StartDate < b.CheckOutDate
+            );
+
+            if (isBooked)
+            {
+                throw new InvalidOperationException("Room is booked during the selected closure period.");
+            }
+
+            var closure = _mapper.Map<RoomClosure>(closureDto);
+
+            _context.RoomClosure.Add(closure);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<RoomClosureDTO>(closure);
+        }
 
 
         public async Task UpdateRoomUsageAfterBooking(int roomId, int numberOfGuests, int stayDuration)

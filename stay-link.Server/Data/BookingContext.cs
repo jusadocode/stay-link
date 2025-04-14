@@ -13,6 +13,7 @@ namespace stay_link.Server.Data
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<RoomUsage> RoomUsages { get; set; }
         public DbSet<RoomFeature> RoomFeatures { get; set; }
+        public DbSet<RoomClosure> RoomClosure { get; set; }
 
         public DbSet<Session> Sessions { get; set; }
 

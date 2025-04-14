@@ -65,6 +65,22 @@ namespace stay_link.Server.Controllers
             return Ok(features); // Wrap the result in Ok()
         }
 
+        [HttpPost("closure")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateRoomClosureDTO))]
+        public async Task<IActionResult> CreateRoomClosure([FromBody] CreateRoomClosureDTO dto)
+        {
+            var closure = await _roomService.CreateRoomClosure(dto);
+            return Ok(closure);
+        }
+
+        [HttpGet("closure")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomClosureDTO>))]
+        public async Task<ActionResult<IEnumerable<RoomClosureDTO>>> GetRoomClosures()
+        {
+            var roomClosures = await _roomService.GetRoomClosures();
+            return Ok(roomClosures);
+        }
+
         [HttpGet("availability")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<int>))]
         public async Task<ActionResult<IEnumerable<int>>> GetAvailableRooms(DateOnly checkIn, DateOnly checkOut)
@@ -73,6 +89,8 @@ namespace stay_link.Server.Controllers
 
             return Ok(availableRooms);
         }
+
+  
 
         [HttpGet("usages")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomFeatureDetailsDTO>))]

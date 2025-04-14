@@ -15,7 +15,7 @@ import useRooms from "../../../../shared/hooks/useRooms";
 
 export default function RoomClosureCreatePage() {
   const navigate = useNavigate();
-  const { fetchRooms, getRoomAvailability, addRoomClosure } = useRooms();
+  const { fetchRooms, getRoomAvailability, createRoomClosure } = useRooms();
 
   const [rooms, setRooms] = useState([]);
   const [availableRoomIds, setAvailableRoomIds] = useState([]);
@@ -44,7 +44,7 @@ export default function RoomClosureCreatePage() {
       const ids = await getRoomAvailability(start, end);
       setAvailableRoomIds(ids);
     } catch (err) {
-      console.error("Failed to check availability", err);
+      console.error("Failed to check room availability", err);
     }
   };
 
@@ -63,14 +63,16 @@ export default function RoomClosureCreatePage() {
 
   const handleSubmit = async () => {
     try {
-      await addRoomClosure(closure);
-      navigate("/admin/rooms");
+      await createRoomClosure(closure);
+      navigate("/bookings/calendar");
     } catch (error) {
-      console.error("Error creating closure:", error);
+      console.error("Error submitting closure:", error);
     }
   };
 
-  const availableRooms = rooms.filter((r) => availableRoomIds.includes(r.id));
+  const availableRooms = rooms.filter((room) =>
+    availableRoomIds.includes(room.id)
+  );
 
   if (isLoading) return <CircularProgress />;
 
@@ -82,7 +84,7 @@ export default function RoomClosureCreatePage() {
 
       <TextField
         fullWidth
-        label="Reason for closure"
+        label="Reason for Closure"
         value={closure.reason}
         onChange={handleChange("reason")}
         sx={{ mb: 2 }}
@@ -92,21 +94,25 @@ export default function RoomClosureCreatePage() {
         <DatePicker
           label="Start Date"
           value={dayjs(closure.startDate)}
-          onChange={(newValue) =>
-            handleChange("startDate")({
-              target: { value: newValue.format("YYYY-MM-DD") },
-            })
-          }
+          onChange={(newValue) => {
+            if (newValue) {
+              handleChange("startDate")({
+                target: { value: newValue.format("YYYY-MM-DD") },
+              });
+            }
+          }}
           sx={{ mb: 2, width: "100%" }}
         />
         <DatePicker
           label="End Date"
           value={dayjs(closure.endDate)}
-          onChange={(newValue) =>
-            handleChange("endDate")({
-              target: { value: newValue.format("YYYY-MM-DD") },
-            })
-          }
+          onChange={(newValue) => {
+            if (newValue) {
+              handleChange("endDate")({
+                target: { value: newValue.format("YYYY-MM-DD") },
+              });
+            }
+          }}
           sx={{ mb: 2, width: "100%" }}
         />
       </LocalizationProvider>
@@ -114,7 +120,7 @@ export default function RoomClosureCreatePage() {
       <TextField
         select
         fullWidth
-        label="Room"
+        label="Select Room"
         value={closure.roomId}
         onChange={handleChange("roomId")}
         sx={{ mb: 3 }}
@@ -126,7 +132,7 @@ export default function RoomClosureCreatePage() {
         ))}
       </TextField>
 
-      <Button variant="contained" onClick={handleSubmit}>
+      <Button variant="contained" color="primary" onClick={handleSubmit}>
         Submit Closure
       </Button>
     </Container>

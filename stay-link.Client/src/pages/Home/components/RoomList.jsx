@@ -98,7 +98,6 @@ function RoomList({ roomOffers, bookingDates }) {
 
                 return (
                   <React.Fragment key={offer.rooms.map((r) => r.id).join("-")}>
-                    {/* offer Label */}
                     {isGroup && (
                       <TableRow>
                         <TableCell colSpan={6}>
@@ -125,7 +124,6 @@ function RoomList({ roomOffers, bookingDates }) {
                       </TableRow>
                     )}
 
-                    {/* Summary row */}
                     <TableRow
                       hover
                       onClick={() =>
@@ -171,7 +169,6 @@ function RoomList({ roomOffers, bookingDates }) {
                       </TableCell>
                     </TableRow>
 
-                    {/* Expandable details */}
                     <TableRow>
                       <TableCell colSpan={6} sx={{ p: 0 }}>
                         <Collapse
@@ -234,43 +231,32 @@ function RoomList({ roomOffers, bookingDates }) {
 
                                   <Typography variant="body2" sx={{ mt: 1 }}>
                                     <strong>Features:</strong>{" "}
-                                    {room.features.length > 0 ? (
-                                      room.features.map((f, i) => (
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        gap: 1,
+                                        mt: 1,
+                                      }}
+                                    >
+                                      {room.features.map((f, i) => (
                                         <Box
                                           key={f.id || i}
-                                          component="span"
                                           sx={{
-                                            display: "inline-flex",
+                                            display: "flex",
                                             alignItems: "center",
-                                            mr: 1.5,
-                                            mb: 0.5,
+                                            border: "1px solid #ddd",
+                                            borderRadius: 2,
+                                            px: 1,
+                                            py: 0.5,
+                                            fontSize: "0.875rem",
                                           }}
                                         >
-                                          <span
-                                            style={{
-                                              fontSize: "1.2em",
-                                              marginRight: "4px",
-                                            }}
-                                          >
-                                            {featureIcons[f.name] || "🔧"}
-                                          </span>
-                                          <Typography
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                          >
-                                            {f.name}
-                                          </Typography>
+                                          {featureIcons[f.name] || "🔧"}{" "}
+                                          {f.name}
                                         </Box>
-                                      ))
-                                    ) : (
-                                      <Typography
-                                        component="span"
-                                        color="text.secondary"
-                                      >
-                                        None
-                                      </Typography>
-                                    )}
+                                      ))}
+                                    </Box>
                                   </Typography>
                                 </Box>
                               </Box>
