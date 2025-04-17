@@ -1,125 +1,146 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Typography,
   TextField,
-  MenuItem,
   Button,
+  MenuItem,
   CircularProgress,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import useBookings from "../../../../shared/hooks/useBookings";
+import useRooms from "../../../../shared/hooks/useRooms";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import useRooms from "../../../../shared/hooks/useRooms";
+import { useNavigate } from "react-router-dom";
 
-export default function RoomClosureCreatePage() {
+export default function BookingAdditionPage() {
   const navigate = useNavigate();
-  const { fetchRooms, getRoomAvailability, addRoomClosure } = useRooms();
+  const { addBooking } = useBookings();
+  const { fetchRooms, getRoomAvailability } = useRooms();
 
   const [rooms, setRooms] = useState([]);
   const [availableRoomIds, setAvailableRoomIds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [closure, setClosure] = useState({
-    reason: "",
-    startDate: dayjs().add(1, "day").format("YYYY-MM-DD"),
-    endDate: dayjs().add(2, "day").format("YYYY-MM-DD"),
-    roomId: "",
+  const [booking, setBooking] = useState({
+    displayName: "",
+    breakfastRequests: 0,
+    checkInDate: dayjs().add(1, "day").format("YYYY-MM-DD"),
+    checkOutDate: dayjs().add(2, "day").format("YYYY-MM-DD"),
+    roomIds: [],
   });
 
   useEffect(() => {
     const load = async () => {
       const r = await fetchRooms();
       setRooms(r);
-      await checkAvailability(closure.startDate, closure.endDate);
+
+      await getAvailability(booking.checkInDate, booking.checkOutDate);
+
       setIsLoading(false);
     };
+
     load();
   }, []);
 
-  const checkAvailability = async (start, end) => {
-    if (!start || !end) return;
+  const getAvailability = async (checkIn, checkOut) => {
+    if (!checkIn || !checkOut) return;
     try {
-      const ids = await getRoomAvailability(start, end);
+      const ids = await getRoomAvailability(checkIn, checkOut);
       setAvailableRoomIds(ids);
     } catch (err) {
-      console.error("Failed to check availability", err);
+      console.error("Failed to fetch availability", err);
     }
   };
 
   const handleChange = (field) => (e) => {
     const value = e.target.value;
-    const updated = { ...closure, [field]: value };
-    setClosure(updated);
+    const updated = { ...booking, [field]: value };
+    setBooking(updated);
 
-    if (field === "startDate" || field === "endDate") {
-      checkAvailability(
-        field === "startDate" ? value : updated.startDate,
-        field === "endDate" ? value : updated.endDate
+    if (field === "checkInDate" || field === "checkOutDate") {
+      getAvailability(
+        field === "checkInDate" ? value : updated.checkInDate,
+        field === "checkOutDate" ? value : updated.checkOutDate
       );
     }
   };
 
   const handleSubmit = async () => {
     try {
-      await addRoomClosure(closure);
-      navigate("/admin/rooms");
+      await addBooking(booking);
+      navigate("/bookings/calendar");
     } catch (error) {
-      console.error("Error creating closure:", error);
+      console.error("Failed to create booking", error);
     }
   };
 
-  const availableRooms = rooms.filter((r) => availableRoomIds.includes(r.id));
+  const filteredRooms = rooms.filter((r) => availableRoomIds.includes(r.id));
 
   if (isLoading) return <CircularProgress />;
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h5" gutterBottom>
-        Create Room Closure
+        Create Booking
       </Typography>
 
       <TextField
         fullWidth
-        label="Reason for closure"
-        value={closure.reason}
-        onChange={handleChange("reason")}
+        label="Display Name"
+        value={booking.displayName}
+        onChange={handleChange("displayName")}
+        sx={{ mb: 2 }}
+      />
+
+      <TextField
+        fullWidth
+        type="number"
+        label="Breakfast Requests"
+        value={booking.breakfastRequests}
+        onChange={handleChange("breakfastRequests")}
         sx={{ mb: 2 }}
       />
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
-          label="Start Date"
-          value={dayjs(closure.startDate)}
-          onChange={(newValue) =>
-            handleChange("startDate")({
-              target: { value: newValue.format("YYYY-MM-DD") },
-            })
-          }
+          label="Check-in"
+          value={dayjs(booking.checkInDate)}
+          onChange={(newValue) => {
+            if (newValue) {
+              handleChange("checkInDate")({
+                target: { value: newValue.format("YYYY-MM-DD") },
+              });
+            }
+          }}
           sx={{ mb: 2, width: "100%" }}
         />
         <DatePicker
-          label="End Date"
-          value={dayjs(closure.endDate)}
-          onChange={(newValue) =>
-            handleChange("endDate")({
-              target: { value: newValue.format("YYYY-MM-DD") },
-            })
-          }
+          label="Check-out"
+          value={dayjs(booking.checkOutDate)}
+          onChange={(newValue) => {
+            if (newValue) {
+              handleChange("checkOutDate")({
+                target: { value: newValue.format("YYYY-MM-DD") },
+              });
+            }
+          }}
           sx={{ mb: 2, width: "100%" }}
         />
       </LocalizationProvider>
 
       <TextField
-        select
         fullWidth
-        label="Room"
-        value={closure.roomId}
-        onChange={handleChange("roomId")}
+        select
+        label="Rooms"
+        SelectProps={{ multiple: true }}
+        value={booking.roomIds}
+        onChange={handleChange("roomIds")}
         sx={{ mb: 3 }}
       >
-        {availableRooms.map((room) => (
+        {filteredRooms.map((room) => (
           <MenuItem key={room.id} value={room.id}>
             {room.title} – {room.roomType}
           </MenuItem>
@@ -127,7 +148,7 @@ export default function RoomClosureCreatePage() {
       </TextField>
 
       <Button variant="contained" onClick={handleSubmit}>
-        Submit Closure
+        Create Booking
       </Button>
     </Container>
   );

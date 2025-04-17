@@ -8,7 +8,6 @@ namespace stay_link.Server.Data
 {
     public class BookingContext : IdentityDbContext<BookingUser>
     {
-        public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<RoomUsage> RoomUsages { get; set; }

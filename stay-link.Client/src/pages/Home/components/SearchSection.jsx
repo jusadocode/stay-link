@@ -25,14 +25,15 @@ import SortableItem from "./SortableItem";
 function SearchSection({
   setRoomOffers,
   setIsLoading,
-  setBookingDates,
   bookingDates,
+  setBookingDates,
 }) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [features, setFeatures] = useState([]);
   // const [showAllRooms, setShowAllRooms] = useState(false);
 
   const [guestCount, setGuestCount] = useState(1);
+  // const [roomCount, setRoomCount] = useState(1);
 
   const { searchRooms, fetchFeatures } = useRooms();
 
@@ -77,8 +78,7 @@ function SearchSection({
         checkIn: bookingDates[0],
         checkOut: bookingDates[1],
         preferenceIds: selectedPreferences.map((p) => parseInt(p.id)),
-        // guestCount: showAllRooms ? 0 : Number(guestCount),
-        guestCount: 0,
+        guestCount: Number(guestCount),
       };
 
       const offers = await searchRooms(payload);
@@ -123,13 +123,23 @@ function SearchSection({
                 label="Guest amount"
                 type="number"
                 size="small"
-                // disabled={showAllRooms}
                 value={guestCount}
                 onChange={(e) =>
                   setGuestCount(Math.max(1, Number(e.target.value)))
                 }
                 InputProps={{ inputProps: { min: 1 } }}
               />
+
+              {/* <TextField
+                label="Rooms"
+                type="number"
+                size="small"
+                value={roomCount}
+                onChange={(e) =>
+                  setRoomCount(Math.max(1, Number(e.target.value)))
+                }
+                InputProps={{ inputProps: { min: 1 } }}
+              /> */}
             </Box>
           </Box>
         </LocalizationProvider>

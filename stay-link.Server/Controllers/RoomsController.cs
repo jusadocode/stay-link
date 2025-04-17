@@ -29,6 +29,16 @@ namespace stay_link.Server.Controllers
             return Ok(rooms); // Wrap the result in Ok()
         }
 
+        [HttpGet("stats")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomStatsDTO>))]
+        public async Task<ActionResult<IEnumerable<RoomStatsDTO>>> GetRoomStats(
+        [FromQuery] DateOnly start,
+        [FromQuery] DateOnly end)
+        {
+            var stats = await _roomService.GetRoomStats(start, end);
+            return Ok(stats);
+        }
+
         //[HttpGet("filter")]
         //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomDTO>))]
         //public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsByFilters(

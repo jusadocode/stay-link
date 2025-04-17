@@ -1,321 +1,304 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  Button,
   TableHead,
   TableRow,
   Paper,
   Typography,
-  Box,
   TextField,
+  CircularProgress,
+  TableSortLabel,
+  Box,
+  Button,
   IconButton,
   Tooltip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-import { CircularProgress } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import { useNavigate } from "react-router-dom";
 import useRooms from "../../shared/hooks/useRooms";
+import dayjs from "dayjs";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { CircularProgress as ProgressCircle } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-function AdminRoomPage() {
+const AdminRoomMetricsPage = () => {
+  const { getRoomStats, deleteRoom } = useRooms();
+  const [roomStats, setRoomStats] = useState([]);
+  const [filteredStats, setFilteredStats] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [roomToDelete, setRoomToDelete] = useState(null);
-  const { fetchRooms, deleteRoom } = useRooms();
+  const [roomTypeFilter, setRoomTypeFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [sortConfig, setSortConfig] = useState({
+    key: "Revenue",
+    direction: "desc",
+  });
+  const [startDate, setStartDate] = useState(dayjs().startOf("month"));
+  const [endDate, setEndDate] = useState(dayjs().endOf("month"));
 
   const navigate = useNavigate();
 
-  const [rooms, setRooms] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const [roomUsages, setRoomUsages] = useState<{ [roomId: number]: RoomUsage }>(
-    {}
-  );
-
-  const { fetchRoomsUsages } = useRooms();
-
-  async function populateUsageData() {
+  const fetchStats = async (start, end) => {
+    setIsLoading(true);
     try {
-      const usageData: RoomUsage[] = await fetchRoomsUsages();
-      const usageMap = usageData.reduce((acc, usage) => {
-        acc[usage.roomId] = usage;
-        return acc;
-      }, {});
-      setRoomUsages(usageMap);
+      const stats = await getRoomStats(
+        start.format("YYYY-MM-DD"),
+        end.format("YYYY-MM-DD")
+      );
+      setRoomStats(stats);
+      setFilteredStats(stats);
     } catch (error) {
-      console.error("Error fetching usage data:", error);
+      console.error("Failed to fetch room stats:", error);
+    } finally {
+      setIsLoading(false);
     }
-  }
-
-  const getWearColor = (wear: number) => {
-    if (wear < 30) return "success";
-    if (wear < 70) return "warning";
-    return "error";
   };
 
   useEffect(() => {
-    populateUsageData();
+    fetchStats(startDate, endDate);
   }, []);
 
-  const filteredRooms = rooms.filter((room) =>
-    room.title.toLowerCase().includes(searchInput.toLowerCase())
-  );
+  useEffect(() => {
+    const filtered = roomStats.filter((room) => {
+      return (
+        room.roomTitle.toLowerCase().includes(searchInput.toLowerCase()) &&
+        (roomTypeFilter === "" || room.roomType === roomTypeFilter)
+      );
+    });
+    setFilteredStats(filtered);
+  }, [searchInput, roomTypeFilter, roomStats]);
 
-  const handleEditClick = (room: Room) => {
-    navigate(`/rooms/edit/${room.id}`); // Navigate to admin edit route
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+
+    const sorted = [...filteredStats].sort((a, b) => {
+      if (direction === "asc") return a[key] > b[key] ? 1 : -1;
+      return a[key] < b[key] ? 1 : -1;
+    });
+    setFilteredStats(sorted);
   };
 
-  const handleOpenDeleteDialog = (room: Room) => {
-    setRoomToDelete(room);
+  const handleApplyFilter = () => {
+    fetchStats(startDate, endDate);
   };
 
-  const handleCloseDeleteDialog = () => {
-    setRoomToDelete(null);
+  const handleEdit = (roomId) => {
+    navigate(`/rooms/edit/${roomId}`);
   };
 
-  const handleConfirmDelete = async () => {
-    if (!roomToDelete) return;
-
+  const handleDelete = async (roomId) => {
     try {
-      await deleteRoom(roomToDelete.id); // Using the mock/real function
-
-      handleCloseDeleteDialog();
-    } catch (err) {
-      console.error("Error deleting room:", err);
-      handleCloseDeleteDialog(); // Close dialog even on error for now
+      await deleteRoom(roomId);
+      fetchStats(startDate, endDate); // refresh after deletion
+    } catch (error) {
+      console.error("Failed to delete room:", error);
     }
   };
 
-  const handleAddNewClick = () => {
-    navigate("/rooms/new"); // Navigate to admin add route
-  };
+  if (isLoading) return <CircularProgress />;
 
-  if (error) {
-    return <Typography color="error">Error loading rooms: {error}</Typography>;
-  }
+  const columnHeaders = [
+    { key: "roomTitle", label: "Room Title" },
+    { key: "revenue", label: "Revenue" },
+    { key: "reservations", label: "Reservations" },
+    { key: "nights", label: "Nights" },
+    { key: "occupancy", label: "Occupancy" },
+    { key: "adr", label: "ADR" },
+    { key: "leadTime", label: "Lead Time" },
+    { key: "loS", label: "Length of Stay" },
+    { key: "revPar", label: "RevPAR" },
+    { key: "generalWear", label: "General Wear" },
+    { key: "actions", label: "Actions" },
+  ];
 
-  useEffect(() => {
-    const loadRooms = async () => {
-      try {
-        setIsLoading(true);
-        const roomsData = await fetchRooms();
-        setRooms(roomsData);
-      } catch (err) {
-        console.error("Error loading rooms:", err);
-        setError("Failed to load rooms.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadRooms();
-  }, []);
+  const uniqueRoomTypes = [...new Set(roomStats.map((r) => r.roomType))];
 
   return (
-    <Container style={{ marginTop: "20px" }}>
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        Room Metrics
+      </Typography>
+
       <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          mb: 2,
-          flexWrap: "wrap",
-          gap: 2,
+        display="grid"
+        gap={2}
+        mb={3}
+        gridTemplateColumns={{
+          xs: "1fr",
+          sm: "repeat(2, 1fr)",
+          md: "repeat(3, 1fr)",
         }}
       >
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={(newValue) => setStartDate(newValue)}
+          />
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={(newValue) => setEndDate(newValue)}
+          />
+        </LocalizationProvider>
+
         <TextField
           label="Search Room Title"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          variant="outlined" // Changed variant for better look
-          size="small" // Make it smaller
-          style={{ flexGrow: 1, minWidth: "200px" }} // Allow shrinking/growing
         />
+
+        <FormControl>
+          <InputLabel>Room Type</InputLabel>
+          <Select
+            label="Room Type"
+            value={roomTypeFilter}
+            onChange={(e) => setRoomTypeFilter(e.target.value)}
+          >
+            <MenuItem value="">All</MenuItem>
+            {uniqueRoomTypes.map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <Button
           variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleAddNewClick}
+          onClick={handleApplyFilter}
+          sx={{ alignSelf: "end" }}
         >
-          Add New Room
+          Apply Filter
         </Button>
       </Box>
 
-      {rooms.length === 0 ? (
-        <Typography style={{ marginLeft: "10px", marginTop: "20px" }}>
-          No rooms found. Use the button above to add one.
-        </Typography>
-      ) : filteredRooms.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ width: "100px" }}>Image</TableCell>{" "}
-                <TableCell>Title</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Guests</TableCell>
-                <TableCell>Price (€)</TableCell>
-                <TableCell>Wear</TableCell>
-                <TableCell align="right">Actions</TableCell>{" "}
+      <TableContainer sx={{ width: "100%", overflowX: "none" }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              {columnHeaders.map(({ key, label }) => (
+                <TableCell key={key} sx={{ whiteSpace: "nowrap" }}>
+                  {key !== "actions" ? (
+                    <TableSortLabel
+                      active={sortConfig.key === key}
+                      direction={sortConfig.direction}
+                      onClick={() => handleSort(key)}
+                    >
+                      {label}
+                    </TableSortLabel>
+                  ) : (
+                    label
+                  )}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredStats.map((room) => (
+              <TableRow key={room.roomId}>
+                <TableCell>{room.roomTitle}</TableCell>
+                <TableCell>€{room.revenue.toFixed(2)}</TableCell>
+                <TableCell>{room.reservations}</TableCell>
+                <TableCell>{room.nights}</TableCell>
+                <TableCell>{(room.occupancy * 100).toFixed(0)}%</TableCell>
+                <TableCell>€{room.adr.toFixed(2)}</TableCell>
+                <TableCell>{room.leadTime.toFixed(1)}</TableCell>
+                <TableCell>{room.loS.toFixed(1)}</TableCell>
+                <TableCell>€{room.revPar.toFixed(2)}</TableCell>
+                <TableCell>
+                  <Box position="relative" display="inline-flex">
+                    <ProgressCircle
+                      variant="determinate"
+                      value={room.generalWear * 100}
+                      size={36}
+                      thickness={4}
+                      color={
+                        room.generalWear > 0.7
+                          ? "error"
+                          : room.generalWear > 0.4
+                          ? "warning"
+                          : "success"
+                      }
+                    />
+                    <Box
+                      top={0}
+                      left={0}
+                      bottom={0}
+                      right={0}
+                      position="absolute"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <Typography
+                        variant="caption"
+                        component="div"
+                        color="textSecondary"
+                      >
+                        {`${Math.round(room.generalWear * 100)}%`}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Tooltip title="Edit Room">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => handleEdit(room.roomId)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete Room">
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => handleDelete(room.roomId)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRooms.map((room) => {
-                const usage = roomUsages[room.id];
-                const usagePercentage = usage
-                  ? Math.round(usage.generalWear * 100)
-                  : 0;
-
-                return (
-                  <TableRow key={room.id} hover>
-                    <TableCell>
-                      {room.imageUrl ? (
-                        <img
-                          src={room.imageUrl}
-                          alt={room.title}
-                          style={{
-                            width: 80, // Smaller image
-                            height: 50,
-                            objectFit: "cover",
-                            borderRadius: 4,
-                          }}
-                        />
-                      ) : (
-                        <Box
-                          sx={{
-                            width: 80,
-                            height: 50,
-                            backgroundColor: "#eee",
-                            borderRadius: 1,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "#999",
-                          }}
-                        >
-                          <Typography variant="caption">No Image</Typography>
-                        </Box>
-                      )}
-                    </TableCell>
-                    <TableCell>{room.title}</TableCell>
-                    {/* Use RoomTypes mapping, provide fallback */}
-                    <TableCell>{room.roomType}</TableCell>
-                    <TableCell>
-                      <Box display="flex" alignItems="center">
-                        <PersonIcon fontSize="small" sx={{ mr: 0.5 }} />{" "}
-                        {room.maxOccupancy}
-                      </Box>
-                    </TableCell>
-                    <TableCell>€{room.price.toFixed(2)}</TableCell>{" "}
-                    <TableCell>
-                      {usage ? (
-                        <Tooltip
-                          title={`General Wear: ${usagePercentage}%, Status: ${usage.cleaningState}`}
-                        >
-                          <Box
-                            sx={{
-                              position: "relative",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <CircularProgress
-                              variant="determinate"
-                              value={usagePercentage}
-                              size={40}
-                              thickness={5}
-                              color={getWearColor(usagePercentage)}
-                            />
-                            <Box
-                              sx={{
-                                position: "absolute",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <Typography
-                                variant="caption"
-                                component="div"
-                                color="textSecondary"
-                              >
-                                {`${usagePercentage}%`}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Tooltip>
-                      ) : (
-                        <Typography variant="body2" color="textSecondary">
-                          —
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell align="right">
-                      {" "}
-                      {/* Actions Cell */}
-                      <Tooltip title="Edit Room">
-                        <IconButton
-                          onClick={() => handleEditClick(room)}
-                          color="primary"
-                          size="small"
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete Room">
-                        <IconButton
-                          onClick={() => handleOpenDeleteDialog(room)}
-                          color="error"
-                          size="small"
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <Typography sx={{ mt: 2 }}>No rooms match your search.</Typography>
-      )}
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={!!roomToDelete} // Open if roomToDelete is not null
-        onClose={handleCloseDeleteDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to permanently delete the room "
-            {roomToDelete?.title}"? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
-          <Button onClick={handleConfirmDelete} color="error" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+            ))}
+            <TableRow key="summary">
+              <TableCell>Total:</TableCell>
+              <TableCell>
+                €
+                {filteredStats
+                  .reduce((acc, stat) => acc + stat.revenue, 0)
+                  .toFixed(2)}
+              </TableCell>
+              <TableCell>
+                {filteredStats.reduce(
+                  (acc, stat) => acc + stat.reservations,
+                  0
+                )}
+              </TableCell>
+              <TableCell>
+                {filteredStats.reduce((acc, stat) => acc + stat.nights, 0)}
+              </TableCell>
+              <TableCell colSpan={11}></TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Container>
   );
-}
+};
 
-export default AdminRoomPage;
+export default AdminRoomMetricsPage;

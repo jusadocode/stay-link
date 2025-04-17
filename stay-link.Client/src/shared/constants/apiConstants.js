@@ -10,6 +10,7 @@ export const API_ROOMS_URL = API_URL+ "/rooms";
 export const API_MULTIPLE_ROOMS_URL = API_URL+ "/rooms/batch";
 export const API_ROOMS_USAGES_URL = API_URL+ "/rooms/usages";
 export const API_ROOM_CLOSURES_URL = API_URL+ "/rooms/closure";
+export const API_ROOM_STATS_URL = API_URL+ "/rooms/stats";
 export const API_ROOMS_FEATURES_URL = API_URL+ "/rooms/features";
 export const API_ROOMS_AVAILABILITY_URL = API_URL+ "/rooms/availability";
 export const API_ROOMS_SEARCH_URL = API_ROOMS_URL+ "/offers/filter";

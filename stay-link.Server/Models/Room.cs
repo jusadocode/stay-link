@@ -20,11 +20,6 @@ namespace stay_link.Server.Models
         [Range(1, int.MaxValue, ErrorMessage = "Price can't be negative.")]
         public decimal Price {get;set;}
 
-        [Required(ErrorMessage = "Hotel ID is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Hotel ID must be a positive number.")]
-        public int HotelId { get; set; }
-        public int FloorNumber { get; set; }
-
         [Required(ErrorMessage = "Max occupancy is required.")]
         [Range(1, 10, ErrorMessage = "Max occupancy must be between 1 and 10.")]
         public int MaxOccupancy { get; set; }

@@ -33,6 +33,61 @@ namespace stay_link.Server.Services
             return _mapper.Map<IEnumerable<RoomDTO>>(rooms);
         }
 
+        public async Task<List<RoomStatsDTO>> GetRoomStats(DateOnly start, DateOnly end)
+        {
+            var bookingsInRange = await _context.Bookings
+                .Include(b => b.Rooms)
+                .Where(b => b.CheckInDate < end && b.CheckOutDate > start)
+                .ToListAsync();
+
+            var roomStatsMap = new Dictionary<int, RoomStatsDTO>();
+
+            foreach (var booking in bookingsInRange)
+            {
+                int nights = (booking.CheckOutDate.DayNumber - booking.CheckInDate.DayNumber);
+
+                foreach (var room in booking.Rooms)
+                {
+                    var roomUsage = room.RoomUsage;
+
+                    if (!roomStatsMap.TryGetValue(room.Id, out var stats))
+                    {
+                        stats = new RoomStatsDTO
+                        {
+                            RoomId = room.Id,
+                            RoomTitle = room.Title,
+                            RoomType = room.RoomType.ToString(),
+                            Reservations = 0,
+                            Nights = 0,
+                            Revenue = 0,
+                            LeadTime = 0,
+                            TotalLoS = 0,
+                            GeneralWear = roomUsage.GeneralWear
+
+                        };
+                        roomStatsMap[room.Id] = stats;
+                    }
+
+                    stats.Reservations++;
+                    stats.Nights += nights;
+                    stats.Revenue += room.Price * nights;
+                    stats.LeadTime += (booking.CreationTime - booking.CheckInDate.ToDateTime(TimeOnly.MinValue)).Days;
+                    stats.TotalLoS += nights;
+                }
+            }
+
+            foreach (var stat in roomStatsMap.Values)
+            {
+                stat.ADR = stat.Reservations > 0 ? Math.Round(stat.Revenue / stat.Nights,2) : 0;
+                stat.LeadTime = stat.Reservations > 0 ? Math.Round(stat.LeadTime / stat.Reservations) : 0;
+                stat.LoS = stat.Reservations > 0 ? stat.TotalLoS / stat.Reservations : 0;
+                stat.RevPar = stat.Nights > 0 ? Math.Round(stat.Revenue / 30)  : 0;
+                stat.Occupancy = Math.Round((double)stat.Nights / 30.0, 2);
+            }
+
+            return roomStatsMap.Values.ToList();
+        }
+
 
         public async Task<IEnumerable<int>> GetAvailableRoomIds(DateOnly checkIn, DateOnly checkOut)
         {

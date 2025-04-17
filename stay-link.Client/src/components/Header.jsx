@@ -30,6 +30,10 @@ const Header = () => {
         <strong>StayLink</strong>
       </Typography>
 
+      <Button variant="outlined" onClick={() => navigate("/")}>
+        Home
+      </Button>
+
       {isLoggedIn ? (
         <Button
           variant="outlined"

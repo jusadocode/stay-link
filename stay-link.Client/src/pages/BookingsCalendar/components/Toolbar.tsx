@@ -1,4 +1,9 @@
-import { Today, ChevronLeft, ChevronRight } from "@mui/icons-material";
+import {
+  Today,
+  ChevronLeft,
+  ChevronRight,
+  CleaningServices,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -47,6 +52,15 @@ function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
           size="small"
         >
           View Today
+        </Button>
+
+        <Button
+          variant="outlined"
+          startIcon={<CleaningServices />}
+          onClick={handleToday}
+          size="small"
+        >
+          View Housekeeping
         </Button>
       </Box>
       <Box display="flex" alignItems="center">
