@@ -28,7 +28,7 @@ const HomePage = () => {
   const defaultRoomSearch = {
     checkIn: dayjs().startOf("week").add(1, "day"), // Monday
     checkOut: dayjs().endOf("week"), // Sunday
-    guestCount: 0, // 'Auto' search
+    guestCount: 2, // 'Auto' search
     preferenceIds: [],
   };
 

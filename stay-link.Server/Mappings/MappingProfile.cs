@@ -1,6 +1,11 @@
 ﻿using AutoMapper;
-using stay_link.Server.DTO;
-using stay_link.Server.Models;
+using stay_link.Server.DTO.Bookings;
+using stay_link.Server.DTO.RoomClosure;
+using stay_link.Server.DTO.RoomOperations;
+using stay_link.Server.DTO.Rooms;
+using stay_link.Server.Models.Bookings;
+using stay_link.Server.Models.RoomOperations;
+using stay_link.Server.Models.Rooms;
 using System.Diagnostics.CodeAnalysis;
 
 namespace stay_link.Server.Mappings
@@ -16,7 +21,9 @@ namespace stay_link.Server.Mappings
                     opt => opt.MapFrom(src => src.Rooms.Select(r => r.Id).ToList()));
             CreateMap<Room, RoomDTO>()
                 .ForMember(dest => dest.RoomType,
-                    opt => opt.MapFrom(src => src.RoomType.ToString()));
+                    opt => opt.MapFrom(src => src.RoomType.ToString()))
+                .ForMember(dest => dest.GeneralWear,
+                    opt => opt.MapFrom(src => src.RoomUsage != null ? src.RoomUsage.GeneralWear : 0));
 
             CreateMap<CreateRoomDTO, Room>();
             CreateMap<RoomDTO, Room>();

@@ -1,6 +1,7 @@
 ﻿using stay_link.Server.Data;
 using stay_link.Server.Helpers;
 using stay_link.Server.Models;
+using stay_link.Server.Models.Auth;
 
 namespace stay_link.Server.Services
 {

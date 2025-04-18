@@ -12,9 +12,14 @@ function BookingsCalendar() {
   const [numDays, setNumDays] = useState(14);
   const [rooms, setRooms] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [roomUsages, setRoomUsages] = useState([]);
+  const [roomClosures, setRoomClosures] = useState([]);
+
+  const [showBookings, setShowBookings] = useState(true);
+  const [showHousekeeping, setShowHousekeeping] = useState(true);
 
   const { fetchBookings } = useBookings();
-  const { fetchRoom } = useRooms();
+  const { fetchRoom, fetchRoomsUsages, getRoomClosures } = useRooms();
 
   async function populateBookingData() {
     try {
@@ -37,8 +42,20 @@ function BookingsCalendar() {
     }
   }
 
+  async function populateUsageData() {
+    try {
+      const usageData = await fetchRoomsUsages();
+      const closureData = await getRoomClosures();
+      setRoomUsages(usageData);
+      setRoomClosures(closureData);
+    } catch (error) {
+      console.error("Error fetching usage or closure data:", error);
+    }
+  }
+
   useEffect(() => {
     populateBookingData();
+    populateUsageData();
   }, []);
 
   return (
@@ -51,12 +68,24 @@ function BookingsCalendar() {
         setCurrentDate={setCurrentDate}
         numDays={numDays}
         setNumDays={setNumDays}
+        populateBookingData={populateBookingData}
+        populateUsageData={populateUsageData}
+        setShowBookings={setShowBookings}
+        showBookings={showBookings}
+        setShowHousekeeping={setShowHousekeeping}
+        showHouseKeeping={showHousekeeping}
       />
       <BookingGrid
         rooms={rooms}
+        roomUsages={roomUsages}
+        roomClosures={roomClosures}
         bookings={bookings}
         checkInDate={currentDate}
         numDays={numDays}
+        populateBookingData={populateBookingData}
+        populateUsageData={populateUsageData}
+        showBookings={showBookings}
+        showHousekeeping={showHousekeeping}
       />
     </Container>
   );

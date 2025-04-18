@@ -18,7 +18,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { AuthContext } from "../../../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_PATH } from "../../../shared/constants/routes";
-import GroupBookingDialog from "../../../components/roomBooking/BookingDialog";
+import BookingDialog from "./roomBooking/BookingDialog";
 
 function RoomList({ roomOffers, bookingDates }) {
   const [searchInput, setSearchInput] = useState("");
@@ -273,7 +273,7 @@ function RoomList({ roomOffers, bookingDates }) {
         </TableContainer>
       )}
 
-      <GroupBookingDialog
+      <BookingDialog
         open={dialogOpen}
         selectedRooms={selectedOffer?.rooms || []}
         handleCloseDialog={handleCloseDialog}

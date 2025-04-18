@@ -6,11 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using stay_link.Server.Data;
-using stay_link.Server.Models;
 using stay_link.Server.Services;
 using stay_link.Server.DTO;
 using AutoMapper;
 using stay_link.Server.Mappings;
+using stay_link.Server.Models.Rooms;
+using stay_link.Server.DTO.Rooms;
 
 namespace RoomServiceTests
 {
@@ -27,13 +28,11 @@ namespace RoomServiceTests
 
             if (!await databaseContext.Rooms.AnyAsync())
             {
-                var hotel = new Hotel { ID = 1, Name = "Test Hotel", Address = "123 Test St", ImageUrl = "test.jpg" };
-                await databaseContext.Hotels.AddAsync(hotel);
 
                 await databaseContext.Rooms.AddRangeAsync(new List<Room>
                 {
-                    new Room { ID = 1, Title = "Room 101", MaxOccupancy = 2, HotelId = 1, Price = 100 },
-                    new Room { ID = 2, Title = "Room 102", MaxOccupancy = 3, HotelId = 1, Price = 150 }
+                    new Room { Id = 1, Title = "Room 101", MaxOccupancy = 2,  Price = 100 },
+                    new Room { Id = 2, Title = "Room 102", MaxOccupancy = 3,  Price = 150 }
                 });
 
                 await databaseContext.SaveChangesAsync();

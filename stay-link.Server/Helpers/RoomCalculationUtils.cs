@@ -1,4 +1,4 @@
-﻿using stay_link.Server.Models;
+﻿using stay_link.Server.Models.Rooms;
 
 namespace stay_link.Server.Helpers
 {
@@ -11,14 +11,12 @@ namespace stay_link.Server.Helpers
             // Option 1: Average individual scores (simple)
             double avgIndividualScore = combo.Average(r => individualScores.ContainsKey(r) ? individualScores[r] : 0.0);
 
-            // Option 2: More complex - check if *all* high-priority preferences are met *somewhere* in the combo
-
             // Option 3: Factor in occupancy fit strongly
             double totalCapacity = combo.Sum(r => r.MaxOccupancy);
-            double occupancyFitScore = (totalCapacity == 0) ? 0 : Math.Max(0.0, 1.0 - ((totalCapacity - totalGuestCount) / (double)totalGuestCount) * 0.5); // Penalize overcapacity, score ~1 if close fit
+            double occupancyFitScore = totalCapacity == 0 ? 0 : Math.Max(0.0, 1.0 - (totalCapacity - totalGuestCount) / totalGuestCount * 0.5); // Penalize overcapacity, score ~1 if close fit
 
             // Example weighted score
-            return (0.6 * avgIndividualScore) + (0.4 * occupancyFitScore); // Adjust weights
+            return 0.6 * avgIndividualScore + 0.4 * occupancyFitScore; // Adjust weights
         }
 
 

@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
-  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   TextField,
   MenuItem,
   Button,
   CircularProgress,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import useRooms from "../../../../shared/hooks/useRooms";
 
-export default function RoomClosureCreatePage() {
-  const navigate = useNavigate();
+export default function RoomClosureDialog({ open, onClose, onSuccess }) {
   const { fetchRooms, getRoomAvailability, createRoomClosure } = useRooms();
 
   const [rooms, setRooms] = useState([]);
@@ -29,14 +29,17 @@ export default function RoomClosureCreatePage() {
   });
 
   useEffect(() => {
+    if (!open) return;
+
     const load = async () => {
       const r = await fetchRooms();
       setRooms(r);
       await checkAvailability(closure.startDate, closure.endDate);
       setIsLoading(false);
     };
+
     load();
-  }, []);
+  }, [open]);
 
   const checkAvailability = async (start, end) => {
     if (!start || !end) return;
@@ -64,7 +67,8 @@ export default function RoomClosureCreatePage() {
   const handleSubmit = async () => {
     try {
       await createRoomClosure(closure);
-      navigate("/bookings/calendar");
+      onSuccess?.(); // optional callback
+      onClose();
     } catch (error) {
       console.error("Error submitting closure:", error);
     }
@@ -74,67 +78,76 @@ export default function RoomClosureCreatePage() {
     availableRoomIds.includes(room.id)
   );
 
-  if (isLoading) return <CircularProgress />;
-
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Create Room Closure
-      </Typography>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Create Room Closure</DialogTitle>
 
-      <TextField
-        fullWidth
-        label="Reason for Closure"
-        value={closure.reason}
-        onChange={handleChange("reason")}
-        sx={{ mb: 2 }}
-      />
+      {isLoading ? (
+        <DialogContent>
+          <CircularProgress />
+        </DialogContent>
+      ) : (
+        <>
+          <DialogContent dividers>
+            <TextField
+              fullWidth
+              label="Reason for Closure"
+              value={closure.reason}
+              onChange={handleChange("reason")}
+              sx={{ mb: 2 }}
+            />
 
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          label="Start Date"
-          value={dayjs(closure.startDate)}
-          onChange={(newValue) => {
-            if (newValue) {
-              handleChange("startDate")({
-                target: { value: newValue.format("YYYY-MM-DD") },
-              });
-            }
-          }}
-          sx={{ mb: 2, width: "100%" }}
-        />
-        <DatePicker
-          label="End Date"
-          value={dayjs(closure.endDate)}
-          onChange={(newValue) => {
-            if (newValue) {
-              handleChange("endDate")({
-                target: { value: newValue.format("YYYY-MM-DD") },
-              });
-            }
-          }}
-          sx={{ mb: 2, width: "100%" }}
-        />
-      </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Start Date"
+                value={dayjs(closure.startDate)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    handleChange("startDate")({
+                      target: { value: newValue.format("YYYY-MM-DD") },
+                    });
+                  }
+                }}
+                sx={{ mb: 2, width: "100%" }}
+              />
+              <DatePicker
+                label="End Date"
+                value={dayjs(closure.endDate)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    handleChange("endDate")({
+                      target: { value: newValue.format("YYYY-MM-DD") },
+                    });
+                  }
+                }}
+                sx={{ mb: 2, width: "100%" }}
+              />
+            </LocalizationProvider>
 
-      <TextField
-        select
-        fullWidth
-        label="Select Room"
-        value={closure.roomId}
-        onChange={handleChange("roomId")}
-        sx={{ mb: 3 }}
-      >
-        {availableRooms.map((room) => (
-          <MenuItem key={room.id} value={room.id}>
-            {room.title} – {room.roomType}
-          </MenuItem>
-        ))}
-      </TextField>
+            <TextField
+              select
+              fullWidth
+              label="Select Room"
+              value={closure.roomId}
+              onChange={handleChange("roomId")}
+              sx={{ mb: 2 }}
+            >
+              {availableRooms.map((room) => (
+                <MenuItem key={room.id} value={room.id}>
+                  {room.title} – {room.roomType}
+                </MenuItem>
+              ))}
+            </TextField>
+          </DialogContent>
 
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
-        Submit Closure
-      </Button>
-    </Container>
+          <DialogActions>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </DialogActions>
+        </>
+      )}
+    </Dialog>
   );
 }

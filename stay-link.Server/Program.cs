@@ -7,8 +7,7 @@ using System.Text;
 using DotNetEnv;
 using stay_link.Server.Services;
 using stay_link.Server.Mappings;
-using stay_link.Server.Controllers;
-using stay_link.Server.Models;
+using stay_link.Server.Models.Auth;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -101,8 +100,6 @@ await SeedData.Initialize(scope.ServiceProvider);
 //await dbSeeder.SeedAsync();
 
 app.UseCors("AllowFrontend");
-
-app.AddAuthApi();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

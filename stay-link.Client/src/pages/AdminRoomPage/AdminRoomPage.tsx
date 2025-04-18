@@ -116,9 +116,9 @@ const AdminRoomMetricsPage = () => {
     { key: "nights", label: "Nights" },
     { key: "occupancy", label: "Occupancy" },
     { key: "adr", label: "ADR" },
-    { key: "leadTime", label: "Lead Time" },
+    // { key: "leadTime", label: "Lead Time" },
     { key: "loS", label: "Length of Stay" },
-    { key: "revPar", label: "RevPAR" },
+    // { key: "revPar", label: "RevPAR" },
     { key: "generalWear", label: "General Wear" },
     { key: "actions", label: "Actions" },
   ];
@@ -183,9 +183,17 @@ const AdminRoomMetricsPage = () => {
         >
           Apply Filter
         </Button>
+
+        <Button
+          variant="contained"
+          onClick={() => navigate("new")}
+          sx={{ alignSelf: "end" }}
+        >
+          + Add room
+        </Button>
       </Box>
 
-      <TableContainer sx={{ width: "100%", overflowX: "none" }}>
+      <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
@@ -215,9 +223,9 @@ const AdminRoomMetricsPage = () => {
                 <TableCell>{room.nights}</TableCell>
                 <TableCell>{(room.occupancy * 100).toFixed(0)}%</TableCell>
                 <TableCell>€{room.adr.toFixed(2)}</TableCell>
-                <TableCell>{room.leadTime.toFixed(1)}</TableCell>
+                {/* <TableCell>{room.leadTime.toFixed(1)}</TableCell> */}
                 <TableCell>{room.loS.toFixed(1)}</TableCell>
-                <TableCell>€{room.revPar.toFixed(2)}</TableCell>
+                {/* <TableCell>€{room.revPar.toFixed(2)}</TableCell> */}
                 <TableCell>
                   <Box position="relative" display="inline-flex">
                     <ProgressCircle

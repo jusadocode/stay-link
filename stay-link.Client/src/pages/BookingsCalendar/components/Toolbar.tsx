@@ -1,9 +1,4 @@
-import {
-  Today,
-  ChevronLeft,
-  ChevronRight,
-  CleaningServices,
-} from "@mui/icons-material";
+import { Today, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -13,17 +8,30 @@ import {
   Typography,
 } from "@mui/material";
 import { addDays, addWeeks, format, subDays, subWeeks } from "date-fns";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import BookingAdditionDialog from "./BookingAddition/BookingAddition";
+import RoomClosureDialog from "./RoomClosureAddition/RoomClosureAdditionPage";
 
-function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
+function Toolbar({
+  currentDate,
+  setCurrentDate,
+  numDays,
+  setNumDays,
+  populateBookingData,
+  populateUsageData,
+  setShowBookings,
+  setShowHousekeeping,
+  showBookings,
+  showHouseKeeping,
+}) {
   const handlePrevWeek = () => setCurrentDate((prev) => subWeeks(prev, 1));
   const handlePrevDay = () => setCurrentDate((prev) => subDays(prev, 1));
   const handleNextDay = () => setCurrentDate((prev) => addDays(prev, 1));
   const handleNextWeek = () => setCurrentDate((prev) => addWeeks(prev, 1));
   const handleToday = () => setCurrentDate(new Date());
 
-  const navigator = useNavigate();
+  const [openBookingDialog, setOpenBookingDialog] = useState(false);
+  const [openClosureDialog, setOpenClosureDialog] = useState(false);
 
   return (
     <Box
@@ -54,14 +62,24 @@ function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
           View Today
         </Button>
 
-        <Button
-          variant="outlined"
-          startIcon={<CleaningServices />}
-          onClick={handleToday}
-          size="small"
-        >
-          View Housekeeping
-        </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button
+            variant={showBookings ? "contained" : "outlined"}
+            color="primary"
+            size="small"
+            onClick={() => setShowBookings((prev) => !prev)}
+          >
+            Bookings
+          </Button>
+          <Button
+            variant={showHouseKeeping ? "contained" : "outlined"}
+            color="secondary"
+            size="small"
+            onClick={() => setShowHousekeeping((prev) => !prev)}
+          >
+            Housekeeping
+          </Button>
+        </Box>
       </Box>
       <Box display="flex" alignItems="center">
         {/* Add << and >> buttons if needed */}
@@ -87,7 +105,7 @@ function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => navigator("/bookings/new")}
+          onClick={() => setOpenBookingDialog(true)}
         >
           + Add booking
         </Button>
@@ -95,11 +113,31 @@ function Toolbar({ currentDate, setCurrentDate, numDays, setNumDays }) {
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => navigator("/closures/new")}
+          onClick={() => setOpenClosureDialog(true)}
         >
           + Room Closure
         </Button>
       </Box>
+
+      <BookingAdditionDialog
+        open={openBookingDialog}
+        onClose={() => setOpenBookingDialog(false)}
+        onSuccess={() => {
+          populateBookingData();
+          populateUsageData();
+          setOpenBookingDialog(false);
+        }}
+      />
+
+      <RoomClosureDialog
+        open={openClosureDialog}
+        onClose={() => setOpenClosureDialog(false)}
+        onSuccess={() => {
+          populateBookingData();
+          populateUsageData();
+          setOpenClosureDialog(false);
+        }}
+      />
     </Box>
   );
 }

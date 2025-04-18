@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import {
-  Container,
-  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   TextField,
   Button,
   MenuItem,
   CircularProgress,
 } from "@mui/material";
-import React from "react";
 import useBookings from "../../../../shared/hooks/useBookings";
 import useRooms from "../../../../shared/hooks/useRooms";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
-export default function BookingAdditionPage() {
-  const navigate = useNavigate();
+export default function BookingAdditionDialog({ open, onClose, onSuccess }) {
   const { addBooking } = useBookings();
   const { fetchRooms, getRoomAvailability } = useRooms();
 
@@ -33,6 +33,8 @@ export default function BookingAdditionPage() {
   });
 
   useEffect(() => {
+    if (!open) return;
+
     const load = async () => {
       const r = await fetchRooms();
       setRooms(r);
@@ -43,7 +45,7 @@ export default function BookingAdditionPage() {
     };
 
     load();
-  }, []);
+  }, [open]);
 
   const getAvailability = async (checkIn, checkOut) => {
     if (!checkIn || !checkOut) return;
@@ -71,7 +73,8 @@ export default function BookingAdditionPage() {
   const handleSubmit = async () => {
     try {
       await addBooking(booking);
-      navigate("/bookings/calendar");
+      onSuccess?.();
+      onClose();
     } catch (error) {
       console.error("Failed to create booking", error);
     }
@@ -79,77 +82,86 @@ export default function BookingAdditionPage() {
 
   const filteredRooms = rooms.filter((r) => availableRoomIds.includes(r.id));
 
-  if (isLoading) return <CircularProgress />;
-
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Create Booking
-      </Typography>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Create Booking</DialogTitle>
 
-      <TextField
-        fullWidth
-        label="Display Name"
-        value={booking.displayName}
-        onChange={handleChange("displayName")}
-        sx={{ mb: 2 }}
-      />
+      {isLoading ? (
+        <DialogContent>
+          <CircularProgress />
+        </DialogContent>
+      ) : (
+        <>
+          <DialogContent dividers>
+            <TextField
+              fullWidth
+              label="Display Name"
+              value={booking.displayName}
+              onChange={handleChange("displayName")}
+              sx={{ mb: 2 }}
+            />
 
-      <TextField
-        fullWidth
-        type="number"
-        label="Breakfast Requests"
-        value={booking.breakfastRequests}
-        onChange={handleChange("breakfastRequests")}
-        sx={{ mb: 2 }}
-      />
+            <TextField
+              fullWidth
+              type="number"
+              label="Breakfast Requests"
+              value={booking.breakfastRequests}
+              onChange={handleChange("breakfastRequests")}
+              sx={{ mb: 2 }}
+            />
 
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          label="Check-in"
-          value={dayjs(booking.checkInDate)}
-          onChange={(newValue) => {
-            if (newValue) {
-              handleChange("checkInDate")({
-                target: { value: newValue.format("YYYY-MM-DD") },
-              });
-            }
-          }}
-          sx={{ mb: 2, width: "100%" }}
-        />
-        <DatePicker
-          label="Check-out"
-          value={dayjs(booking.checkOutDate)}
-          onChange={(newValue) => {
-            if (newValue) {
-              handleChange("checkOutDate")({
-                target: { value: newValue.format("YYYY-MM-DD") },
-              });
-            }
-          }}
-          sx={{ mb: 2, width: "100%" }}
-        />
-      </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Check-in"
+                value={dayjs(booking.checkInDate)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    handleChange("checkInDate")({
+                      target: { value: newValue.format("YYYY-MM-DD") },
+                    });
+                  }
+                }}
+                sx={{ mb: 2, width: "100%" }}
+              />
+              <DatePicker
+                label="Check-out"
+                value={dayjs(booking.checkOutDate)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    handleChange("checkOutDate")({
+                      target: { value: newValue.format("YYYY-MM-DD") },
+                    });
+                  }
+                }}
+                sx={{ mb: 2, width: "100%" }}
+              />
+            </LocalizationProvider>
 
-      <TextField
-        fullWidth
-        select
-        label="Rooms"
-        SelectProps={{ multiple: true }}
-        value={booking.roomIds}
-        onChange={handleChange("roomIds")}
-        sx={{ mb: 3 }}
-      >
-        {filteredRooms.map((room) => (
-          <MenuItem key={room.id} value={room.id}>
-            {room.title} – {room.roomType}
-          </MenuItem>
-        ))}
-      </TextField>
+            <TextField
+              fullWidth
+              select
+              label="Rooms"
+              SelectProps={{ multiple: true }}
+              value={booking.roomIds}
+              onChange={handleChange("roomIds")}
+              sx={{ mb: 2 }}
+            >
+              {filteredRooms.map((room) => (
+                <MenuItem key={room.id} value={room.id}>
+                  {room.title} – {room.roomType}
+                </MenuItem>
+              ))}
+            </TextField>
+          </DialogContent>
 
-      <Button variant="contained" onClick={handleSubmit}>
-        Create Booking
-      </Button>
-    </Container>
+          <DialogActions>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleSubmit}>
+              Create
+            </Button>
+          </DialogActions>
+        </>
+      )}
+    </Dialog>
   );
 }

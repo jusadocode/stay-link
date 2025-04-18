@@ -14,9 +14,7 @@ import useRooms from "../../shared/hooks/useRooms";
 import { roomTypeOptions } from "../../shared/utils/roomTypeUtils";
 const RoomEditPage = () => {
   const { id } = useParams();
-
   const navigate = useNavigate();
-
   const { fetchRoom, updateRoom } = useRooms();
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,7 +60,7 @@ const RoomEditPage = () => {
       setUpdateLoading(true);
       const response = await updateRoom(room);
       if (response.ok) {
-        navigate("/");
+        navigate("/rooms");
       }
     } catch (error) {
       console.error("Failed to update room:", error);
@@ -120,6 +118,18 @@ const RoomEditPage = () => {
           sx={{ mb: 2 }}
           value={room.summary || ""}
           onChange={(e) => handleRoomChange("summary", e.target.value)}
+        />
+
+        <TextField
+          label="General Wear (%)"
+          fullWidth
+          type="number"
+          sx={{ mb: 2 }}
+          value={room.generalWear != null ? room.generalWear * 100 : ""}
+          onChange={(e) =>
+            handleRoomChange("generalWear", parseFloat(e.target.value) / 100)
+          }
+          inputProps={{ min: 0, max: 100 }}
         />
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel id="room-type-label">Room Type</InputLabel>

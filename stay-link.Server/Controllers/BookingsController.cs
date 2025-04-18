@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using stay_link.Server.Models;
+using stay_link.Server.DTO.Bookings;
+using stay_link.Server.Models.Auth;
 using stay_link.Server.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

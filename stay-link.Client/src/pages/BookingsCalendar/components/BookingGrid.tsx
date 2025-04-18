@@ -17,34 +17,29 @@ import {
 import { eachDayOfInterval } from "date-fns/eachDayOfInterval";
 import { isWithinInterval } from "date-fns/isWithinInterval";
 import { parseISO } from "date-fns/parseISO";
-import React, { useEffect, useMemo, useState } from "react";
-import useRooms from "../../../shared/hooks/useRooms";
+import React, { useMemo, useState } from "react";
 import {
   CheckCircleOutline,
   CleaningServicesOutlined,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import BookingEditDialog from "./BookingEdit/BookingEditPage";
 
-function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
+function BookingGrid({
+  rooms,
+  bookings,
+  checkInDate,
+  numDays,
+  roomClosures,
+  roomUsages,
+  populateBookingData,
+  populateUsageData,
+  showBookings,
+  showHousekeeping,
+}) {
   const parseBookingDate = (dateStr) => startOfDay(parseISO(dateStr));
 
-  const [roomUsages, setRoomUsages] = useState([]);
-  const [roomClosures, setRoomClosures] = useState([]);
-
-  const navigate = useNavigate();
-
-  const { fetchRoomsUsages, getRoomClosures } = useRooms();
-
-  async function populateUsageData() {
-    try {
-      const usageData = await fetchRoomsUsages();
-      const closureData = await getRoomClosures();
-      setRoomUsages(usageData);
-      setRoomClosures(closureData);
-    } catch (error) {
-      console.error("Error fetching usage or closure data:", error);
-    }
-  }
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
 
   const getBookingsForCell = (roomId, date) => {
     return bookings.find(
@@ -67,10 +62,6 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
         })
     );
   };
-
-  useEffect(() => {
-    populateUsageData();
-  }, []);
 
   const dateArray: DateOrStringOrNumber[] = useMemo(
     () =>
@@ -95,7 +86,7 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
   const gridTemplateColumns = `150px repeat(${numDays}, 80px)`;
 
   return (
-    <Paper elevation={1} sx={{ overflowX: "auto" }}>
+    <Paper elevation={1} sx={{ overflow: "auto", maxHeight: "80vh" }}>
       <Box
         display="grid"
         gridTemplateColumns={gridTemplateColumns}
@@ -258,7 +249,7 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
 
                       let renderCellContent = null;
 
-                      if (coveringBooking) {
+                      if (showBookings && coveringBooking) {
                         const bookingStartDate = parseBookingDate(
                           coveringBooking.checkInDate
                         );
@@ -282,14 +273,13 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                         if (shouldRenderBlockInThisCell) {
                           const visibleStartDate = startedBeforeView
                             ? date
-                            : bookingStartDate; // Start from view start or actual start
+                            : bookingStartDate;
 
                           const visibleEndDate = min([
                             bookingLastNight,
                             dateArray[dateArray.length - 1],
                           ]);
 
-                          // Calculate the span in days based on visible start/end dates
                           const spanDuration =
                             differenceInDays(visibleEndDate, visibleStartDate) +
                             1;
@@ -319,9 +309,9 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                             cursor: "pointer",
                             minHeight: "40px",
                             display: "flex",
-                            alignItems: "center",
+                            flexDirection: "column",
                             justifyContent: "center",
-                            // Add visual cue if booking started before the view
+
                             borderTopLeftRadius: startedBeforeView
                               ? 0
                               : undefined,
@@ -337,12 +327,18 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                                 "yyyy-MM-dd"
                               )}`}
                               sx={blockStyle}
-                              onClick={() =>
-                                navigate(`/bookings/${coveringBooking.id}/edit`)
-                              }
+                              onClick={() => {
+                                setSelectedBookingId(coveringBooking.id);
+                                setIsEditOpen(true);
+                              }}
                             >
-                              {/* Uses your guest name field */}
-                              {coveringBooking.displayName}
+                              <Typography fontSize={"small"}>
+                                {coveringBooking.displayName}
+                              </Typography>
+
+                              <Typography fontSize={"small"}>
+                                Booking ID: {coveringBooking.id}
+                              </Typography>
                             </Box>
                           );
                         } else {
@@ -350,7 +346,7 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
                           // starts in an earlier cell within the view. Render nothing (null).
                           renderCellContent = null;
                         }
-                      } else if (coveringClosure) {
+                      } else if (showHousekeeping && coveringClosure) {
                         // Only render once per closure block
                         const isActualStartDate = isSameDay(
                           date,
@@ -441,6 +437,17 @@ function BookingGrid({ rooms, bookings, checkInDate, numDays }) {
           )
         )}
       </Box>
+
+      <BookingEditDialog
+        open={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        bookingId={selectedBookingId}
+        onSuccess={() => {
+          setIsEditOpen(false);
+          populateBookingData();
+          populateUsageData();
+        }}
+      />
     </Paper>
   );
 }

@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using stay_link.Server.Helpers;
-using stay_link.Server.Models;
+using stay_link.Server.Models.Auth;
+using stay_link.Server.Models.Bookings;
+using stay_link.Server.Models.RoomOperations;
+using stay_link.Server.Models.Rooms;
 
 namespace stay_link.Server.Data
 {

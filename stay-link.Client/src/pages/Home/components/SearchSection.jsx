@@ -30,10 +30,8 @@ function SearchSection({
 }) {
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [features, setFeatures] = useState([]);
-  // const [showAllRooms, setShowAllRooms] = useState(false);
 
-  const [guestCount, setGuestCount] = useState(1);
-  // const [roomCount, setRoomCount] = useState(1);
+  const [guestCount, setGuestCount] = useState(2);
 
   const { searchRooms, fetchFeatures } = useRooms();
 
@@ -129,17 +127,6 @@ function SearchSection({
                 }
                 InputProps={{ inputProps: { min: 1 } }}
               />
-
-              {/* <TextField
-                label="Rooms"
-                type="number"
-                size="small"
-                value={roomCount}
-                onChange={(e) =>
-                  setRoomCount(Math.max(1, Number(e.target.value)))
-                }
-                InputProps={{ inputProps: { min: 1 } }}
-              /> */}
             </Box>
           </Box>
         </LocalizationProvider>
@@ -200,7 +187,7 @@ function SearchSection({
       <Box display={"flex"}>
         <Button size="small" onClick={handleSearchClick}>
           <SearchIcon></SearchIcon>
-          Find your place
+          Find your room
         </Button>
       </Box>
     </Box>

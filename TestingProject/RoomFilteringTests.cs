@@ -1,15 +1,12 @@
-using Xunit;
-using Moq;
-using stay_link.Server.Models;
-using stay_link.Server.DTO;
 using stay_link.Server.Services;
 using stay_link.Server.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using stay_link.Server.Mappings;
+using stay_link.Server.Models.Enums;
+using stay_link.Server.Models.Rooms;
+using stay_link.Server.Models.RoomOperations;
+using stay_link.Server.DTO.Rooms;
 
 namespace RoomServiceTests
 {
@@ -35,48 +32,43 @@ namespace RoomServiceTests
             await context.SaveChangesAsync();
 
             // Initialize RoomDTOs
-            var roomDto1 = new RoomDTO
-            {
-                Title = "Room 101",
-                Summary = "Nice room with balcony",
-                RoomType = RoomType.Standart,
-                Price = 100,
-                HotelID = 1,
-                MaxOccupancy = 2,
-                Features = new List<RoomFeature> { featureBalcony }
-            };
-
             var roomDto2 = new RoomDTO
             {
                 Title = "Room 202",
                 Summary = "Nice room with seaView",
-                RoomType = RoomType.Standart,
+                RoomType = RoomType.Standard.ToString(),
                 Price = 120,
-                HotelID = 1,
                 MaxOccupancy = 3,
-                Features = new List<RoomFeature> { featureSeaView, featureBalcony, featureAC }
+                Features = new List<RoomFeatureDTO>
+                {
+                    new RoomFeatureDTO { Id = featureSeaView.Id, Name = featureSeaView.Name },
+                    new RoomFeatureDTO { Id = featureBalcony.Id, Name = featureBalcony.Name },
+                    new RoomFeatureDTO { Id = featureAC.Id, Name = featureAC.Name }
+                }
             };
 
             var roomDto3 = new RoomDTO
             {
                 Title = "Room 303",
                 Summary = "Nice room with AC",
-                RoomType = RoomType.Standart,
+                RoomType = RoomType.Standard.ToString(),
                 Price = 100,
-                HotelID = 1,
                 MaxOccupancy = 3,
-                Features = new List<RoomFeature> { featureAC }
+                Features = new List<RoomFeatureDTO>
+                {
+                    new RoomFeatureDTO { Id = featureAC.Id, Name = featureAC.Name }
+                }
             };
 
-            // Map RoomDTOs to Room entities
+
+
             var room1 = mapper.Map<Room>(roomDto1);
             var room2 = mapper.Map<Room>(roomDto2);
             var room3 = mapper.Map<Room>(roomDto3);
 
-            // Initialize RoomUsages
             var roomUsage1 = new RoomUsage
             {
-                RoomID = 1,
+                RoomId = 1,
                 CleaningState = CleaningState.Clean,
                 GeneralWear = 0.6,
                 TimesBookedThisYear = 1,
@@ -85,7 +77,7 @@ namespace RoomServiceTests
 
             var roomUsage2 = new RoomUsage
             {
-                RoomID = 2,
+                RoomId = 2,
                 CleaningState = CleaningState.Clean,
                 GeneralWear = 0.5,
                 TimesBookedThisYear = 1,
@@ -94,7 +86,7 @@ namespace RoomServiceTests
 
             var roomUsage3 = new RoomUsage
             {
-                RoomID = 3,
+                RoomId = 3,
                 CleaningState = CleaningState.Clean,
                 GeneralWear = 0.4,
                 TimesBookedThisYear = 1,
@@ -139,7 +131,7 @@ namespace RoomServiceTests
             var roomList = result.ToList();
             foreach (var room in roomList)
             {
-                Console.WriteLine($"Room ID: {room.ID}");
+                Console.WriteLine($"Room ID: {room.Id}");
                 Console.WriteLine($"Title: {room.Title}");
                 Console.WriteLine($"Summary: {room.Summary}");
                 Console.WriteLine($"Price: {room.Price}");
@@ -200,7 +192,7 @@ namespace RoomServiceTests
             // Log room details for debugging
             foreach (var room in roomList)
             {
-                Console.WriteLine($"Room ID: {room.ID}");
+                Console.WriteLine($"Room ID: {room.Id}");
                 Console.WriteLine($"Title: {room.Title}");
                 Console.WriteLine($"Summary: {room.Summary}");
                 Console.WriteLine($"Price: {room.Price}");
@@ -231,16 +223,15 @@ namespace RoomServiceTests
             {
                 Title = "Room 404",
                 Summary = "Basic room with no features",
-                RoomType = RoomType.Standart,
+                RoomType = RoomType.Standard.ToString(),
                 Price = 80,
-                HotelID = 1,
                 MaxOccupancy = 2,
                 Features = new List<RoomFeature>() // No features
             };
 
             var roomUsage4 = new RoomUsage
             {
-                RoomID = 4,
+                RoomId = 4,
                 CleaningState = CleaningState.Clean,
                 GeneralWear = 0.3,
                 TimesBookedThisYear = 30,
@@ -275,7 +266,7 @@ namespace RoomServiceTests
             var service = new RoomService(dbContext, mapper);
 
             // Update room usage to simulate different wear levels
-            var roomUsage3 = await dbContext.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomID == 3);
+            var roomUsage3 = await dbContext.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomId == 3);
             roomUsage3.GeneralWear = 0.8; // Higher wear level for Room 303
             await dbContext.SaveChangesAsync();
 

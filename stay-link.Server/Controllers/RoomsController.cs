@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using stay_link.Server.Models;
 using stay_link.Server.Data;
 using Microsoft.AspNetCore.Authorization;
 using stay_link.Server.Services;
-using stay_link.Server.DTO;
 using AutoMapper;
+using stay_link.Server.DTO.Rooms;
+using stay_link.Server.Models.Auth;
+using stay_link.Server.Models.Rooms;
+using stay_link.Server.DTO.RoomClosure;
+using stay_link.Server.DTO.RoomOperations;
 
 namespace stay_link.Server.Controllers
 {
@@ -100,7 +103,6 @@ namespace stay_link.Server.Controllers
             return Ok(availableRooms);
         }
 
-  
 
         [HttpGet("usages")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomFeatureDetailsDTO>))]
@@ -109,6 +111,7 @@ namespace stay_link.Server.Controllers
             var usages = await _roomService.GetRoomsUsages();
             return Ok(usages); // Wrap the result in Ok()
         }
+
 
         // GET: api/Rooms/5
         [HttpGet("{id}")]
@@ -204,12 +207,12 @@ namespace stay_link.Server.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteRoom(int id)
-    {
-        var success = await _roomService.DeleteRoom(id);
-        if (!success) return NotFound(new { message = "Room not found." });
+        {
+            var success = await _roomService.DeleteRoom(id);
+            if (!success) return NotFound(new { message = "Room not found." });
 
-        return NoContent();
-    }
+            return NoContent();
+        }   
 
     }
 }

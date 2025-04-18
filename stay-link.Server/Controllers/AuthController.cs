@@ -1,184 +1,154 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using stay_link.Server.DTO;
-using stay_link.Server.Models;
+using stay_link.Server.Models.Auth;
 using stay_link.Server.Services;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Security.Policy;
 
 namespace stay_link.Server.Controllers
 {
-    public static class AuthController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
-        public static void AddAuthApi(this WebApplication app)
+        private readonly UserManager<BookingUser> _userManager;
+        private readonly JwtTokenService _jwtTokenService;
+        private readonly SessionService _sessionService;
+
+        public AuthController(
+            UserManager<BookingUser> userManager,
+            JwtTokenService jwtTokenService,
+            SessionService sessionService)
         {
-            app.MapPost("api/accounts", async (UserManager<BookingUser> userManager, RegisterUserDTO userDTO) =>
-            {
-                var user = await userManager.FindByNameAsync(userDTO.Username);
-                if (user != null)
-                {
-                    return Results.UnprocessableEntity(new { message = "Username is taken" });
-                }
-
-                var newUser = new BookingUser()
-                {
-                    Email = userDTO.Email,
-                    FirstName = userDTO.FirstName,
-                    LastName = userDTO.LastName,
-                    UserName = userDTO.Username
-                };
-
-                var createUserResult = await userManager.CreateAsync(newUser, userDTO.Password);
-
-                if (!createUserResult.Succeeded)
-                    return Results.UnprocessableEntity(new { message = "Some error" });
-
-                await userManager.AddToRoleAsync(newUser, BookingRoles.BookingUser);
-
-                return Results.Created("/api/accounts", new { message = "User successfully created" });
-
-            })
-            .Produces<ErrorResponse>(StatusCodes.Status201Created)  // 201 Created
-            .Produces<ErrorResponse>(StatusCodes.Status422UnprocessableEntity); // 422 UnprocessableEntity
-
-
-            app.MapPost("api/login", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext, LoginUserDTO userDTO) =>
-            {
-                var user = await userManager.FindByNameAsync(userDTO.Username);
-
-                if (user == null)
-                {
-                    user = await userManager.FindByEmailAsync(userDTO.Username);
-                    if (user == null)
-                        return Results.UnprocessableEntity(new { message = "User doesn't exist" });
-
-                }
-
-                var isPasswordValid = await userManager.CheckPasswordAsync(user, userDTO.Password);
-
-                if (!isPasswordValid)
-                    return Results.UnprocessableEntity(new { message = "Password was incorrect" });
-
-                var roles = await userManager.GetRolesAsync(user);
-
-                var sessionId = Guid.NewGuid();
-                var cookieExpiresAt = DateTime.UtcNow.AddHours(72);
-                var accessToken = jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
-                var refreshToken = jwtTokenService.CreateRefreshToken(sessionId, user.Id);
-
-                await sessionService.CreateSessionAsync(sessionId, user.Id, refreshToken, cookieExpiresAt);
-
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.None,
-                    Expires = cookieExpiresAt,
-                    Secure = true,
-                };
-
-                httpContext.Response.Cookies.Append("AccessToken", accessToken, cookieOptions);
-                httpContext.Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
-
-                return Results.Ok(new SuccessfulLoginDTO(user.Id, roles));
-
-            })
-            .Produces<SuccessfulLoginDTO>(StatusCodes.Status200OK)  // 201 Created
-            .Produces<ErrorResponse>(StatusCodes.Status422UnprocessableEntity); // 422 UnprocessableEntity;
-
-            app.MapPost("api/accessToken", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
-            {
-                if (!httpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
-                {
-                    return Results.UnprocessableEntity(new { message = "Refresh token not found in cookies" });
-                }
-
-                if (!jwtTokenService.TryParseRefreshToken(refreshToken, out var claims))
-                {
-                    return Results.UnprocessableEntity(new { message = "Failed to parse refresh token" });
-                }
-
-                var sessionId = claims.FindFirstValue("SessionId");
-                if (string.IsNullOrWhiteSpace(sessionId))
-                {
-                    return Results.UnprocessableEntity(new { message = "Session not found" });
-                }
-
-                var sessionIdAsGuid = Guid.Parse(sessionId);
-                if (!await sessionService.IsSessionValidAsync(sessionIdAsGuid, refreshToken))
-                {
-                    return Results.UnprocessableEntity(new { message = "Session invalid" });
-                }
-
-                var userId = claims.FindFirstValue(JwtRegisteredClaimNames.Sub);
-
-                var user = await userManager.FindByIdAsync(userId);
-
-                if (user == null)
-                {
-                    return Results.UnprocessableEntity(new { message = "User not found" });
-                }
-
-                var roles = await userManager.GetRolesAsync(user);
-
-                var cookieExpiresAt = DateTime.UtcNow.AddHours(72);
-                var accessToken = jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
-                var newRefreshToken = jwtTokenService.CreateRefreshToken(sessionIdAsGuid, user.Id);
-
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.None,
-                    Expires = cookieExpiresAt,
-                    Secure = true
-                };
-
-                httpContext.Response.Cookies.Append("AccessToken", accessToken, cookieOptions);
-                httpContext.Response.Cookies.Append("RefreshToken", newRefreshToken, cookieOptions);
-
-                await sessionService.ExtendSessionAsync(sessionIdAsGuid, newRefreshToken, cookieExpiresAt);
-
-                return Results.Ok(new { message = "Access token refreshed" });
-
-            })
-            .Produces<ErrorResponse>(StatusCodes.Status200OK)  // 201 Created
-            .Produces<ErrorResponse>(StatusCodes.Status422UnprocessableEntity); // 422 UnprocessableEntity;;
-
-            app.MapPost("api/logout", async (UserManager<BookingUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
-            {
-                if (!httpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
-                {
-                    return Results.UnprocessableEntity(new { message = "Did not find refresh token in cookies" });
-                }
-
-                if (!httpContext.Request.Cookies.TryGetValue("AccessToken", out var accessToken))
-                {
-                    return Results.UnprocessableEntity(new { message = "Did not find access token in cookies" });
-                }
-
-                if (!jwtTokenService.TryParseRefreshToken(refreshToken, out var claims))
-                {
-                    return Results.UnprocessableEntity(new { message = "Error parsing refresh token" });
-                }
-
-                var sessionId = claims.FindFirstValue("SessionId");
-                if (string.IsNullOrWhiteSpace(sessionId))
-                {
-                    return Results.UnprocessableEntity(new { message = "Did not find sessionId in token" });
-                }
-
-                await sessionService.InvalidateSessionAsync(Guid.Parse(sessionId));
-                httpContext.Response.Cookies.Delete("AccessToken");
-                httpContext.Response.Cookies.Delete("RefreshToken");
-
-                return Results.Ok(new { message = "Logged out successfully" });
-            });
-
+            _userManager = userManager;
+            _jwtTokenService = jwtTokenService;
+            _sessionService = sessionService;
         }
 
-        public record RegisterUserDTO(string Username, string FirstName, string LastName, string Email, string Password);
-        public record LoginUserDTO(string Username, string Password);
-        public record SuccessfulLoginDTO(string userId, IList<string> roles);
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDTO userDTO)
+        {
+            var user = await _userManager.FindByNameAsync(userDTO.Username);
+            if (user != null)
+                return UnprocessableEntity(new { message = "Username is taken" });
+
+            var newUser = new BookingUser
+            {
+                Email = userDTO.Email,
+                FirstName = userDTO.FirstName,
+                LastName = userDTO.LastName,
+                UserName = userDTO.Username
+            };
+
+            var createUserResult = await _userManager.CreateAsync(newUser, userDTO.Password);
+            if (!createUserResult.Succeeded)
+                return UnprocessableEntity(new { message = "User creation failed" });
+
+            await _userManager.AddToRoleAsync(newUser, BookingRoles.BookingUser);
+
+            return Created("/api/auth/register", new { message = "User successfully created" });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO userDTO)
+        {
+            var user = await _userManager.FindByNameAsync(userDTO.Username)
+                       ?? await _userManager.FindByEmailAsync(userDTO.Username);
+
+            if (user == null)
+                return UnprocessableEntity(new { message = "User doesn't exist" });
+
+            if (!await _userManager.CheckPasswordAsync(user, userDTO.Password))
+                return UnprocessableEntity(new { message = "Password was incorrect" });
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var sessionId = Guid.NewGuid();
+            var expiresAt = DateTime.UtcNow.AddHours(72);
+            var accessToken = _jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
+            var refreshToken = _jwtTokenService.CreateRefreshToken(sessionId, user.Id);
+
+            await _sessionService.CreateSessionAsync(sessionId, user.Id, refreshToken, expiresAt);
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true,
+                Expires = expiresAt
+            };
+
+            Response.Cookies.Append("AccessToken", accessToken, cookieOptions);
+            Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
+
+            return Ok(new SuccessfulLoginDTO(user.Id, roles));
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshAccessToken()
+        {
+            if (!Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
+                return UnprocessableEntity(new { message = "Missing refresh token" });
+
+            if (!_jwtTokenService.TryParseRefreshToken(refreshToken, out var claims))
+                return UnprocessableEntity(new { message = "Invalid refresh token" });
+
+            var sessionId = claims.FindFirstValue("SessionId");
+            if (string.IsNullOrWhiteSpace(sessionId))
+                return UnprocessableEntity(new { message = "Session ID missing" });
+
+            var sessionGuid = Guid.Parse(sessionId);
+            if (!await _sessionService.IsSessionValidAsync(sessionGuid, refreshToken))
+                return UnprocessableEntity(new { message = "Session invalid" });
+
+            var userId = claims.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return UnprocessableEntity(new { message = "User not found" });
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var newAccessToken = _jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
+            var newRefreshToken = _jwtTokenService.CreateRefreshToken(sessionGuid, user.Id);
+            var expiresAt = DateTime.UtcNow.AddHours(72);
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true,
+                Expires = expiresAt
+            };
+
+            Response.Cookies.Append("AccessToken", newAccessToken, cookieOptions);
+            Response.Cookies.Append("RefreshToken", newRefreshToken, cookieOptions);
+            await _sessionService.ExtendSessionAsync(sessionGuid, newRefreshToken, expiresAt);
+
+            return Ok(new { message = "Access token refreshed" });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            if (!Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
+                return UnprocessableEntity(new { message = "Missing refresh token" });
+
+            if (!_jwtTokenService.TryParseRefreshToken(refreshToken, out var claims))
+                return UnprocessableEntity(new { message = "Invalid refresh token" });
+
+            var sessionId = claims.FindFirstValue("SessionId");
+            if (string.IsNullOrWhiteSpace(sessionId))
+                return UnprocessableEntity(new { message = "Missing session ID" });
+
+            await _sessionService.InvalidateSessionAsync(Guid.Parse(sessionId));
+            Response.Cookies.Delete("AccessToken");
+            Response.Cookies.Delete("RefreshToken");
+
+            return Ok(new { message = "Logged out successfully" });
+        }
     }
+
+    public record RegisterUserDTO(string Username, string FirstName, string LastName, string Email, string Password);
+    public record LoginUserDTO(string Username, string Password);
+    public record SuccessfulLoginDTO(string userId, IList<string> roles);
 }

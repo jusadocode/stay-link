@@ -1,9 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using stay_link.Server.Data;
 using stay_link.Server.DTO;
+using stay_link.Server.DTO.Bookings;
 using stay_link.Server.Models;
+using stay_link.Server.Models.Bookings;
+using stay_link.Server.Models.RoomOperations;
+using stay_link.Server.Models.Rooms;
 
 namespace stay_link.Server.Services
 {
@@ -34,7 +39,7 @@ namespace stay_link.Server.Services
             if (booking == null) return null;
 
             if (!isAdmin && booking.UserId != userId)
-                return null; // User is not allowed to see this booking
+                return null; 
 
             return _mapper.Map<BookingDTO>(booking);
         }
@@ -45,6 +50,13 @@ namespace stay_link.Server.Services
                 .Where(r => bookingDTO.RoomIds.Contains(r.Id))
                 .ToListAsync();
 
+            var closures = await _context.RoomClosure
+                .Where(r => bookingDTO.RoomIds.Contains(r.Id))
+                .ToListAsync();
+            
+
+
+
             if (rooms.Count != bookingDTO.RoomIds.Count)
                 throw new Exception("One or more selected rooms were not found.");
 
@@ -54,6 +66,14 @@ namespace stay_link.Server.Services
             {
                 if (string.IsNullOrWhiteSpace(bookingDTO.DisplayName))
                     throw new Exception("Display name must be provided for admin-created bookings.");
+
+                var bookingWithSameName = _context.Bookings.FirstOrDefault(b => b.DisplayName == bookingDTO.DisplayName);
+
+
+                if(bookingWithSameName != null)
+                {
+                    throw new Exception("Booking with specified name exists");
+                }
 
                 displayName = bookingDTO.DisplayName;
             }
@@ -77,6 +97,20 @@ namespace stay_link.Server.Services
                 CreationTime = DateTime.UtcNow
             };
 
+            var closureDate = booking.CheckOutDate.AddDays(1);
+
+            foreach (var room in rooms)
+            {
+                var closure = new RoomClosure
+                {
+                    RoomId = room.Id,
+                    StartDate = closureDate,
+                    EndDate = closureDate,
+                    Reason = "Post-booking cleanup"
+                };
+                _context.RoomClosure.Add(closure);
+            }
+
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
 
@@ -99,13 +133,6 @@ namespace stay_link.Server.Services
             if (rooms.Count != bookingDTO.RoomIds.Count)
                 throw new Exception("One or more selected rooms were not found.");
 
-            //if (bookingDTO.HotelId != null)
-            //{
-            //    var hotel = await _context.Hotels.FindAsync(bookingDTO.HotelId);
-            //    if (hotel == null)
-            //        throw new Exception("Hotel not found.");
-            //}
-
             booking.CheckInDate = DateOnly.Parse(bookingDTO.CheckInDate);
             booking.CheckOutDate = DateOnly.Parse(bookingDTO.CheckOutDate);
             booking.DisplayName = bookingDTO.DisplayName;
@@ -122,10 +149,25 @@ namespace stay_link.Server.Services
 
         public async Task<bool> DeleteBooking(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _context.Bookings
+                .Include(b => b.Rooms) 
+                .FirstOrDefaultAsync(b => b.Id == id);
+
             if (booking == null) return false;
 
+            var closureDate = booking.CheckOutDate.AddDays(1);
+
+            var closuresToRemove = await _context.RoomClosure
+                .Where(rc =>
+                    rc.StartDate == closureDate &&
+                    rc.Reason == "Post-booking cleanup" &&
+                    booking.Rooms.Select(r => r.Id).Contains(rc.RoomId)
+                )
+                .ToListAsync();
+
+            _context.RoomClosure.RemoveRange(closuresToRemove);
             _context.Bookings.Remove(booking);
+
             await _context.SaveChangesAsync();
             return true;
         }

@@ -1,24 +1,32 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
-  Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Typography,
   TextField,
-  Button,
   MenuItem,
+  Button,
   CircularProgress,
+  Box,
 } from "@mui/material";
-import React from "react";
-import useBookings from "../../../../shared/hooks/useBookings";
-import useRooms from "../../../../shared/hooks/useRooms";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SaveIcon from "@mui/icons-material/Save";
+import useBookings from "../../../../shared/hooks/useBookings";
+import useRooms from "../../../../shared/hooks/useRooms";
+import React from "react";
 
-export default function BookingEditPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { fetchBooking, updateBooking } = useBookings();
+export default function BookingEditDialog({
+  open,
+  onClose,
+  bookingId,
+  onSuccess,
+}) {
+  const { fetchBooking, updateBooking, deleteBooking } = useBookings();
   const { fetchRooms, getRoomAvailability } = useRooms();
 
   const [booking, setBooking] = useState(null);
@@ -27,8 +35,10 @@ export default function BookingEditPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!open || !bookingId) return;
+
     const load = async () => {
-      const b = await fetchBooking(id);
+      const b = await fetchBooking(bookingId);
       const r = await fetchRooms();
       setBooking(b);
       setRooms(r);
@@ -39,7 +49,7 @@ export default function BookingEditPage() {
     };
 
     load();
-  }, [id]);
+  }, [open, bookingId]);
 
   const getAvailability = async (checkIn, checkOut) => {
     if (!checkIn || !checkOut) return;
@@ -68,90 +78,127 @@ export default function BookingEditPage() {
   const handleSubmit = async () => {
     try {
       await updateBooking(booking);
-      navigate("/bookings/calendar");
+      onSuccess?.();
+      onClose();
     } catch (error) {
       console.error("Failed to update booking", error);
     }
   };
 
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this booking?")) {
+      try {
+        await deleteBooking(bookingId);
+        onSuccess?.();
+        onClose();
+      } catch (error) {
+        console.error("Failed to delete booking", error);
+      }
+    }
+  };
+
   const filteredRooms = rooms.filter(
-    (r) => availableRoomIds.includes(r.id) || booking.roomIds.includes(r.id)
+    (r) => availableRoomIds.includes(r.id) || booking?.roomIds?.includes(r.id)
   );
 
-  if (isLoading) return <CircularProgress />;
-
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Edit Booking #{id}
-      </Typography>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Edit Booking #{bookingId}</DialogTitle>
+      {isLoading || !booking ? (
+        <DialogContent>
+          <CircularProgress />
+        </DialogContent>
+      ) : (
+        <>
+          <DialogContent dividers>
+            <TextField
+              fullWidth
+              label="Display Name"
+              value={booking.displayName}
+              onChange={handleChange("displayName")}
+              sx={{ mb: 2 }}
+            />
 
-      <TextField
-        fullWidth
-        label="Display Name"
-        value={booking.displayName}
-        defaultValue={""}
-        onChange={handleChange("displayName")}
-        sx={{ mb: 2 }}
-      />
+            <TextField
+              fullWidth
+              type="number"
+              label="Breakfast Requests"
+              value={booking.breakfastRequests}
+              onChange={handleChange("breakfastRequests")}
+              sx={{ mb: 2 }}
+            />
 
-      <TextField
-        fullWidth
-        type="number"
-        label="Breakfast Requests"
-        value={booking.breakfastRequests}
-        onChange={handleChange("breakfastRequests")}
-        sx={{ mb: 2 }}
-      />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Check-in"
+                value={dayjs(booking.checkInDate)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    handleChange("checkInDate")({
+                      target: { value: newValue.format("YYYY-MM-DD") },
+                    });
+                  }
+                }}
+                sx={{ mb: 2, width: "100%" }}
+              />
+              <DatePicker
+                label="Check-out"
+                value={dayjs(booking.checkOutDate)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    handleChange("checkOutDate")({
+                      target: { value: newValue.format("YYYY-MM-DD") },
+                    });
+                  }
+                }}
+                sx={{ mb: 2, width: "100%" }}
+              />
+            </LocalizationProvider>
 
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          label="Check-in"
-          value={dayjs(booking.checkInDate)}
-          onChange={(newValue) => {
-            if (newValue) {
-              handleChange("checkInDate")({
-                target: { value: newValue.format("YYYY-MM-DD") },
-              });
-            }
-          }}
-          sx={{ mb: 2, width: "100%" }}
-        />
-        <DatePicker
-          label="Check-out"
-          value={dayjs(booking.checkOutDate)}
-          onChange={(newValue) => {
-            if (newValue) {
-              handleChange("checkOutDate")({
-                target: { value: newValue.format("YYYY-MM-DD") },
-              });
-            }
-          }}
-          sx={{ mb: 2, width: "100%" }}
-        />
-      </LocalizationProvider>
+            <TextField
+              fullWidth
+              select
+              label="Rooms"
+              SelectProps={{ multiple: true }}
+              value={booking.roomIds}
+              onChange={handleChange("roomIds")}
+              sx={{ mb: 2 }}
+            >
+              {filteredRooms.map((room) => (
+                <MenuItem key={room.id} value={room.id}>
+                  {room.title} – {room.roomType}
+                </MenuItem>
+              ))}
+            </TextField>
+          </DialogContent>
 
-      <TextField
-        fullWidth
-        select
-        label="Rooms"
-        SelectProps={{
-          multiple: true,
-        }}
-        value={booking.roomIds}
-        onChange={handleChange("roomIds")}
-        sx={{ mb: 3 }}
-      >
-        {filteredRooms.map((room) => (
-          <MenuItem key={room.id} value={room.id}>
-            {room.title} – {room.roomType}
-          </MenuItem>
-        ))}
-      </TextField>
+          <DialogActions>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              width="100%"
+              px={2}
+            >
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleDelete}
+                startIcon={<DeleteIcon />}
+              >
+                Delete
+              </Button>
 
-      <Button variant="contained" onClick={handleSubmit}>
-        Save Changes
-      </Button>
-    </Container>
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                startIcon={<SaveIcon />}
+              >
+                Save
+              </Button>
+            </Box>
+          </DialogActions>
+        </>
+      )}
+    </Dialog>
   );
 }

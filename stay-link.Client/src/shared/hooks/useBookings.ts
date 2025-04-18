@@ -39,7 +39,7 @@ const useBookings = () => {
     if (response.status === 204) return;
   };
 
-  const deleteBooking = async (bookingId: number) => {
+  const deleteBooking = async (bookingId) => {
     const response = await customFetch(API_BOOKINGS_URL + `/${bookingId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },

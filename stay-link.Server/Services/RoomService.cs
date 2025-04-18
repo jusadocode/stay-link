@@ -3,9 +3,14 @@ using AutoMapper.Features;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using stay_link.Server.Data;
-using stay_link.Server.DTO;
+using stay_link.Server.DTO.RoomClosure;
+using stay_link.Server.DTO.RoomOperations;
+using stay_link.Server.DTO.Rooms;
 using stay_link.Server.Helpers;
 using stay_link.Server.Models;
+using stay_link.Server.Models.Enums;
+using stay_link.Server.Models.RoomOperations;
+using stay_link.Server.Models.Rooms;
 using System.Collections.Generic;
 
 namespace stay_link.Server.Services
@@ -35,38 +40,37 @@ namespace stay_link.Server.Services
 
         public async Task<List<RoomStatsDTO>> GetRoomStats(DateOnly start, DateOnly end)
         {
+            var allRooms = await _context.Rooms
+                .Include(r => r.RoomUsage)
+                .ToListAsync();
+
+            var roomStatsMap = allRooms.ToDictionary(
+                room => room.Id,
+                room => new RoomStatsDTO
+                {
+                    RoomId = room.Id,
+                    RoomTitle = room.Title,
+                    RoomType = room.RoomType.ToString(),
+                    Reservations = 0,
+                    Nights = 0,
+                    Revenue = 0,
+                    LeadTime = 0,
+                    TotalLoS = 0,
+                    GeneralWear = room.RoomUsage?.GeneralWear ?? 0
+                });
+
             var bookingsInRange = await _context.Bookings
                 .Include(b => b.Rooms)
                 .Where(b => b.CheckInDate < end && b.CheckOutDate > start)
                 .ToListAsync();
 
-            var roomStatsMap = new Dictionary<int, RoomStatsDTO>();
-
             foreach (var booking in bookingsInRange)
             {
-                int nights = (booking.CheckOutDate.DayNumber - booking.CheckInDate.DayNumber);
+                int nights = booking.CheckOutDate.DayNumber - booking.CheckInDate.DayNumber;
 
                 foreach (var room in booking.Rooms)
                 {
-                    var roomUsage = room.RoomUsage;
-
-                    if (!roomStatsMap.TryGetValue(room.Id, out var stats))
-                    {
-                        stats = new RoomStatsDTO
-                        {
-                            RoomId = room.Id,
-                            RoomTitle = room.Title,
-                            RoomType = room.RoomType.ToString(),
-                            Reservations = 0,
-                            Nights = 0,
-                            Revenue = 0,
-                            LeadTime = 0,
-                            TotalLoS = 0,
-                            GeneralWear = roomUsage.GeneralWear
-
-                        };
-                        roomStatsMap[room.Id] = stats;
-                    }
+                    if (!roomStatsMap.TryGetValue(room.Id, out var stats)) continue;
 
                     stats.Reservations++;
                     stats.Nights += nights;
@@ -78,10 +82,10 @@ namespace stay_link.Server.Services
 
             foreach (var stat in roomStatsMap.Values)
             {
-                stat.ADR = stat.Reservations > 0 ? Math.Round(stat.Revenue / stat.Nights,2) : 0;
+                stat.ADR = stat.Reservations > 0 ? Math.Round(stat.Revenue / stat.Nights, 2) : 0;
                 stat.LeadTime = stat.Reservations > 0 ? Math.Round(stat.LeadTime / stat.Reservations) : 0;
                 stat.LoS = stat.Reservations > 0 ? stat.TotalLoS / stat.Reservations : 0;
-                stat.RevPar = stat.Nights > 0 ? Math.Round(stat.Revenue / 30)  : 0;
+                stat.RevPar = Math.Round(stat.Revenue / 30, 2);
                 stat.Occupancy = Math.Round((double)stat.Nights / 30.0, 2);
             }
 
@@ -115,13 +119,14 @@ namespace stay_link.Server.Services
 
         public async Task<RoomDTO?> GetRoom(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
+            var room = await _context.Rooms
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             return _mapper.Map<RoomDTO>(room);
         }
 
         public async Task<RoomDTO> CreateRoom(CreateRoomDTO createRoomDTO)
         {
-
             var features = await _context.RoomFeatures
                 .Where(rf => createRoomDTO.FeatureIds.Contains(rf.Id))
                 .ToListAsync();
@@ -181,9 +186,16 @@ namespace stay_link.Server.Services
             if (room == null)
                 return false;
 
+            var roomUsage = await _context.RoomUsages.FirstOrDefaultAsync(ru => ru.RoomId == id);
+
+            if (roomUsage != null)
+            {
+                roomUsage.GeneralWear = roomDTO.GeneralWear;
+            }
+
             room.RoomType = Enum.Parse<RoomType>(roomDTO.RoomType);
 
-            _mapper.Map(roomDTO, room); // Update room properties from DTO
+            _mapper.Map(roomDTO, room); 
             _context.Entry(room).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return true;
@@ -218,6 +230,8 @@ namespace stay_link.Server.Services
             var features = await _context.RoomFeatures
                 .Include(f => f.Bookings)
                 .Include(f => f.Rooms)
+                .OrderByDescending(f => f.Rooms.Count)
+                .Take(10)
                 .ToListAsync();
 
             return _mapper.Map<List<RoomFeatureDetailsDTO>>(features);
@@ -289,7 +303,7 @@ namespace stay_link.Server.Services
 
             }
 
-            return roomScores.OrderByDescending(r => r.Value).Select(r => r.Key).Take(10).ToList();
+            return roomScores.OrderByDescending(r => r.Value).Select(r => r.Key).ToList();
         }
 
         public async Task<Dictionary<Room, double>> FindCandidateRoomScoresForGroups(DateOnly checkIn, DateOnly checkOut,  List<RoomFeature> preferences)
@@ -350,37 +364,49 @@ namespace stay_link.Server.Services
 
         public async Task<List<RoomOffer?>> FindMatchingRoomGroupsPreference(DateOnly checkIn, DateOnly checkOut, int guestCount, List<RoomFeature> preferences)
         {
-
             int MAX_ROOMS_TO_COMBINE = 3;
 
-            var roomScores = await FindCandidateRoomScoresForGroups(checkIn, checkOut, preferences); 
-
-            var availableRooms = roomScores.OrderByDescending(r => r.Value).Select(r => r.Key).ToList();
-
-            //var wearHeuristicRooms = scoreHeuristicRooms.OrderByDescending(r => r.Value).Select(r => r.Key).Take(20);
+            var roomScores = await FindCandidateRoomScoresForGroups(checkIn, checkOut, preferences);
+            var availableRooms = roomScores
+                .OrderByDescending(r => r.Value)
+                .Select(r => r.Key)
+                .ToList();
 
             if (!availableRooms.Any())
                 return null;
 
+            if (guestCount == 1)
+            {
+                return availableRooms
+                    .Where(r => r.MaxOccupancy >= 1)
+                    .Take(10)
+                    .Select(r => new RoomOffer
+                    {
+                        Rooms = new List<Room> { r },
+                        Score = roomScores[r],
+                        TotalPrice = r.Price
+                    })
+                    .OrderByDescending(o => o.Score)
+                    .ThenBy(o => o.TotalPrice)
+                    .ToList();
+            }
+
             var allCombinations = new List<List<Room>>();
 
-            var singleRoomCombinations = availableRooms.Where(r => r.MaxOccupancy >= guestCount).Take(5);
-
+            var singleRoomCombinations = availableRooms.Where(r => r.MaxOccupancy == guestCount).Take(10);
             allCombinations.AddRange(singleRoomCombinations.Select(r => new List<Room> { r }));
 
             if (MAX_ROOMS_TO_COMBINE >= 2)
             {
-                int pairCount = 0;
                 for (int i = 0; i < availableRooms.Count; i++)
                 {
                     for (int j = i + 1; j < availableRooms.Count; j++)
                     {
                         Room room1 = availableRooms[i];
                         Room room2 = availableRooms[j];
-                        if (room1.MaxOccupancy + room2.MaxOccupancy >= guestCount)
+                        if (room1.MaxOccupancy + room2.MaxOccupancy >= guestCount && 2 <= guestCount)
                         {
                             allCombinations.Add(new List<Room> { room1, room2 });
-                            pairCount++;
                         }
                     }
                 }
@@ -389,7 +415,6 @@ namespace stay_link.Server.Services
             if (MAX_ROOMS_TO_COMBINE >= 3)
             {
                 var poolFor = availableRooms.Take(30).ToList();
-                int tripletCount = 0;
                 for (int i = 0; i < availableRooms.Count; i++)
                 {
                     for (int j = i + 1; j < availableRooms.Count; j++)
@@ -399,24 +424,26 @@ namespace stay_link.Server.Services
                             Room room1 = availableRooms[i];
                             Room room2 = availableRooms[j];
                             Room room3 = availableRooms[l];
-                            if (room1.MaxOccupancy + room2.MaxOccupancy + room3.MaxOccupancy >= guestCount)
+                            if (room1.MaxOccupancy + room2.MaxOccupancy + room3.MaxOccupancy >= guestCount && 3 <= guestCount)
                             {
                                 allCombinations.Add(new List<Room> { room1, room2, room3 });
-                                tripletCount++;
                             }
                         }
                     }
                 }
             }
 
+            allCombinations = allCombinations
+                .Where(combo => combo.Count <= guestCount)
+                .ToList();
+
             var rankedOptions = new List<RoomOffer>();
             foreach (var combo in allCombinations)
             {
-                // Ensure combo is not null or empty before scoring
                 if (combo != null && combo.Count > 0)
                 {
                     double score = RoomCalculationUtils.CalculateCombinationScore(combo, preferences, guestCount, roomScores);
-                    decimal totalPrice = combo.Sum(r => r.Price); // Assuming Room has a Price property
+                    decimal totalPrice = combo.Sum(r => r.Price);
                     rankedOptions.Add(new RoomOffer { Rooms = combo, Score = score, TotalPrice = totalPrice });
                 }
             }
@@ -426,8 +453,8 @@ namespace stay_link.Server.Services
                 .ThenBy(opt => opt.TotalPrice)
                 .Take(10)
                 .ToList();
-
         }
+
 
         public async Task<RoomClosureDTO> CreateRoomClosure(CreateRoomClosureDTO closureDto)
         {
