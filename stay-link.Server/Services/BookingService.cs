@@ -7,6 +7,7 @@ using stay_link.Server.DTO;
 using stay_link.Server.DTO.Bookings;
 using stay_link.Server.Models;
 using stay_link.Server.Models.Bookings;
+using stay_link.Server.Models.Enums;
 using stay_link.Server.Models.RoomOperations;
 using stay_link.Server.Models.Rooms;
 
@@ -168,6 +169,60 @@ namespace stay_link.Server.Services
             _context.RoomClosure.RemoveRange(closuresToRemove);
             _context.Bookings.Remove(booking);
 
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> CancelBooking(int bookingId)
+        {
+            var booking = await _context.Bookings.FindAsync(bookingId);
+
+            if (booking == null || booking.Status == BookingStatus.Cancelled)
+                return false;
+
+            // Only allow cancellation if check-in is more than 24h away
+            if (booking.CheckInDate.ToDateTime(TimeOnly.MinValue) <= DateTime.UtcNow.AddHours(24))
+                return false;
+
+            booking.Status = BookingStatus.Cancelled;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> CheckInBooking(int bookingId)
+        {
+            var booking = await _context.Bookings.FindAsync(bookingId);
+
+            if (booking == null || booking.Status != BookingStatus.Confirmed)
+                return false;
+
+            // Optional: Only allow check-in on the day of or within a certain time window
+            if (booking.CheckInDate.ToDateTime(TimeOnly.MinValue) > DateTime.UtcNow)
+                return false;
+
+            booking.Status = BookingStatus.CheckedIn;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> CheckOutBooking(int bookingId)
+        {
+            var booking = await _context.Bookings
+                .Include(b => b.Rooms)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            if (booking == null || booking.Status != BookingStatus.CheckedIn)
+                return false;
+
+            if (booking.CheckOutDate.ToDateTime(TimeOnly.MinValue) > DateTime.UtcNow)
+                return false;
+
+            foreach (var room in booking.Rooms)
+            {
+                room.RoomUsage.GeneralWear += booking.TotalGuests * 3;
+            }
+
+            booking.Status = BookingStatus.CheckedOut;
             await _context.SaveChangesAsync();
             return true;
         }

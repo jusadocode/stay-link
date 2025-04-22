@@ -2,22 +2,22 @@
 {
     public static class BookingConstants
     {
-        public const double GeneralCleaningThreshold = 0.4; // Number of bookings before maintenance is required
-        public const double DeepMaintenanceThreshold = 0.8; // Number of bookings before maintenance is required
-        public const double WearThreshold = 0.8; // General wear threshold for maintenance
-        public const double WearIncreasePerBooking = 0.10; // Wear increase per booking
-        public const double WearReductionAfterMaintenance = 0.5; // Wear reduction after maintenance
+        public const double GeneralCleaningThreshold = 0.4; 
+        public const double DeepMaintenanceThreshold = 0.8; 
+        public const double WearThreshold = 0.8; 
+        public const double WearIncreasePerBooking = 0.10; 
+        public const double WearReductionAfterMaintenance = 0.5;
 
-        public const int DeepCleaningThreshold = 2; // Number of bookings before cleaning is required
-        public const double CleaningWearThreshold = 0.6; // Wear threshold for cleaning
+        public const int DeepCleaningThreshold = 2; 
+        public const double CleaningWearThreshold = 0.6; 
 
-        public const int MaxOccupancyDefault = 2; // Default maximum occupancy for rooms
-        public const int MaxBookingDurationDays = 30; // Maximum allowed booking duration in days
-        public const int MinBookingAdvanceDays = 1; // Minimum days in advance for booking
+        public const int MaxOccupancyDefault = 2; 
+        public const int MaxBookingDurationDays = 30; 
+        public const int MinBookingAdvanceDays = 1; 
 
-        public const double BasePricePerNight = 100.0; // Base price per night for a standard room
-        public const double PriceIncreasePerGuest = 20.0; // Price increase per additional guest
-        public const double DiscountForLongStay = 0.1; // 10% discount for stays longer than 7 days
+        public const double BasePricePerNight = 100.0; 
+        public const double PriceIncreasePerGuest = 20.0; 
+        public const double DiscountForLongStay = 0.1; 
 
         public const string FeatureBalcony = "Balcony";
         public const string FeatureAC = "AC";

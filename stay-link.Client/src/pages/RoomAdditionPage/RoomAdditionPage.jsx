@@ -74,7 +74,7 @@ const RoomAdditionPage = () => {
       response = await addRoom(payload);
 
       if (response.ok || response.id) {
-        navigate("/rooms"); // Or wherever your list is
+        navigate("/rooms");
       } else {
         throw new Error("Failed to create room");
       }

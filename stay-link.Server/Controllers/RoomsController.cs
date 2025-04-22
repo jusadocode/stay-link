@@ -23,13 +23,12 @@ namespace stay_link.Server.Controllers
             _roomService = roomService;
         }
 
-        // GET: api/Rooms
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomDTO>))]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRooms()
         {
             var rooms = await _roomService.GetRooms();
-            return Ok(rooms); // Wrap the result in Ok()
+            return Ok(rooms); 
         }
 
         [HttpGet("stats")]
@@ -113,7 +112,6 @@ namespace stay_link.Server.Controllers
         }
 
 
-        // GET: api/Rooms/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Room))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -126,7 +124,6 @@ namespace stay_link.Server.Controllers
             return Ok(room);
         }
 
-        // POST: api/Rooms
         [HttpPost]
         [Authorize(Roles = BookingRoles.Admin)]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Room))]

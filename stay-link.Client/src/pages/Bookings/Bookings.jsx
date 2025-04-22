@@ -27,7 +27,13 @@ function BookingsPage() {
 
   const { userIsAdmin } = useContext(AuthContext);
 
-  const { fetchBookings, deleteBooking } = useBookings();
+  const {
+    fetchBookings,
+    deleteBooking,
+    checkInBooking,
+    checkOutBooking,
+    cancelBooking,
+  } = useBookings();
   const { fetchRoom } = useRooms();
   useEffect(() => {
     populateBookingData();
@@ -213,45 +219,50 @@ function BookingsPage() {
                       <Typography>
                         <strong>Total price:</strong> €{totalPrice}
                       </Typography>
+
+                      <Typography sx={{ mt: 1 }}>
+                        <strong>Status:</strong> {booking.status}
+                      </Typography>
                     </Grid>
-                    {userIsAdmin() && (
+                    {booking.status === "Confirmed" && canCancel && (
                       <Button
                         variant="outlined"
-                        color="error"
-                        onClick={() => handleOpenModal(booking)}
-                        sx={{ mt: 2 }}
-                        disabled={!canCancel}
+                        color="warning"
+                        sx={{ mt: 1 }}
+                        onClick={() => {
+                          populateBookingData();
+                          cancelBooking(booking.id);
+                        }}
                       >
-                        <DeleteForeverIcon sx={{ mr: 1 }} />
-                        {canCancel
-                          ? "Cancel Booking"
-                          : "Cancellation Unavailable"}
-                      </Button>
-                    )}
-
-                    <Typography
-                      variant="body2"
-                      sx={{ mt: 1 }}
-                      color="text.secondary"
-                    >
-                      {canCancel
-                        ? `You can cancel until ${checkIn
-                            .subtract(24, "hour")
-                            .format("DD MMM HH:mm")}`
-                        : ""}
-                    </Typography>
-
-                    {canCancel ? (
-                      <Button variant="outlined" sx={{ mt: 1 }}>
                         Cancel
                       </Button>
-                    ) : (
-                      ""
                     )}
 
-                    <Button variant="outlined" sx={{ mt: 1 }}>
-                      {canCheckOut ? "Check out" : "Check In"}
-                    </Button>
+                    {booking.status === "Confirmed" && !canCancel && (
+                      <Button
+                        variant="outlined"
+                        sx={{ mt: 1 }}
+                        onClick={() => {
+                          populateBookingData();
+                          checkInBooking(booking.id);
+                        }}
+                      >
+                        Check In
+                      </Button>
+                    )}
+
+                    {booking.status === "CheckedIn" && (
+                      <Button
+                        variant="outlined"
+                        sx={{ mt: 1 }}
+                        onClick={() => {
+                          populateBookingData();
+                          checkOutBooking(booking.id);
+                        }}
+                      >
+                        Check Out
+                      </Button>
+                    )}
                   </Box>
                 </Paper>
               );

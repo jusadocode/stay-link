@@ -18,16 +18,12 @@ namespace stay_link.Server.DTO.Bookings
 
         public List<int> RoomIds { get; set; }
 
-        //[Required(ErrorMessage = "Hotel ID is required.")]
-        //[Range(1, int.MaxValue, ErrorMessage = "Hotel ID must be a positive number.")]
-        //public int HotelId { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Breakfast requests must be a non-negative integer.")]
         public int BreakfastRequests { get; set; } = 0;
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            // Attempt to parse CheckInDate
             if (!DateOnly.TryParse(CheckInDate, out var checkInDate))
             {
                 yield return new ValidationResult(
@@ -36,7 +32,6 @@ namespace stay_link.Server.DTO.Bookings
                 );
             }
 
-            // Attempt to parse CheckOutDate
             if (!DateOnly.TryParse(CheckOutDate, out var checkOutDate))
             {
                 yield return new ValidationResult(
@@ -45,7 +40,6 @@ namespace stay_link.Server.DTO.Bookings
                 );
             }
 
-            // Additional check: CheckOutDate should be after CheckInDate
             if (checkInDate != default && checkOutDate != default)
             {
                 if (checkOutDate <= checkInDate)

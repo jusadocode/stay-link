@@ -9,7 +9,6 @@ import DoneIcon from "@mui/icons-material/Done";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { Dialog, DialogTitle } from "@mui/material";
-import CheckInStep from "./CheckInStep";
 import React from "react";
 import ExtraStep from "./ExtraStep";
 import FinalStep from "./FinalStep";
@@ -164,15 +163,14 @@ export default function BookingDialog({
           </React.Fragment>
         ) : (
           <React.Fragment>
-            {activeStep === 0 && <CheckInStep />}
-            {activeStep === 1 && (
+            {activeStep === 0 && (
               <ExtraStep
                 selectedRooms={selectedRooms}
                 breakfastRequests={breakfastRequests}
                 setBreakfastRequests={setBreakfastRequests}
               />
             )}
-            {activeStep === 2 && (
+            {activeStep === 1 && (
               <FinalStep
                 selectedRooms={selectedRooms}
                 bookingDates={bookingDates}

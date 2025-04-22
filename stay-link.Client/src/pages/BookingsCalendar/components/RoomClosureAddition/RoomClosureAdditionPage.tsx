@@ -67,7 +67,7 @@ export default function RoomClosureDialog({ open, onClose, onSuccess }) {
   const handleSubmit = async () => {
     try {
       await createRoomClosure(closure);
-      onSuccess?.(); // optional callback
+      onSuccess?.();
       onClose();
     } catch (error) {
       console.error("Error submitting closure:", error);

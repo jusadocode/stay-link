@@ -75,4 +75,32 @@ public class BookingsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPost("{id}/cancel")]
+    public async Task<IActionResult> CancelBooking(int id)
+    {
+        var success = await _bookingService.CancelBooking(id);
+        if (!success) return NotFound(new { message = "Booking not found or already cancelled." });
+
+        return Ok(new { message = "Booking cancelled successfully." });
+    }
+
+    [HttpPost("{id}/check-in")]
+    public async Task<IActionResult> CheckIn(int id)
+    {
+        var success = await _bookingService.CheckInBooking(id);
+        if (!success) return NotFound(new { message = "Check-in failed. Booking may not exist or isn't eligible." });
+
+        return Ok(new { message = "Check-in completed." });
+    }
+
+    [HttpPost("{id}/check-out")]
+    [Authorize(Roles = BookingRoles.Admin)]
+    public async Task<IActionResult> CheckOut(int id)
+    {
+        var success = await _bookingService.CheckOutBooking(id);
+        if (!success) return NotFound(new { message = "Check-out failed. Booking may not exist or isn't eligible." });
+
+        return Ok(new { message = "Check-out completed." });
+    }
 }

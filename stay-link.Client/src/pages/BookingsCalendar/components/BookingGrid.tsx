@@ -82,7 +82,6 @@ function BookingGrid({
     }, {});
   }, [rooms]);
 
-  // Calculate grid column template: 1 for room names + 1 for each day
   const gridTemplateColumns = `150px repeat(${numDays}, 80px)`;
 
   return (
@@ -90,7 +89,7 @@ function BookingGrid({
       <Box
         display="grid"
         gridTemplateColumns={gridTemplateColumns}
-        sx={{ minWidth: `${150 + numDays * 80}px` }} // Ensure minimum width
+        sx={{ minWidth: `${150 + numDays * 80}px` }}
       >
         <Box
           sx={{
@@ -110,7 +109,7 @@ function BookingGrid({
               p: 1,
               border: "1px solid #eee",
               borderTop: "none",
-              borderLeft: index === 0 ? "none" : undefined, // Remove left border for first date cell
+              borderLeft: index === 0 ? "none" : undefined,
               backgroundColor: "#f9f9f9",
               fontWeight: "bold",
               position: "sticky",
@@ -191,7 +190,7 @@ function BookingGrid({
                                 <LinearProgress
                                   variant="determinate"
                                   value={wearPercentage}
-                                  color={progressBarColor} // Apply conditional color
+                                  color={progressBarColor}
                                 />
                               </Box>
                             </Tooltip>
@@ -225,7 +224,6 @@ function BookingGrid({
                                 </Typography>
                               </Tooltip>
                             </Box>
-                            {/* Optionally display timesBookedThisYear */}
                             <Tooltip
                               title={`Booked ${usage.timesBookedThisYear} times this year`}
                             >
@@ -342,12 +340,9 @@ function BookingGrid({
                             </Box>
                           );
                         } else {
-                          // This cell is covered by a booking, but the visual block
-                          // starts in an earlier cell within the view. Render nothing (null).
                           renderCellContent = null;
                         }
                       } else if (showHousekeeping && coveringClosure) {
-                        // Only render once per closure block
                         const isActualStartDate = isSameDay(
                           date,
                           parseBookingDate(coveringClosure.startDate)
@@ -427,7 +422,6 @@ function BookingGrid({
                         );
                       }
 
-                      // Make sure this return is the LAST thing in the dateArray.map callback
                       return renderCellContent;
                     })}
                   </React.Fragment>

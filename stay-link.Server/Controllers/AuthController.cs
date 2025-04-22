@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using stay_link.Server.DTO;
 using stay_link.Server.Models.Auth;
 using stay_link.Server.Services;
 using System.IdentityModel.Tokens.Jwt;

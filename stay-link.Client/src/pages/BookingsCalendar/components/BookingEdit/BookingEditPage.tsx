@@ -34,6 +34,14 @@ export default function BookingEditDialog({
   const [availableRoomIds, setAvailableRoomIds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const bookingStatusOptions = [
+    "Pending",
+    "Confirmed",
+    "CheckedIn",
+    "CheckedOut",
+    "Cancelled",
+  ];
+
   useEffect(() => {
     if (!open || !bookingId) return;
 
@@ -154,6 +162,21 @@ export default function BookingEditDialog({
                 sx={{ mb: 2, width: "100%" }}
               />
             </LocalizationProvider>
+
+            <TextField
+              fullWidth
+              select
+              label="Booking Status"
+              value={booking.status}
+              onChange={handleChange("status")}
+              sx={{ mb: 2 }}
+            >
+              {bookingStatusOptions.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status}
+                </MenuItem>
+              ))}
+            </TextField>
 
             <TextField
               fullWidth
